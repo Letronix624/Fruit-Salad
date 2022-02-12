@@ -1,15 +1,8 @@
 import signal
 print(signal.valid_signals())
 from PIL import ImageTk, Image
-import time, win32api, threading, os, subprocess, json, tkinter
+import time, win32api, threading, os, subprocess, json
 pydir = os.path.dirname(os.path.realpath(__file__))
-root = tkinter.Tk()
-root.title("Fruit Salad")
-root.iconbitmap(f'{pydir}\\3060.ico')
-root.geometry("800x600")
-root.resizable(False, False)
-root.configure(bg="orange")
-root.mainloop()
 os.system('title AFK Version of the Salad Miner Optimized For The 3060')
 def cls(): os.system("cls")
 last = time.time()
