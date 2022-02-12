@@ -66,7 +66,7 @@ def mainwindow():
     tkinter.Button(root,fg="white", text= "Auto start",bg="red", border=2, font=fontregular).place(x=512,y=425,width=201,height=50)
     #top
     tkinter.Canvas(root, bg="#222129", highlightthickness=0).place(x=0,y=0,width=800,height=30)
-    tkinter.Button(root, text='Settings', bg='#222129', fg="white", border=1, font=fontregular).place(x=0, y=0, width=188, height=30)
+    tkinter.Button(root, text='Settings', bg='#222129', fg="white", border=1, font=fontregular, command=opensettings).place(x=0, y=0, width=188, height=30)
     tkinter.Label(root, text='GPU Temperature', bg='#222129', fg="white", font=fontregular).place(x=200, y=0, width=400, height=30)
     tkinter.Button(root, text='About us', bg='#222129', fg="white", border=1, font=fontregular, command=aboutus).place(x=612, y=0, width=188, height=30)
 
@@ -125,6 +125,29 @@ def aboutus():
     else:
         about.deiconify()
         about.focus()
+def opensettings():#settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings
+    global settings
+    global settingsopen
+    def opensettings():
+        global settings
+        def close():
+            global settingsopen
+            settingsopen = False
+            settings.destroy()
+        settings = tkinter.Toplevel()
+        settings.geometry("800x600")
+        settings.resizable(False, False)
+        settings.iconbitmap(f'{pydir}\\3060.ico')
+        settings.configure(bg='#303136')
+        #nice cock
+        
+        settings.protocol("WM_DELETE_WINDOW", close)
+    if not settingsopen:
+        settingsopen = True
+        threading.Thread(target=opensettings).start()
+    else:
+        settings.deiconify()
+        settings.focus()
 def megaguide():
     def mega():
         playsound(f"{pydir}\\MEGAGUIDE.mp3")
@@ -209,6 +232,7 @@ fontextremelybig = (f"{pydir}\\GUI\\BarlowCondensed-Medium.ttf", 50, "bold")
 a = ""
 hashrate = 0
 aboutopen = False
+settingsopen = False
 gpuname = {'gpuname':''}
 gpus = GPUtil.getGPUs()
 c = Computer()
