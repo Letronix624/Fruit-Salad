@@ -1,33 +1,73 @@
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, GPUtil, webbrowser, clr
+pydir = os.path.dirname(os.path.realpath(__file__))
+clr.AddReference(f'{pydir}\OpenHardwareMonitorLib')
+from OpenHardwareMonitor.Hardware import Computer
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
 from playsound import playsound
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, GPUtil, webbrowser
-pydir = os.path.dirname(os.path.realpath(__file__))
 def mainwindow():
+    global tempnum
+    global startbuttonanimation
+    global tempbar
     global root
     global windowvisible
+    global startbutton
     windowvisible = True
     traymenu.update_menu()
     root = tkinter.Tk()
+    startbuttonanimation = [
+        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 1.png"),
+        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 2.png"),
+        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 3.png"),
+        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 4.png"),
+        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 5.png"),
+        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 6.png"),
+        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 7.png"),
+        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 8.png"),
+        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 9.png"),
+        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 10.png")
+    ]
     root.wm_attributes("-transparentcolor", '#010110')
     #Stats
+    tkinter.Label(root, text=f'{hashrate} mh/s', bg='#303136', fg="white", font=fontextremelybig).place(x=425, y=480, width=350, height=70)
     tkinter.Label(root, text=f"Gpu: {gpuname['gpuname']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=30, width=400, height=50)
     tkinter.Label(root, text='Miner:', bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=80, width=400, height=50)
     tkinter.Label(root, text='Algo:', bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=130, width=400, height=50)
     tkinter.Label(root, text='Pool:', bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=180, width=400, height=50)
     tkinter.Label(root, text='Region:', bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=230, width=400, height=50)
     #middle
+    tkinter.Label(root, text='100°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-100*5.2, width=50, height=30)
+    tkinter.Label(root, text='90°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-92.5*5.2, width=50, height=30)
+    tkinter.Label(root, text='80°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-82.5*5.2, width=50, height=30)
+    tkinter.Label(root, text='70°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-72.5*5.2, width=50, height=30)
+    tkinter.Label(root, text='60°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-62.5*5.2, width=50, height=30)
+    tkinter.Label(root, text='50°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-52.5*5.2, width=50, height=30)
+    tkinter.Label(root, text='40°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-42.5*5.2, width=50, height=30)
+    tkinter.Label(root, text='30°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-32.5*5.2, width=50, height=30)
+    tkinter.Label(root, text='20°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-22.5*5.2, width=50, height=30)
+    tkinter.Label(root, text='10°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-12.5*5.2, width=50, height=30)
+    tkinter.Label(root, text='0°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=520, width=50, height=30)
     tkinter.Canvas(root, bg="#2D2C36", highlightthickness=0).place(x=375,y=30,width=50,height=520)#temptemptemptemp
-    tkinter.Label(root, text='100°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=30, width=50, height=30)
-    tkinter.Label(root, text='60°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=275, width=50, height=30)
-    tkinter.Label(root, text='20°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=520, width=50, height=30)
-    #bottomright
-    tkinter.Button(root,fg="white", text= "Start",bg="#222129", border=0, font=fontregular).place(x=375,y=550,width=425,height=50)
-    tkinter.Label(root, text=f'{hashrate} mh/s', bg='#303136', fg="white", font=fontextremelybig).place(x=425, y=480, width=350, height=70)
+    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-90*5.2, width=60, height=2)
+    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-80*5.2, width=60, height=2)
+    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-70*5.2, width=60, height=2)
+    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-60*5.2, width=60, height=2)
+    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-50*5.2, width=60, height=2)
+    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-40*5.2, width=60, height=2)
+    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-30*5.2, width=60, height=2)
+    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-20*5.2, width=60, height=2)
+    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-10*5.2, width=60, height=2)
+    tempbar = tkinter.Canvas(root, bg="red", highlightthickness=0)
+    tempnum = tkinter.Label(root, bg="red", fg="white", font=fontregular)
+    #bottom
+    tkinter.Canvas(root, bg="#0A2133", highlightthickness=0).place(x=0, y=550 ,width=375, height=50)
+    startbutton = tkinter.Button(root,fg="white",bg="#0A2133", border=0, font=fontregular, command=start, image=startbuttonanimation[1])
+    startbutton.place(x=375,y=550,width=425,height=50)
+    tkinter.Button(root,fg="white", text= "Auto start",bg="red", border=2, font=fontregular).place(x=512,y=425,width=201,height=50)
     #top
     tkinter.Canvas(root, bg="#222129", highlightthickness=0).place(x=0,y=0,width=800,height=30)
     tkinter.Button(root, text='Settings', bg='#222129', fg="white", border=1, font=fontregular).place(x=0, y=0, width=188, height=30)
-    tkinter.Button(root, text='Temperature Menu', bg='#222129', fg="white", border=1, font=fontregular).place(x=200, y=0, width=400, height=30)
+    tkinter.Label(root, text='GPU Temperature', bg='#222129', fg="white", font=fontregular).place(x=200, y=0, width=400, height=30)
     tkinter.Button(root, text='About us', bg='#222129', fg="white", border=1, font=fontregular, command=aboutus).place(x=612, y=0, width=188, height=30)
 
 
@@ -47,6 +87,7 @@ def mainwindow():
 def trayicon():
     traymenu.run()
     print('tray dead')
+def rgb_to_hex(rgb): return '%02x%02x%02x' % rgb
 def aboutus():
     global about
     global aboutopen
@@ -92,6 +133,51 @@ def windowclose():
     global windowvisible
     windowvisible = False
     root.withdraw()
+def start():
+    def realclick():
+        global mining
+        global startbuttonanimation
+        if mining:
+            mining = False
+            startbutton.configure(image=startbuttonanimation[8])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[7])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[6])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[5])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[4])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[3])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[2])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[1])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[0])
+            time.sleep(0.05)
+        else:
+            mining = True
+            startbutton.configure(image=startbuttonanimation[1])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[2])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[3])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[4])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[5])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[6])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[7])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[8])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[9])
+            time.sleep(0.05)
+    threading.Thread(target=realclick).start()
 def windowopen():
     global windowvisible
     if windowvisible:
@@ -108,15 +194,26 @@ def changegpu():
     with open(f"{pydir}\\settings.json", ("w")) as settings:
                 settings.write(json.dumps(gpuname))
     gpudefine.destroy()
+
+def gputemp():
+    for a in range(0, len(c.Hardware[0].Sensors)):
+        if "/temperature" in str(c.Hardware[0].Sensors[a].Identifier):
+            temp = c.Hardware[0].Sensors[a].get_Value()
+            c.Hardware[0].Update()
+            return temp
 icon = Image.open(f"{pydir}\\3060.ico")
-fontregular = (f"{pydir}\\BarlowCondensed-Medium.ttf", 10, "bold")
-fontbig = (f"{pydir}\\BarlowCondensed-Medium.ttf", 20, "bold")
-fontextremelybig = (f"{pydir}\\BarlowCondensed-Medium.ttf", 50, "bold")
+mining = False
+fontregular = (f"{pydir}\\GUI\\BarlowCondensed-Medium.ttf", 10, "bold")
+fontbig = (f"{pydir}\\GUI\\BarlowCondensed-Medium.ttf", 20, "bold")
+fontextremelybig = (f"{pydir}\\GUI\\BarlowCondensed-Medium.ttf", 50, "bold")
 a = ""
 hashrate = 0
 aboutopen = False
 gpuname = {'gpuname':''}
 gpus = GPUtil.getGPUs()
+c = Computer()
+c.GPUEnabled = True
+c.Open()
 supportedgpus = [
     "GTX 1050",
     "GTX 1050 Ti",
@@ -152,6 +249,9 @@ traymenucontent = (
     #item('Quit', byebye, default=False)
 )
 traymenu = pystray.Icon("Fruit Salad", icon, "Fruit Salad", traymenucontent)
+
+
+
 if __name__ == "__main__":
     for gpu in gpus:
         gpuname['gpuname'] = gpu.name
@@ -178,3 +278,13 @@ if __name__ == "__main__":
     traythread = threading.Thread(target=trayicon)
     traythread.start()
     threading.Thread(target=mainwindow).start()
+    time.sleep(1)
+    while 1:
+        time.sleep(1)
+        #highest y30 = 100c lowest 550 = 20c sweet 395 425
+        if windowvisible:
+            gputemperature = gputemp()
+            tempnum.place(x=380,y=int(550-gputemp()*5.2),width=40,height=30)
+            tempbar.place(x=380,y=int(550-gputemperature*5.2),width=40,height=520)
+            tempnum.configure(text=str(int(gputemperature)))
+        
