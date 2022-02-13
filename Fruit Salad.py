@@ -157,6 +157,9 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         hhh.destroy()
     def settingchange():
         changelang(selectedlang.get())
+        acceptbutton.place_forget()
+    def enableaccept(aseggsaegsdg):
+        acceptbutton.place(x=595, y=565, width=200, height=30)
     if not settingsopen:
         settingsopen = True
         settings = tkinter.Toplevel(bg=defaultbg)
@@ -175,16 +178,23 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Button(settings, text=language["Mining Settings"], font=fontregular, bg='#222129', fg="white", command=openminingsettings).place(x=300, y=0, width=300, height=30)
         tkinter.Button(settings, text=language["Advanced Settings"], font=fontregular, bg='#222129', fg="white", command=openadvancedsettings).place(x=600, y=0, width=200, height=30)
         tkinter.Button(settings, border=0, bg=defaultbg, command=openmegaguide).place(x=790, y=590, width=10, height=10)
-        tkinter.Button(settings, text=language['Accept Settings'], command=settingchange).place(x=595, y=565, width=200, height=30)
+        acceptbutton = tkinter.Button(settings, text=language['Accept Settings'], command=settingchange)
+
         #App Settings
         selectedlang = tkinter.StringVar()
         selectedlang.set(savedsettings['language'])
-        hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages)
+        hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages, command=enableaccept)
         hhhh.place(x=5, y=3, width=100, height=24)
         hhhh.configure(highlightthickness=0)
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Language. Apply by closing the program in task manager and reopening."], anchor=tkinter.W).place(x=150, y=5, width=800, height=20)
+
+
         #Mining Settings
+
+
         #Advanced Settings
+
+
         #Megaguide Settings
         tkinter.Label(megaguidesettingsframe, text=language["Secret Settings"], bg="pink", fg="white", font=fontextremelybig).pack()
         tkinter.Button(megaguidesettingsframe, text="Megaguide", bg="Red", fg="White", command=megaguide, font=fontregular, padx=10, pady=5).pack(anchor=tkinter.NW)
