@@ -1,5 +1,6 @@
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, GPUtil, webbrowser, clr
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, GPUtil, webbrowser, clr, sys
 pydir = os.path.dirname(os.path.realpath(__file__))
+exedir = sys.executable
 clr.AddReference(f'{pydir}\OpenHardwareMonitorLib')
 from OpenHardwareMonitor.Hardware import Computer
 from PIL import ImageTk, Image
@@ -62,7 +63,7 @@ def mainwindow():
     tempnum = tkinter.Label(root, bg="red", fg="white", font=fontregular)
     #bottom
     tkinter.Canvas(root, bg="#0A2133", highlightthickness=0).place(x=0, y=550 ,width=375, height=50)
-    startbutton = tkinter.Button(root,fg="white",bg="#0A2133", border=0, font=fontregular, command=start, image=startbuttonanimation[1])
+    startbutton = tkinter.Button(root,fg="white",bg="#0A2133", border=0, font=fontregular, command=start, image=startbuttonanimation[1], activebackground="#0A2133")
     startbutton.place(x=375,y=550,width=425,height=50)
     tkinter.Button(root,fg="white", text=language['Auto start'],bg="red", border=2, font=fontregular).place(x=512,y=425,width=201,height=50)
     #top
@@ -157,6 +158,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         hhh.destroy()
     def settingchange():
         changelang(selectedlang.get())
+        savedsettings["tempbar"] = selectedtempbar.get()
+        savesettings()
         acceptbutton.place_forget()
     def enableaccept(aseggsaegsdg):
         acceptbutton.place(x=595, y=565, width=200, height=30)
@@ -180,14 +183,19 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Button(settings, border=0, bg=defaultbg, command=openmegaguide).place(x=790, y=590, width=10, height=10)
         acceptbutton = tkinter.Button(settings, text=language['Accept Settings'], command=settingchange)
 
+
         #App Settings
         selectedlang = tkinter.StringVar()
         selectedlang.set(savedsettings['language'])
+        selectedtempbar =tkinter.BooleanVar()
+        selectedtempbar.set(savedsettings['tempbar'])
         hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages, command=enableaccept)
         hhhh.place(x=5, y=3, width=100, height=24)
         hhhh.configure(highlightthickness=0)
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Language. Apply by closing the program in task manager and reopening."], anchor=tkinter.W).place(x=150, y=5, width=800, height=20)
-
+        tempcheckbutton = tkinter.Checkbutton(appsettingsframe, text=language["Temperature Bar"], onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedtempbar, activebackground=defaultbg, fg="black")
+        tempcheckbutton.place(x=5, y=35)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["When checked the temperature bar is visible."], anchor=tkinter.W).place(x=150, y=35, width=800, height=20)
 
         #Mining Settings
 
@@ -274,13 +282,21 @@ def windowopen():
 def changesettings():
     savedsettings['gpuname'] = nvidia.get()
     savedsettings['language'] = defaultlang.get()
+    savedsettings['tempbar'] = tempbar
     changelang(savedsettings['language'])
-    
-
-    with open(f"{pydir}\\settings.json", ("w")) as settings:
+    with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
                 settings.write(json.dumps(savedsettings))
     gpudefine.destroy()
-
+def savesettings():
+    with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
+                settings.write(json.dumps(savedsettings))
+    if savedsettings["tempbar"]:
+        gputemperature = gputemp()
+        tempnum.place(x=380,y=int(550-gputemperature*5.2),width=40,height=30)
+        tempbar.place(x=380,y=int(550-gputemperature*5.2),width=40,height=520)
+    else:
+        tempnum.place_forget()
+        tempbar.place_forget()
 def gputemp():
     for a in range(0, len(c.Hardware[0].Sensors)):
         if "/temperature" in str(c.Hardware[0].Sensors[a].Identifier):
@@ -292,7 +308,7 @@ def changelang(lang):
     savedsettings["language"] = lang
     with open(f"{pydir}\\languages\\{lang}.json") as data:
         language = json.load(data)
-    with open(f"{pydir}\\settings.json", ("w")) as settings:
+    with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "w") as settings:
         settings.write(json.dumps(savedsettings))
     threading.Thread(target=mainwindow)
 icon = Image.open(f"{pydir}\\3060.ico")
@@ -338,20 +354,26 @@ defaultbg = "#303136"
 hashrate = 0
 aboutopen = False
 settingsopen = False
-savedsettings = {'gpuname':'', 'language':''}
+savedsettings = {'gpuname':'', 'language':'', 'tempbar': True}
 gpus = GPUtil.getGPUs()
 c = Computer()
 c.GPUEnabled = True
 c.Open()
 try:
-    with open(f"{pydir}\\settings.json", "r") as data:
+    with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
         savedsettings = json.load(data)
+        tempbar = savedsettings['tempbar']
         changelang(savedsettings["language"])
 except Exception as e:
     print(e)
+    try:
+        os.makedirs(f"{os.environ['APPDATA']}\\fruitsalad")
+    except:
+        pass
     savedsettings["language"] = "English"
     savedsettings['gpuname'] = "Unknown"
     gpudefine = tkinter.Tk()
+    tempbar = True
     nvidia = tkinter.StringVar()
     nvidia.set("Nvidia")
     defaultlang = tkinter.StringVar()
@@ -388,9 +410,9 @@ if __name__ == "__main__":
     while 1:
         time.sleep(1)
         #highest y30 = 100c lowest 550 = 20c sweet 395 425
-        if windowvisible:
+        if windowvisible and savedsettings['tempbar']:
             gputemperature = gputemp()
-            tempnum.place(x=380,y=int(550-gputemp()*5.2),width=40,height=30)
-            tempbar.place(x=380,y=int(550-gputemperature*5.2),width=40,height=520)
+            tempnum.place_configure(x=380,y=int(550-gputemperature*5.2),width=40,height=30)
+            tempbar.place_configure(x=380,y=int(550-gputemperature*5.2),width=40,height=520)
             tempnum.configure(text=str(int(gputemperature)))
         

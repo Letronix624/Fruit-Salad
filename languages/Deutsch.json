@@ -21,5 +21,7 @@
     "Translators:": "Uebersetzer:",
     "Button below requires Task Manager Restart.": "Der untere knopf benoetigt ein Neustart vom Task Manager aus.",
     "Accept Settings": "Einstellungen Annehmen",
-    "Language. Apply by closing the program in task manager and reopening.": "Sprache. Zum annehmen das Programm per Taskmanager schliessen und wieder oeffnen."
+    "Language. Apply by closing the program in task manager and reopening.": "Sprache. Zum annehmen das Programm per Taskmanager schliessen und wieder oeffnen.",
+    "Temperature Bar": "Temperatur Anzeige",
+    "When checked the temperature bar is visible.": "Aktiviert die Temperaturenleiste wenn angekreuzt."
 }
