@@ -4,6 +4,7 @@
     "Algo:": "",
     "Pool:": "",
     "Region:": "",
+    "Worker:": "",
     "Auto start": "",
     "Settings": "",
     "GPU Temperature": "",
@@ -18,10 +19,17 @@
     "Furry Language": "",
     "Unknown": "",
     "Hide": "",
+    "Quit": "",
     "Translators:": "",
     "Button below requires Task Manager Restart.": "",
     "Accept Settings": "",
-    "Language. Apply by closing the program in task manager and reopening.": "",
+    "Language. When applying program will restart.": "",
     "Temperature Bar": "",
-    "When checked the temperature bar is visible.": ""
+    "When checked the temperature bar is visible.": "",
+    "Salad Mining?": "",
+    "Should the miner mine to your Salad balance or an external wallet?": "",
+    "Auto get worker": "",
+    "Manually set worker": "",
+    "Worker to send the balance to.": "",
+    "RESET EVERYTHING": ""
 }

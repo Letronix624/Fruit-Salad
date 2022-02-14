@@ -4,6 +4,7 @@
     "Algo:": "Algo:",
     "Pool:": "Pool:",
     "Region:": "Region:",
+    "Worker:": "Arbeiter:",
     "Auto start": "Auto Start",
     "Settings": "Einstellungen",
     "GPU Temperature": "GPU Temperatur",
@@ -18,10 +19,17 @@
     "Furry Language": "Furry Sprache",
     "Unknown": "Unbekannt",
     "Hide": "Verstecken",
+    "Quit": "Schließen",
     "Translators:": "Uebersetzer:",
     "Button below requires Task Manager Restart.": "Der untere knopf benoetigt ein Neustart vom Task Manager aus.",
     "Accept Settings": "Einstellungen Annehmen",
-    "Language. Apply by closing the program in task manager and reopening.": "Sprache. Zum annehmen das Programm per Taskmanager schliessen und wieder oeffnen.",
+    "Language. When applying program will restart.": "Sprache. Startet das Programm bei Annahme neu.",
     "Temperature Bar": "Temperatur Anzeige",
-    "When checked the temperature bar is visible.": "Aktiviert die Temperaturenleiste wenn angekreuzt."
+    "When checked the temperature bar is visible.": "Aktiviert die Temperaturenleiste wenn angekreuzt.",
+    "Salad Mining?": "Mining fuer Salad?",
+    "Should the miner mine to your Salad balance or an external wallet?": "Soll der Miner auf deine Salad Guthaben oder auf ein externes Wallet minen?",
+    "Auto get worker": "Arbeiter automatisch setzen",
+    "Manually set worker": "Arbeiter manuell setzen",
+    "Worker to send the balance to.": "Arbeiter, zudem das Guthaben geschickt wird.",
+    "RESET EVERYTHING": "ALLES ZURUECKSETZEN"
 }
