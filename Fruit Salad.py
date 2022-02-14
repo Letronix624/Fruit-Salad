@@ -1,4 +1,5 @@
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, clr, sys, GPUtil
+version = "0.0.1"
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, clr, sys, GPUtil, tkinter.messagebox
 from numpy import save
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
@@ -223,10 +224,13 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         givenworker.place_forget()
         prelabel.place(x=10, y=45, height=20, width=100)
         manualworkergetterb.configure(state="normal")
-        with open(f"{os.environ['appdata']}\\Salad\\logs\\main.log","r")as data:
-            for line in data:
-                if 'worker ID:' in line:
-                    savedsettings['worker'] = line[21:-1]
+        try:
+            with open(f"{os.environ['appdata']}\\Salad\\logs\\main.log","r")as data:
+                for line in data:
+                    if 'worker ID:' in line:
+                        savedsettings['worker'] = line[21:-1]
+        except:
+            tkinter.messagebox.showerror(title="Salad not installed", message="You need to install Salad from Salad.com to use this function.")
         globalworker.configure(text=f"{language['Worker:']} {savedsettings['worker']}")
         prelabel.configure(text=savedsettings['worker'], anchor=tkinter.CENTER)
     def manualworkergetter():
