@@ -1,4 +1,4 @@
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, GPUtil, webbrowser, clr, sys
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, clr, sys
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
 clr.AddReference(f'{pydir}\OpenHardwareMonitorLib')
@@ -6,6 +6,8 @@ from OpenHardwareMonitor.Hardware import Computer
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
 from playsound import playsound
+p = subprocess.Popen(["nvidia-smi","--query-gpu=name", "--format=csv,noheader,nounits"], stdout=subprocess.PIPE)
+gpus = p.stdout.read().decode('UTF-8').replace("\r", "").replace("NVIDIA GeForce ", "").split('\n')[:-1]
 def mainwindow():
     global tempnum
     global startbuttonanimation
@@ -279,17 +281,9 @@ def windowopen():
         root.deiconify()
 #def byebye():
     #root.destroy()
-def changesettings():
-    savedsettings['gpuname'] = nvidia.get()
-    savedsettings['language'] = defaultlang.get()
-    savedsettings['tempbar'] = tempbar
-    changelang(savedsettings['language'])
-    with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
-                settings.write(json.dumps(savedsettings))
-    gpudefine.destroy()
 def savesettings():
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
-                settings.write(json.dumps(savedsettings))
+        settings.write(json.dumps(savedsettings))
     if savedsettings["tempbar"]:
         gputemperature = gputemp()
         tempnum.place(x=380,y=int(550-gputemperature*5.2),width=40,height=30)
@@ -355,7 +349,6 @@ hashrate = 0
 aboutopen = False
 settingsopen = False
 savedsettings = {'gpuname':'', 'language':'', 'tempbar': True}
-gpus = GPUtil.getGPUs()
 c = Computer()
 c.GPUEnabled = True
 c.Open()
@@ -371,26 +364,12 @@ except Exception as e:
     except:
         pass
     savedsettings["language"] = "English"
-    savedsettings['gpuname'] = "Unknown"
-    gpudefine = tkinter.Tk()
-    tempbar = True
-    nvidia = tkinter.StringVar()
-    nvidia.set("Nvidia")
-    defaultlang = tkinter.StringVar()
-    defaultlang.set("English")
-    tkinter.Label(gpudefine, text='Startup settings.', bg='#303136', fg="white", font=fontregular).pack()
-    tkinter.Label(gpudefine, text="What gpu do you use.").pack()
-    tkinter.OptionMenu(gpudefine, nvidia, *supportedgpus).pack()
-    tkinter.Label(gpudefine, text="Language.").pack()
-    tkinter.OptionMenu(gpudefine, defaultlang, *supportedlanguages).pack()
-    tkinter.Button(gpudefine, text="Done", command=changesettings).pack()
-
-    gpudefine.title("Fruit Salad")
-    gpudefine.iconbitmap(f'{pydir}\\3060.ico')
-    gpudefine.geometry("600x400")
-    gpudefine.resizable(False, False)
-    gpudefine.configure(bg='#303136')
-    gpudefine.mainloop()
+    savedsettings["tempbar"] = True
+    with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
+        settings.write(json.dumps(savedsettings))
+    with open(f"{pydir}\\languages\\{savedsettings['language']}.json") as data:
+        language = json.load(data)
+savedsettings["gpuname"] = gpus[0]
 traymenucontent = (
     item('Show or hide', windowopen, default=True, visible=False),
     item(language['Hide'], windowclose, default=False),
