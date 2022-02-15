@@ -96,7 +96,7 @@ def mainwindow():
     root.protocol("WM_DELETE_WINDOW", windowclose)
     root.mainloop()
     print('root stopped')
-def rgb_to_hex(rgb): return '%02x%02x%02x' % rgb
+def rgb_to_hex(rgb): return '#%02x%02x%02x' % rgb
 def aboutus():
     global about
     global aboutopen
@@ -233,6 +233,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             tkinter.messagebox.showerror(title="Salad not installed", message="You need to install Salad from Salad.com to use this function.")
         globalworker.configure(text=f"{language['Worker:']} {savedsettings['worker']}")
         prelabel.configure(text=savedsettings['worker'], anchor=tkinter.CENTER)
+        savesettings()
     def manualworkergetter():
         global currentlyeditingmanual
         currentlyeditingmanual = True
@@ -417,14 +418,48 @@ def changelang(lang):
     traymenu.visible = False
     os._exit(0)
 def temperaturebar():
+    tempcolors = [
+        (0, 234, 255), #0
+        (0, 234, 255), #40
+        (64, 255, 0), #60
+        (255, 251, 0), #70
+        (255, 51, 0), #80
+        (255, 0, 0), #100
+    ]
     while 1:
         time.sleep(1)
         gputemperature = gputemp()
+        if gputemperature < 40:
+            current = 0
+            next = 40
+            currentrgb = tempcolors[0]
+            nextrgb = tempcolors[1]
+        elif gputemperature < 60 and gputemperature >= 40:
+            current = 40
+            next = 60
+            currentrgb = tempcolors[1]
+            nextrgb = tempcolors[2]
+        elif gputemperature < 70 and gputemperature >= 60:
+            current = 60
+            next = 70
+            currentrgb = tempcolors[2]
+            nextrgb = tempcolors[3]
+        elif gputemperature < 80 and gputemperature >= 70:
+            current = 70
+            next = 80
+            currentrgb = tempcolors[3]
+            nextrgb = tempcolors[4]
+        elif gputemperature >= 80:
+            current = 80
+            next = 100
+            currentrgb = tempcolors[4]
+            nextrgb = tempcolors[5]
         #highest y30 = 100c lowest 550 = 20c sweet 395 425
         if windowvisible and savedsettings['tempbar']:
             tempnum.place_configure(x=380,y=int(550-gputemperature*5.2),width=40,height=30)
             tempbar.place_configure(x=380,y=int(550-gputemperature*5.2),width=40,height=520)
-            tempnum.configure(text=str(int(gputemperature)))
+            tempbar.configure(bg=rgb_to_hex((int((100/(next-current)*(gputemperature-current)/100)*(nextrgb[0] - currentrgb[0]) + currentrgb[0]), int((100/(next-current)*(gputemperature-current)/100)*(nextrgb[1]-currentrgb[1]) + currentrgb[1]), int((100/(next-current)*(gputemperature-current)/100)*(nextrgb[2] - currentrgb[2]) + currentrgb[2]))))
+            tempnum.configure(text=str(int(gputemperature)), bg=rgb_to_hex((int((100/(next-current)*(gputemperature-current)/100)*(nextrgb[0] - currentrgb[0]) + currentrgb[0]), int((100/(next-current)*(gputemperature-current)/100)*(nextrgb[1]-currentrgb[1]) + currentrgb[1]), int((100/(next-current)*(gputemperature-current)/100)*(nextrgb[2] - currentrgb[2]) + currentrgb[2]))))
         if quitter:
             break
     print("tempbar closed")
