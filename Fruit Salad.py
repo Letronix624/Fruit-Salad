@@ -1,14 +1,16 @@
 version = "0.0.1"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, clr, sys, GPUtil, tkinter.messagebox
-from numpy import save
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, GPUtil, tkinter.messagebox
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
-clr.AddReference(f'{pydir}\OpenHardwareMonitorLib')
-from OpenHardwareMonitor.Hardware import Computer
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
 from playsound import playsound
-gpus = GPUtil.getGPUs()
+try:
+    gpunamerslkefjeslafjlska = subprocess.Popen("C:\\Windows\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
+    gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[15:].replace("\r", "").split("\n")[:-1]
+except:
+    gpus = ""
+del gpunamerslkefjeslafjlska
 def mainwindow():
     global tempnum
     global startbuttonanimation
@@ -17,6 +19,9 @@ def mainwindow():
     global windowvisible
     global startbutton
     global globalworker
+    global globalminer
+    global globalalgo
+    global globalpool
     windowvisible = True
     traymenu.update_menu()
     root = tkinter.Tk()
@@ -44,9 +49,8 @@ def mainwindow():
     tkinter.Label(root, text=language['Miner:'], bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=80+shift, width=400, height=50)
     tkinter.Label(root, text=language['Algo:'], bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=130+shift, width=400, height=50)
     tkinter.Label(root, text=language['Pool:'], bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=180+shift, width=400, height=50)
-    tkinter.Label(root, text=language['Region:'], bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=230+shift, width=400, height=50)
     globalworker = tkinter.Label(root, text=f"{language['Worker:']} {savedsettings['worker']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
-    globalworker.place(x=0, y=280+shift, width=400, height=50)
+    globalworker.place(x=0, y=230+shift, width=400, height=50)
     #middle
     tkinter.Label(root, text='100°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-100*5.2, width=50, height=30)
     tkinter.Label(root, text='90°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-92.5*5.2, width=50, height=30)
@@ -73,7 +77,7 @@ def mainwindow():
     tempnum = tkinter.Label(root, bg="red", fg="white", font=fontregular)
     #bottom
     tkinter.Canvas(root, bg="#0A2133", highlightthickness=0).place(x=0, y=550 ,width=375, height=50)
-    startbutton = tkinter.Button(root,fg="white",bg="#0A2133", border=0, font=fontregular, command=start, image=startbuttonanimation[1], activebackground="#0A2133")
+    startbutton = tkinter.Button(root,fg="white",bg="#0A2133", border=0, font=fontregular, command=startminer, image=startbuttonanimation[1], activebackground="#0A2133")
     startbutton.place(x=375,y=550,width=425,height=50)
     tkinter.Button(root,fg="white", text=language['Auto start'],bg="red", border=2, font=fontregular).place(x=512,y=425,width=201,height=50)
     #top
@@ -91,8 +95,7 @@ def mainwindow():
 
 
     root.lift()
-    root.attributes('-topmost',True)
-    root.after_idle(root.attributes,'-topmost',False)
+    root.focus()
     root.protocol("WM_DELETE_WINDOW", windowclose)
     root.mainloop()
     print('root stopped')
@@ -207,6 +210,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         acceptbutton.place_forget()
         givenworker.place_forget()
         manualworkergetterb.configure(state="normal")
+        savedsettings['miner'] = selectedminer.get()
         prelabel.place(x=10, y=45, height=20, width=100)
         savedsettings['saladmining'] = selectedsaladmining.get()
         if selectedlang.get() != savedsettings["language"]:
@@ -217,8 +221,10 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         if aseggsaegsdg == "saladmining":
             if selectedsaladmining.get():
                 saladsettings.place(x=0, y=0, width=800, height=570)
+                nonsaladsettings.place_forget()
             else:
                 saladsettings.place_forget()
+                nonsaladsettings.place(x=0, y=0, width=800, height=570)
     def autoworkergetter():
         global currentlyeditingmanual
         currentlyeditingmanual = False
@@ -273,6 +279,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedlang.set(savedsettings['language'])
         selectedtempbar =tkinter.BooleanVar()
         selectedtempbar.set(savedsettings['tempbar'])
+        selectedminer = tkinter.StringVar()
+        selectedminer.set(savedsettings['miner'])
             #looks
         hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages, command=enableaccept)
         hhhh.place(x=5, y=13, width=100, height=24)
@@ -289,8 +297,10 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedsaladmining.set(savedsettings['saladmining'])
             #looks
         saladsettings = tkinter.Frame(miningsettingsframe, bg=defaultbg)
+        nonsaladsettings = tkinter.Frame(miningsettingsframe, bg=defaultbg)
         tkinter.Checkbutton(miningsettingsframe, text=language["Salad Mining?"], onvalue=True, offvalue=False, command=lambda:enableaccept("saladmining"), bg="#46464A", variable=selectedsaladmining, activebackground=defaultbg, fg="black").place(x=5, y=15)
         tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Should the miner mine to your Salad balance or an external wallet?"], anchor=tkinter.W).place(x=150, y=15, width=800, height=20)
+            #salad
         prelabel = tkinter.Label(saladsettings, text=savedsettings['worker'])
         manualworkergetterb = tkinter.Button(saladsettings, text=language['Manually set worker'],font=fontregular, command=manualworkergetter)
         givenworker = tkinter.Entry(saladsettings)
@@ -298,8 +308,17 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Button(saladsettings, text=language['Auto get worker'],font=fontregular, command=autoworkergetter).place(x=120, y=45, height=20, width=180)
         manualworkergetterb.place(x=310, y=45, height=20, width=180)
         tkinter.Label(saladsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Worker to send the balance to.'], anchor=tkinter.W).place(x=500, y=45, width=800, height=20)
-        if savedsettings['saladmining']:
-            saladsettings.place(x=0, y=0, width=800, height=570)
+            #miner
+        hhhhh = tkinter.OptionMenu(miningsettingsframe, selectedminer, command=enableaccept, *supportedminers)
+        hhhhh.configure(highlightthickness=0)
+        hhhhh.place(x=5, y=73, width=100, height=24)
+        tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Miner:'][0:-1], anchor=tkinter.W).place(x=115, y=75, width=800, height=20)
+        hhh = tkinter.OptionMenu(miningsettingsframe, selectedminer, command=enableaccept, *supportedminers)
+        hhh.configure(highlightthickness=0)
+        hhh.place(x=5, y=73, width=100, height=24)
+        if savedsettings['saladmining']: saladsettings.place(x=0, y=0, width=800, height=570)
+        else: nonsaladsettings.place(x=0, y=0, width=800, height=570)
+
 
 
         #Advanced Settings
@@ -319,14 +338,12 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         settings.deiconify()
         settings.focus()
 def megaguide():
-    def mega():
-        playsound(f"{pydir}\\MEGAGUIDE.mp3")
-    threading.Thread(target=mega).start()
+    playsound(f"{pydir}\\MEGAGUIDE.mp3", False)
 def windowclose():
     global windowvisible
     windowvisible = False
     root.withdraw()
-def start():
+def startminer():
     def realclick():
         global mining
         global startbuttonanimation
@@ -403,11 +420,8 @@ def savesettings():
         tempnum.place_forget()
         tempbar.place_forget()
 def gputemp():
-    for a in range(0, len(c.Hardware[0].Sensors)):
-        if "/temperature" in str(c.Hardware[0].Sensors[a].Identifier):
-            temp = c.Hardware[0].Sensors[a].get_Value()
-            c.Hardware[0].Update()
-            return temp
+    gputemperature = subprocess.Popen("C:\\Windows\\System32\\nvidia-smi.exe --query-gpu=temperature.gpu --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
+    return int(gputemperature.stdout.read().decode("UTF-8").replace("\r", "").split("\n")[:-1][0])
 def changelang(lang):
     global language
     savedsettings["language"] = lang
@@ -419,44 +433,38 @@ def changelang(lang):
     traymenu.visible = False
     os._exit(0)
 def temperaturebar():
-    tempcolors = [
-        (0, 234, 255), #0
-        (0, 234, 255), #40
-        (64, 255, 0), #60
-        (255, 251, 0), #70
-        (255, 51, 0), #80
-        (255, 0, 0), #100
-    ]
+    
     while 1:
         time.sleep(1)
-        gputemperature = gputemp()
-        if gputemperature < 40:
-            current = 0
-            next = 40
-            currentrgb = tempcolors[0]
-            nextrgb = tempcolors[1]
-        elif gputemperature < 60 and gputemperature >= 40:
-            current = 40
-            next = 60
-            currentrgb = tempcolors[1]
-            nextrgb = tempcolors[2]
-        elif gputemperature < 70 and gputemperature >= 60:
-            current = 60
-            next = 70
-            currentrgb = tempcolors[2]
-            nextrgb = tempcolors[3]
-        elif gputemperature < 80 and gputemperature >= 70:
-            current = 70
-            next = 80
-            currentrgb = tempcolors[3]
-            nextrgb = tempcolors[4]
-        elif gputemperature >= 80:
-            current = 80
-            next = 100
-            currentrgb = tempcolors[4]
-            nextrgb = tempcolors[5]
+        
         #highest y30 = 100c lowest 550 = 20c sweet 395 425
         if windowvisible and savedsettings['tempbar']:
+            gputemperature = gputemp()
+            if gputemperature < 40:
+                current = 0
+                next = 40
+                currentrgb = tempcolors[0]
+                nextrgb = tempcolors[1]
+            elif gputemperature < 60 and gputemperature >= 40:
+                current = 40
+                next = 60
+                currentrgb = tempcolors[1]
+                nextrgb = tempcolors[2]
+            elif gputemperature < 70 and gputemperature >= 60:
+                current = 60
+                next = 70
+                currentrgb = tempcolors[2]
+                nextrgb = tempcolors[3]
+            elif gputemperature < 80 and gputemperature >= 70:
+                current = 70
+                next = 80
+                currentrgb = tempcolors[3]
+                nextrgb = tempcolors[4]
+            elif gputemperature >= 80:
+                current = 80
+                next = 100
+                currentrgb = tempcolors[4]
+                nextrgb = tempcolors[5]
             tempnum.place_configure(x=380,y=int(550-gputemperature*5.2),width=40,height=30)
             tempbar.place_configure(x=380,y=int(550-gputemperature*5.2),width=40,height=520)
             tempbar.configure(bg=rgb_to_hex((int((100/(next-current)*(gputemperature-current)/100)*(nextrgb[0] - currentrgb[0]) + currentrgb[0]), int((100/(next-current)*(gputemperature-current)/100)*(nextrgb[1]-currentrgb[1]) + currentrgb[1]), int((100/(next-current)*(gputemperature-current)/100)*(nextrgb[2] - currentrgb[2]) + currentrgb[2]))))
@@ -466,6 +474,14 @@ def temperaturebar():
     print("tempbar closed")
 icon = Image.open(f"{pydir}\\3060.ico")
 mining = False
+tempcolors = [
+        (0, 234, 255), #0
+        (0, 234, 255), #40
+        (64, 255, 0), #60
+        (255, 251, 0), #70
+        (255, 51, 0), #80
+        (255, 0, 0), #100
+    ]
 fontregular = (f"{pydir}\\GUI\\BarlowCondensed-Medium.ttf", 10, "bold")
 fontbig = (f"{pydir}\\GUI\\BarlowCondensed-Medium.ttf", 17, "bold")
 fontextremelybig = (f"{pydir}\\GUI\\BarlowCondensed-Medium.ttf", 50, "bold")
@@ -506,14 +522,14 @@ supportedlanguages = [
     "English",
     "Deutsch",
 ]
+supportedminers = [
+    "T-Rex Miner",
+]
 defaultbg = "#303136"
 hashrate = 0
 aboutopen = False
 settingsopen = False
-savedsettings = {'language':'', 'tempbar':True,'worker':'', 'saladmining':True}
-c = Computer()
-c.GPUEnabled = True
-c.Open()
+savedsettings = {'language':'', 'tempbar':True,'worker':'', 'saladmining':True, 'wallet': ""}
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
         savedsettings = json.load(data)
@@ -528,10 +544,7 @@ except Exception as e:
         os.makedirs(f"{os.environ['APPDATA']}\\fruitsalad")
     except:
         pass
-    savedsettings["language"] = "English"
-    savedsettings["tempbar"] = True
-    savedsettings["worker"] = "2999rfdr9kp8qbi"
-    savedsettings["saladmining"] = True
+    savedsettings = {'language':'English', 'tempbar':True,'worker':'2999rfdr9kp8qbi', 'saladmining':True, 'nicehashwallet': "", 'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 'miner': "T-Rex Miner"}
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
         settings.write(json.dumps(savedsettings))
     with open(f"{pydir}\\languages\\{savedsettings['language']}.json") as data:
