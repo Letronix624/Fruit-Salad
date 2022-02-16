@@ -208,16 +208,17 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         givenworker.place_forget()
         manualworkergetterb.configure(state="normal")
         prelabel.place(x=10, y=45, height=20, width=100)
-        if selectedsaladmining.get():
-            saladsettings.place(x=0, y=0, width=800, height=570)
-        else:
-            saladsettings.place_forget()
         savedsettings['saladmining'] = selectedsaladmining.get()
         if selectedlang.get() != savedsettings["language"]:
             changelang(selectedlang.get())
         savesettings()
     def enableaccept(aseggsaegsdg):
         acceptbutton.place(x=595, y=565, width=200, height=30)
+        if aseggsaegsdg == "saladmining":
+            if selectedsaladmining.get():
+                saladsettings.place(x=0, y=0, width=800, height=570)
+            else:
+                saladsettings.place_forget()
     def autoworkergetter():
         global currentlyeditingmanual
         currentlyeditingmanual = False
@@ -288,7 +289,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedsaladmining.set(savedsettings['saladmining'])
             #looks
         saladsettings = tkinter.Frame(miningsettingsframe, bg=defaultbg)
-        tkinter.Checkbutton(miningsettingsframe, text=language["Salad Mining?"], onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg="#46464A", variable=selectedsaladmining, activebackground=defaultbg, fg="black").place(x=5, y=15)
+        tkinter.Checkbutton(miningsettingsframe, text=language["Salad Mining?"], onvalue=True, offvalue=False, command=lambda:enableaccept("saladmining"), bg="#46464A", variable=selectedsaladmining, activebackground=defaultbg, fg="black").place(x=5, y=15)
         tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Should the miner mine to your Salad balance or an external wallet?"], anchor=tkinter.W).place(x=150, y=15, width=800, height=20)
         prelabel = tkinter.Label(saladsettings, text=savedsettings['worker'])
         manualworkergetterb = tkinter.Button(saladsettings, text=language['Manually set worker'],font=fontregular, command=manualworkergetter)
