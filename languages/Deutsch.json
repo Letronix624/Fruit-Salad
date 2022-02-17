@@ -31,5 +31,6 @@
     "Auto get worker": "Arbeiter automatisch setzen",
     "Manually set worker": "Arbeiter manuell setzen",
     "Worker to send the balance to.": "Arbeiter, zudem das Guthaben geschickt wird.",
+    "Use preset": "Preset nutzen",
     "RESET EVERYTHING": "ALLES ZURUECKSETZEN"
 }
