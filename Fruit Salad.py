@@ -1,7 +1,11 @@
-version = "0.0.1"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, GPUtil, tkinter.messagebox
+version = "0.0.0"
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
+try:
+    FruitSaladSession = singleton.SingleInstance()
+except:
+    os._exit(0)
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
 from playsound import playsound
@@ -46,9 +50,12 @@ def mainwindow():
         shift = 0
     else:
         shift = -50
-    tkinter.Label(root, text=language['Miner:'], bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=80+shift, width=400, height=50)
-    tkinter.Label(root, text=language['Algo:'], bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=130+shift, width=400, height=50)
-    tkinter.Label(root, text=language['Pool:'], bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=180+shift, width=400, height=50)
+    globalminer = tkinter.Label(root, text=f"{language['Miner:']} {savedsettings['miner']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
+    globalminer.place(x=0, y=80+shift, width=400, height=50)
+    globalalgo = tkinter.Label(root, text=f"{language['Algo:']} {savedsettings['algo']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
+    globalalgo.place(x=0, y=130+shift, width=400, height=50)
+    globalpool = tkinter.Label(root, text=language['Pool:'], bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
+    globalpool.place(x=0, y=180+shift, width=400, height=50)
     globalworker = tkinter.Label(root, text=f"{language['Worker:']} {savedsettings['worker']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
     globalworker.place(x=0, y=230+shift, width=400, height=50)
     #middle
@@ -211,6 +218,9 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         givenworker.place_forget()
         manualworkergetterb.configure(state="normal")
         savedsettings['miner'] = selectedminer.get()
+        savedsettings['algo'] = selectedalgo.get()
+        globalalgo.configure(text=f"{language['Algo:']} {savedsettings['algo']}")
+        globalminer.configure(text=f"{language['Miner:']} {savedsettings['miner']}")
         prelabel.place(x=10, y=45, height=20, width=100)
         savedsettings['saladmining'] = selectedsaladmining.get()
         if selectedlang.get() != savedsettings["language"]:
@@ -239,7 +249,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         except:
             tkinter.messagebox.showerror(title="Salad not installed", message="You need to install Salad from Salad.com to use this function.")
         globalworker.configure(text=f"{language['Worker:']} {savedsettings['worker']}")
-        prelabel.configure(text=savedsettings['worker'], anchor=tkinter.CENTER)
+        prelabel.configure(text=savedsettings['worker'], anchor=tkinter.W)
         savesettings()
     def manualworkergetter():
         global currentlyeditingmanual
@@ -256,6 +266,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         settings.resizable(False, False)
         settings.iconbitmap(f'{pydir}\\3060.ico')
         settings.protocol("WM_DELETE_WINDOW", close)
+        settings.bind("<Return>", lambda event:settingchange())
         #nice cock ----- Layout ----- settings layout. Mining settings, app settings, advanced settings, SECRET SETTINGS\\\\\ CIGARO CIGARO CIGAR
         appsettingsframe = tkinter.Frame(settings, bg=defaultbg)
         miningsettingsframe = tkinter.Frame(settings, bg=defaultbg)
@@ -281,6 +292,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedtempbar.set(savedsettings['tempbar'])
         selectedminer = tkinter.StringVar()
         selectedminer.set(savedsettings['miner'])
+        selectedalgo = tkinter.StringVar()
+        selectedalgo.set(savedsettings['algo'])
             #looks
         hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages, command=enableaccept)
         hhhh.place(x=5, y=13, width=100, height=24)
@@ -301,7 +314,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Checkbutton(miningsettingsframe, text=language["Salad Mining?"], onvalue=True, offvalue=False, command=lambda:enableaccept("saladmining"), bg="#46464A", variable=selectedsaladmining, activebackground=defaultbg, fg="black").place(x=5, y=15)
         tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Should the miner mine to your Salad balance or an external wallet?"], anchor=tkinter.W).place(x=150, y=15, width=800, height=20)
             #salad
-        prelabel = tkinter.Label(saladsettings, text=savedsettings['worker'])
+        prelabel = tkinter.Label(saladsettings, text=savedsettings['worker'], anchor=tkinter.W)
         manualworkergetterb = tkinter.Button(saladsettings, text=language['Manually set worker'],font=fontregular, command=manualworkergetter)
         givenworker = tkinter.Entry(saladsettings)
         prelabel.place(x=10, y=45, height=20, width=100)
@@ -309,15 +322,16 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         manualworkergetterb.place(x=310, y=45, height=20, width=180)
         tkinter.Label(saladsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Worker to send the balance to.'], anchor=tkinter.W).place(x=500, y=45, width=800, height=20)
             #miner
-        hhhhh = tkinter.OptionMenu(miningsettingsframe, selectedminer, command=enableaccept, *supportedminers)
-        hhhhh.configure(highlightthickness=0)
-        hhhhh.place(x=5, y=73, width=100, height=24)
-        tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Miner:'][0:-1], anchor=tkinter.W).place(x=115, y=75, width=800, height=20)
-        hhh = tkinter.OptionMenu(miningsettingsframe, selectedminer, command=enableaccept, *supportedminers)
-        hhh.configure(highlightthickness=0)
-        hhh.place(x=5, y=73, width=100, height=24)
         if savedsettings['saladmining']: saladsettings.place(x=0, y=0, width=800, height=570)
         else: nonsaladsettings.place(x=0, y=0, width=800, height=570)
+        tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Miner:'][0:-1], anchor=tkinter.W).place(x=115, y=105, width=800, height=20)
+        hhh = tkinter.OptionMenu(miningsettingsframe, selectedminer, command=enableaccept, *supportedminers)
+        hhh.configure(highlightthickness=0)
+        hhh.place(x=5, y=103, width=100, height=24)
+        hhhha = tkinter.OptionMenu(miningsettingsframe, selectedalgo, command=enableaccept, *mineralgos[selectedminer.get()])
+        hhhha.configure(highlightthickness=0)
+        hhhha.place(x=5, y=133, width=100, height=24)
+        tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Algo:'][0:-1], anchor=tkinter.W).place(x=115, y=135, width=800, height=20)
 
 
 
@@ -525,11 +539,14 @@ supportedlanguages = [
 supportedminers = [
     "T-Rex Miner",
 ]
+mineralgos = {
+    "T-Rex Miner": ["Ethash", "Etchash", "Kawpow", "Autolykos2", "Octopus"],
+}
 defaultbg = "#303136"
 hashrate = 0
 aboutopen = False
 settingsopen = False
-savedsettings = {'language':'', 'tempbar':True,'worker':'', 'saladmining':True, 'wallet': ""}
+savedsettings = {'language':'', 'tempbar':True,'worker':'', 'saladmining':True, 'wallet': "", "algo": ""}
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
         savedsettings = json.load(data)
@@ -544,7 +561,7 @@ except Exception as e:
         os.makedirs(f"{os.environ['APPDATA']}\\fruitsalad")
     except:
         pass
-    savedsettings = {'language':'English', 'tempbar':True,'worker':'2999rfdr9kp8qbi', 'saladmining':True, 'nicehashwallet': "", 'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 'miner': "T-Rex Miner"}
+    savedsettings = {'language':'English', 'tempbar':True,'worker':'2999rfdr9kp8qbi', 'saladmining':True, 'nicehashwallet': "", 'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 'miner': "T-Rex Miner", "algo": "Ethash"}
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
         settings.write(json.dumps(savedsettings))
     with open(f"{pydir}\\languages\\{savedsettings['language']}.json") as data:
@@ -563,3 +580,5 @@ setupthreads = [
 if __name__ == "__main__":
     for thread in setupthreads:
         thread.start()
+    if "-install" in sys.argv:
+        pass
