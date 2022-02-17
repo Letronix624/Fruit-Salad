@@ -87,7 +87,8 @@ def mainwindow():
     tkinter.Canvas(root, bg="#0A2133", highlightthickness=0).place(x=0, y=550 ,width=375, height=50)
     startbutton = tkinter.Button(root,fg="white",bg="#0A2133", border=0, font=fontregular, command=startminer, image=startbuttonanimation[1], activebackground="#0A2133")
     startbutton.place(x=375,y=550,width=425,height=50)
-    tkinter.Button(root,fg="white", text=language['Auto start'],bg="red", border=2, font=fontregular).place(x=512,y=425,width=201,height=50)
+    tkinter.Button(root,fg="white", text=language['Auto start'],bg="red", border=2, font=fontregular).place(x=430,y=35,width=182,height=50)
+    tkinter.Button(root,fg="white", text=language['Auto start'],bg="red", border=2, font=fontregular).place(x=615,y=35,width=182,height=50)
     #top
     tkinter.Canvas(root, bg="#222129", highlightthickness=0).place(x=0,y=0,width=800,height=30)
     tkinter.Button(root, text=language['Settings'], bg='#222129', fg="white", border=1, font=fontregular, command=opensettings).place(x=0, y=0, width=188, height=30)
@@ -592,6 +593,9 @@ except Exception as e:
     except:
         pass
     savedsettings = {'language':'English', 'tempbar':True,'worker':'2999rfdr9kp8qbi', 'saladmining':True, 'nicehashwallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi", 'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 'miner': "T-Rex Miner", "algo": "Ethash", "pool": "Nicehash", 'presetonoff': False, "preset": "RTX 3060"}
+    if gpus[0] in supportedgpus:
+        savedsettings["presetonoff"] = True
+        savedsettings["preset"] = gpus[0]
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
         settings.write(json.dumps(savedsettings))
     with open(f"{pydir}\\languages\\{savedsettings['language']}.json") as data:
