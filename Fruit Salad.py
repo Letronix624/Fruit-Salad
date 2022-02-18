@@ -16,6 +16,7 @@ try:
 except:
     gpus = ""
 del gpunamerslkefjeslafjlska
+mining = False
 def mainwindow():
     global tempnum
     global startbuttonanimation
@@ -27,6 +28,7 @@ def mainwindow():
     global globalminer
     global globalalgo
     global globalpool
+    global s
     windowvisible = True
     traymenu.update_menu()
     root = tkinter.Tk()
@@ -85,7 +87,8 @@ def mainwindow():
     tempnum = tkinter.Label(root, bg="red", fg="white", font=fontregular)
     #bottom
     tkinter.Canvas(root, bg="#0A2133", highlightthickness=0).place(x=0, y=550 ,width=375, height=50)
-    startbutton = tkinter.Button(root,fg="white",bg="#0A2133", border=0, font=fontregular, command=startminer, image=startbuttonanimation[1], activebackground="#0A2133")
+    s = threading.Thread(target=startminer)
+    startbutton = tkinter.Button(root,fg="white",bg="#0A2133", border=0, font=fontregular, command=lambda: s.start(), image=startbuttonanimation[1], activebackground="#0A2133")
     startbutton.place(x=375,y=550,width=425,height=50)
     tkinter.Button(root,fg="white", text=language['Auto start'],bg="red", border=2, font=fontregular).place(x=430,y=35,width=182,height=50)
     tkinter.Button(root,fg="white", text=language['Auto start'],bg="red", border=2, font=fontregular).place(x=615,y=35,width=182,height=50)
@@ -388,50 +391,52 @@ def windowclose():
     windowvisible = False
     root.withdraw()
 def startminer():
-    def realclick():
-        global mining
-        global startbuttonanimation
-        if mining:
-            mining = False
-            startbutton.configure(image=startbuttonanimation[8])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[7])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[6])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[5])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[4])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[3])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[2])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[1])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[0])
-            time.sleep(0.05)
-        else:
-            mining = True
-            startbutton.configure(image=startbuttonanimation[1])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[2])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[3])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[4])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[5])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[6])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[7])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[8])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[9])
-            time.sleep(0.05)
-    threading.Thread(target=realclick).start()
+    global mining
+    global s
+    if mining:
+        mining = False
+        startbutton.configure(image=startbuttonanimation[8])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[7])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[6])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[5])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[4])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[3])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[2])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[1])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[0])
+        time.sleep(0.05)
+        del s
+        s = threading.Thread(target=startminer)
+    else:
+        mining = True
+        startbutton.configure(image=startbuttonanimation[1])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[2])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[3])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[4])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[5])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[6])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[7])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[8])
+        time.sleep(0.05)
+        startbutton.configure(image=startbuttonanimation[9])
+        time.sleep(0.05)
+        del s
+        s = threading.Thread(target=startminer)
 def windowopen():
     global windowvisible
     if windowvisible:
@@ -517,7 +522,6 @@ def temperaturebar():
             break
     print("tempbar closed")
 icon = Image.open(f"{pydir}\\3060.ico")
-mining = False
 tempcolors = [
         (0, 234, 255), #0
         (0, 234, 255), #40
