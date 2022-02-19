@@ -21,7 +21,7 @@
     "Hide": "Verstecken",
     "Quit": "Schließen",
     "Translators:": "Uebersetzer:",
-    "Button below requires Task Manager Restart.": "Der untere knopf benoetigt ein Neustart vom Task Manager aus.",
+    "Button below restarts the program.": "Der untere Knopf startet das Programm sofort neu.",
     "Accept Settings": "Einstellungen Annehmen",
     "Language. When applying program will restart.": "Sprache. Startet das Programm bei Annahme neu.",
     "Temperature Bar": "Temperatur Anzeige",
@@ -32,5 +32,13 @@
     "Manually set worker": "Arbeiter manuell setzen",
     "Worker to send the balance to.": "Arbeiter, zudem das Guthaben geschickt wird.",
     "Use preset": "Preset nutzen",
+    "Use best settings premade for specified GPU.": "Beste Einstellungen fuer das angegebene GPU nutzen.",
+    "Autostart and how many seconds for it to start.": "Autostart und wie lange es dauert bis es startet.",
+    "Scheduled mining settings": "Mining nach plan einstellungen.",
+    "Opens the settings to a schedule menu.": "Oeffnet die Einstellungen zum mining Plan Menu.",
+    "Hello!": "Hallo",
+    "Welcome to the -langname- version of Fruitsalad!": "Wilkommen zur deutschen Version von Fruit Salad!",
+    "Edit": "Aendern",
+    "Wallet address": "Wallet Adresse",
     "RESET EVERYTHING": "ALLES ZURUECKSETZEN"
 }

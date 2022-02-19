@@ -21,7 +21,7 @@
     "Hide": "",
     "Quit": "",
     "Translators:": "",
-    "Button below requires Task Manager Restart.": "",
+    "Button below restarts the program.": "",
     "Accept Settings": "",
     "Language. When applying program will restart.": "",
     "Temperature Bar": "",
@@ -32,5 +32,14 @@
     "Manually set worker": "",
     "Worker to send the balance to.": "",
     "Use preset": "",
+    "Use best settings premade for specified GPU.": "",
+    "Autostart and how many seconds for it to start.": "",
+    "Scheduled mining settings": "",
+    "Opens the settings to a schedule menu.": "",
+    "Hello!": "",
+    "Welcome to the -langname- version of Fruit Salad!": "",
+    "_Comment to the translator:": "at -langname- insert your language that you are translating right now. Delete this comment for the final version.",
+    "Edit": "",
+    "Wallet address": "",
     "RESET EVERYTHING": ""
 }

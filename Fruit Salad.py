@@ -5,8 +5,12 @@ exedir = sys.executable
 try:
     FruitSaladSession = singleton.SingleInstance()
 except:
-    os.startfile(f"{pydir}\\fail.vbs")
-    os._exit(0)
+    time.sleep(2)
+    try:
+        FruitSaladSession = singleton.SingleInstance()
+    except:
+        os.startfile(f"{pydir}\\fail.vbs")
+        os._exit(0)
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
 from playsound import playsound
@@ -149,9 +153,13 @@ def aboutus():
 def opensettings():#settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings
     global settings
     global settingsopen
-    global givenworker
     global currentlyeditingmanual
     currentlyeditingmanual = False
+    editingwalleraddress = False
+    if savedsettings['presetonoff']:
+        presetshift = 0
+    else:
+        presetshift = 90
     def close():
         global settingsopen
         settingsopen = False
@@ -212,16 +220,22 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         changelang("Furry")
     def settingchange():
         global currentlyeditingmanual
-        global givenworker
+        global editingwalleraddress
         savedsettings["tempbar"] = selectedtempbar.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
             globalworker.configure(text=f"{language['Worker:']} {savedsettings['worker']}")
+        if editingwalleraddress:
+            savedsettings['ethwallet'] = givenwallet.get()
+            prolabel.configure(text=savedsettings["ethwallet"])
         currentlyeditingmanual = False
+        editingwalleraddress = False
         acceptbutton.place_forget()
         givenworker.place_forget()
+        givenwallet.place_forget()
         manualworkergetterb.configure(state="normal")
+        editwalletadress.configure(state="normal")
         savedsettings['miner'] = selectedminer.get()
         savedsettings['algo'] = selectedalgo.get()
         savedsettings["pool"] = selectedpool.get()
@@ -231,6 +245,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         globalminer.configure(text=f"{language['Miner:']} {savedsettings['miner']}")
         globalpool.configure(text=f"{language['Pool:']} {savedsettings['pool']}")
         prelabel.place(x=10, y=45, height=20, width=100)
+        prolabel.place(x=5, y=45, width=250, height=20)
         savedsettings['saladmining'] = selectedsaladmining.get()
         if selectedlang.get() != savedsettings["language"]:
             changelang(selectedlang.get())
@@ -246,11 +261,23 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                 nonsaladsettings.place(x=0, y=0, width=800, height=570)
         if aseggsaegsdg == "preset":
             if selectedpreset.get():
-                h_haa.place(x=160, y=70, width=150, height=24)
+                h_haa.place(x=250, y=70, width=150, height=24)
                 presetoffsettings.place_forget()
+                presetshift = 0
+                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=240)
+                presetshitfters[1].place_configure(x=5, y=130 + presetshift, height=20, width=240)
+                presetshitfters[2].place_configure(x=250, y=100 + presetshift, width=800, height=20)
+                presetshitfters[3].place_configure(x=250, y=130 + presetshift, width=800, height=20)
+                abcdefg.place_configure(y=70, x=410)
             else:
                 h_haa.place_forget()
                 presetoffsettings.place(x=0, y=75, width=800, height=570)
+                presetshift = 90
+                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=240)
+                presetshitfters[1].place_configure(x=5, y=130 + presetshift, height=20, width=240)
+                presetshitfters[2].place_configure(x=250, y=100 + presetshift, width=800, height=20)
+                presetshitfters[3].place_configure(x=250, y=130 + presetshift, width=800, height=20)
+                abcdefg.place_configure(y=70, x=250)
     def autoworkergetter():
         global currentlyeditingmanual
         currentlyeditingmanual = False
@@ -274,6 +301,13 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         manualworkergetterb.configure(state="disabled")
         enableaccept(1)
         givenworker.place(x=10, y=45, height=20, width=100)
+    def changewalletaddress():
+        global editingwalleraddress
+        editingwalleraddress = True
+        prolabel.place_forget()
+        editwalletadress.configure(state="disabled")
+        enableaccept(1)
+        givenwallet.place(x=5, y=45, width=250, height=20)
     if not settingsopen:
         settingsopen = True
         settings = tkinter.Toplevel(bg=defaultbg)
@@ -336,8 +370,9 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         saladsettings = tkinter.Frame(miningsettingsframe, bg=defaultbg)
         nonsaladsettings = tkinter.Frame(miningsettingsframe, bg=defaultbg)
         presetoffsettings = tkinter.Frame(miningsettingsframe, bg=defaultbg)
-        tkinter.Checkbutton(miningsettingsframe, text=language["Salad Mining?"], onvalue=True, offvalue=False, command=lambda:enableaccept("saladmining"), bg="#46464A", variable=selectedsaladmining, activebackground=defaultbg, fg="black").place(x=5, y=15)
-        tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Should the miner mine to your Salad balance or an external wallet?"], anchor=tkinter.W).place(x=150, y=15, width=800, height=20)
+        tkinter.Checkbutton(miningsettingsframe, text=language["Salad Mining?"], onvalue=True, offvalue=False, command=lambda:enableaccept("saladmining"), bg="#46464A", variable=selectedsaladmining, activebackground=defaultbg, fg="black").place(x=5, y=15, width=240)
+        tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Should the miner mine to your Salad balance or an external wallet?"], anchor=tkinter.W).place(x=250, y=15, width=800, height=20)
+        
             #salad
         prelabel = tkinter.Label(saladsettings, text=savedsettings['worker'], anchor=tkinter.W)
         manualworkergetterb = tkinter.Button(saladsettings, text=language['Manually set worker'],font=fontregular, command=manualworkergetter)
@@ -349,25 +384,47 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             #miner
         if savedsettings['saladmining']: saladsettings.place(x=0, y=0, width=800, height=570)
         else: nonsaladsettings.place(x=0, y=0, width=800, height=570)
-        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Miner:'][0:-1], anchor=tkinter.W).place(x=115, y=25, width=800, height=20)
+
+        prolabel = tkinter.Label(nonsaladsettings, text=savedsettings['ethwallet'], anchor=tkinter.W)
+        editwalletadress = tkinter.Button(nonsaladsettings, text=language['Edit'],font=fontregular, command=changewalletaddress)
+        givenwallet = tkinter.Entry(nonsaladsettings)
+        prolabel.place(x=5, y=45, width=250, height=20)
+        editwalletadress.place(x=260, y=45, width=60, height=20)
+        tkinter.Label(nonsaladsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Wallet address'], anchor=tkinter.W).place(x=330, y=45, width=800, height=20)
+
+        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Miner:'][0:-1], anchor=tkinter.W).place(x=250, y=25, width=800, height=20)
         hhh = tkinter.OptionMenu(presetoffsettings, selectedminer, command=enableaccept, *supportedminers)
         hhh.configure(highlightthickness=0)
-        hhh.place(x=5, y=23, width=100, height=24)
+        hhh.place(x=5, y=23, width=240, height=24)
         hhhha = tkinter.OptionMenu(presetoffsettings, selectedalgo, command=enableaccept, *mineralgos[selectedminer.get()])
         hhhha.configure(highlightthickness=0)
-        hhhha.place(x=5, y=53, width=100, height=24)
-        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Algo:'][0:-1], anchor=tkinter.W).place(x=115, y=55, width=800, height=20)
+        hhhha.place(x=5, y=53, width=240, height=24)
+        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Algo:'][0:-1], anchor=tkinter.W).place(x=250, y=55, width=800, height=20)
         hhhaa = tkinter.OptionMenu(presetoffsettings, selectedpool, command=enableaccept, *minerpools[selectedminer.get()])
         hhhaa.configure(highlightthickness=0)
-        hhhaa.place(x=5, y=83, width=100, height=24)
-        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Pool:'][0:-1], anchor=tkinter.W).place(x=115, y=85, width=800, height=20)
-        tkinter.Checkbutton(miningsettingsframe, text=language["Use preset"], onvalue=True, offvalue=False, command=lambda:enableaccept("preset"), bg="#46464A", variable=selectedpreset, activebackground=defaultbg, fg="black").place(x=5, y=70)
+        hhhaa.place(x=5, y=83, width=240, height=24)
+        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Pool:'][0:-1], anchor=tkinter.W).place(x=250, y=85, width=800, height=20)
+        tkinter.Checkbutton(miningsettingsframe, text=language["Use preset"], onvalue=True, offvalue=False, command=lambda:enableaccept("preset"), bg="#46464A", variable=selectedpreset, activebackground=defaultbg, fg="black").place(x=5, y=70, width=240)
+        #Use best settings premade for specified GPU.
+        abcdefg = tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Use best settings premade for specified GPU.'], anchor=tkinter.W)
+        if savedsettings['presetonoff']:
+            abcdefg.place(y=70, x=410)
+        else:
+            abcdefg.place(y=70, x=250)
         h_haa = tkinter.OptionMenu(miningsettingsframe, selectedgpu, command=enableaccept, *supportedgpus)
         h_haa.configure(highlightthickness=0)
-        if savedsettings['presetonoff']: h_haa.place(x=160, y=71, width=150, height=24)
+        if savedsettings['presetonoff']: h_haa.place(x=250, y=71, width=150, height=24)
         else: presetoffsettings.place(x=0, y=75, width=800, height=570)
-
-
+        presetshitfters = [
+            tkinter.Checkbutton(miningsettingsframe, text=language["Auto start"], onvalue=True, offvalue=False, command=lambda:enableaccept("p"), bg="#46464A", activebackground=defaultbg, fg="black"),
+            tkinter.Button(miningsettingsframe, text=language['Scheduled mining settings'],font=fontregular),
+            tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Autostart and how many seconds for it to start.'], anchor=tkinter.W),
+            tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Opens the settings to a schedule menu.'], anchor=tkinter.W),
+        ]
+        presetshitfters[0].place(x=5, y=100 + presetshift, width=240)
+        presetshitfters[1].place(x=5, y=130 + presetshift, height=20, width=240)
+        presetshitfters[2].place(x=250, y=100 + presetshift, width=800, height=20)
+        presetshitfters[3].place(x=250, y=130 + presetshift, width=800, height=20)
         #Advanced Settings
 
 
@@ -375,7 +432,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Label(megaguidesettingsframe, text=language["Secret Settings"], bg="pink", fg="white", font=fontextremelybig).pack()
         tkinter.Button(megaguidesettingsframe, text="Megaguide", bg="Red", fg="White", command=megaguide, font=fontregular, padx=10, pady=5).pack(anchor=tkinter.NW)
         if savedsettings['language'] != "Furry":
-            tkinter.Label(megaguidesettingsframe, text=language["Button below requires Task Manager Restart."], font=fontregular).pack(anchor=tkinter.NW)
+            tkinter.Label(megaguidesettingsframe, text=language["Button below restarts the program."], font=fontregular).pack(anchor=tkinter.NW)
             hhh = tkinter.Button(megaguidesettingsframe, text=language["Furry Language"], bg="yellow", fg="pink", font=fontregular, command=kickjesusfromchat)
             hhh.pack(anchor=tkinter.NW) #messageinblood
         
@@ -478,6 +535,8 @@ def changelang(lang):
         language = json.load(data)
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "w") as settings:
         settings.write(json.dumps(savedsettings))
+    savedsettings["freshlang"] = True
+    savesettings()
     os.startfile(sys.executable)
     traymenu.visible = False
     os._exit(0)
@@ -581,7 +640,7 @@ defaultbg = "#303136"
 hashrate = 0
 aboutopen = False
 settingsopen = False
-savedsettings = {'language':'', 'tempbar':True,'worker':'', 'saladmining':True, 'wallet': "", "algo": "", "pool": "", 'presetonoff': False, "preset": ""}
+savedsettings = {'language':'', 'tempbar':True,'worker':'', 'saladmining':True, 'wallet': "", "algo": "", "pool": "", 'presetonoff': False, "preset": "", "freshlang": False}
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
         savedsettings = json.load(data)
@@ -596,7 +655,7 @@ except Exception as e:
         os.makedirs(f"{os.environ['APPDATA']}\\fruitsalad")
     except:
         pass
-    savedsettings = {'language':'English', 'tempbar':True,'worker':'2999rfdr9kp8qbi', 'saladmining':True, 'nicehashwallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi", 'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 'miner': "T-Rex Miner", "algo": "Ethash", "pool": "Nicehash", 'presetonoff': False, "preset": "RTX 3060"}
+    savedsettings = {'language':'English', 'tempbar':True,'worker':'2999rfdr9kp8qbi', 'saladmining':True, 'nicehashwallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi", 'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 'miner': "T-Rex Miner", "algo": "Ethash", "pool": "Nicehash", 'presetonoff': False, "preset": "RTX 3060", "freshlang": False}
     if gpus[0] in supportedgpus:
         savedsettings["presetonoff"] = True
         savedsettings["preset"] = gpus[0]
@@ -614,8 +673,15 @@ setupthreads = [
     threading.Thread(target=temperaturebar),
     threading.Thread(target=traymenu.run)
 ]
+
 if __name__ == "__main__":
     for thread in setupthreads:
         thread.start()
-    if "-install" in sys.argv:
-        pass
+    if savedsettings["freshlang"]:
+        with open(f'{pydir}\\lang.vbs' ,"w") as message:
+            message.write(f"MsgBox\"{language['Welcome to the -langname- version of Fruitsalad!']}\", 0, \"{language['Hello!']}\"")
+        os.startfile(f'{pydir}\\lang.vbs')
+        time.sleep(0.1)
+        os.remove(f'{pydir}\\lang.vbs')
+        savedsettings["freshlang"] = False
+        savesettings()

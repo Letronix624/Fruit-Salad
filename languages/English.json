@@ -21,7 +21,7 @@
     "Hide": "Hide",
     "Quit": "Quit",
     "Translators:": "Translators",
-    "Button below requires Task Manager Restart.": "Button below requires Task Manager Restart.",
+    "Button below restarts the program.": "Button below restarts the program",
     "Accept Settings": "Accept Settings",
     "Language. When applying program will restart.": "Language. When applying program will restart.",
     "Temperature Bar": "Temperature Bar",
@@ -32,5 +32,13 @@
     "Manually set worker": "Manually set worker",
     "Worker to send the balance to.": "Worker to send the balance to.",
     "Use preset": "Use preset",
+    "Use best settings premade for specified GPU.": "Use best settings premade for specified GPU.",
+    "Autostart and how many seconds for it to start.": "Autostart and how many seconds for it to start.",
+    "Scheduled mining settings": "Scheduled mining settings",
+    "Opens the settings to a schedule menu.": "Opens the settings to a schedule menu.",
+    "Hello!": "Hello!",
+    "Welcome to the -langname- version of Fruitsalad!": "Welcome to the english version of Fruit Salad!",
+    "Edit": "Edit",
+    "Wallet address": "Wallet address",
     "RESET EVERYTHING": "RESET EVERYTHING"
 }
