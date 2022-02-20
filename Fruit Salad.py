@@ -20,6 +20,7 @@ try:
 except:
     gpus = ""
 del gpunamerslkefjeslafjlska
+
 mining = False
 def mainwindow():
     global tempnum
@@ -264,19 +265,21 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                 h_haa.place(x=250, y=70, width=150, height=24)
                 presetoffsettings.place_forget()
                 presetshift = 0
-                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=240)
-                presetshitfters[1].place_configure(x=5, y=130 + presetshift, height=20, width=240)
-                presetshitfters[2].place_configure(x=250, y=100 + presetshift, width=800, height=20)
-                presetshitfters[3].place_configure(x=250, y=130 + presetshift, width=800, height=20)
+                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=200)
+                presetshitfters[1].place_configure(x=210, y=100 + presetshift, width=60)
+                presetshitfters[2].place_configure(x=5, y=130 + presetshift, height=20, width=240)
+                presetshitfters[3].place_configure(x=280, y=100 + presetshift, width=800, height=20)
+                presetshitfters[4].place_configure(x=250, y=130 + presetshift, width=800, height=20)
                 abcdefg.place_configure(y=70, x=410)
             else:
                 h_haa.place_forget()
                 presetoffsettings.place(x=0, y=75, width=800, height=570)
                 presetshift = 90
-                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=240)
-                presetshitfters[1].place_configure(x=5, y=130 + presetshift, height=20, width=240)
-                presetshitfters[2].place_configure(x=250, y=100 + presetshift, width=800, height=20)
-                presetshitfters[3].place_configure(x=250, y=130 + presetshift, width=800, height=20)
+                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=200)
+                presetshitfters[1].place_configure(x=210, y=100 + presetshift, width=60)
+                presetshitfters[2].place_configure(x=5, y=130 + presetshift, height=20, width=240)
+                presetshitfters[3].place_configure(x=280, y=100 + presetshift, width=800, height=20)
+                presetshitfters[4].place_configure(x=250, y=130 + presetshift, width=800, height=20)
                 abcdefg.place_configure(y=70, x=250)
     def autoworkergetter():
         global currentlyeditingmanual
@@ -416,15 +419,17 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         if savedsettings['presetonoff']: h_haa.place(x=250, y=71, width=150, height=24)
         else: presetoffsettings.place(x=0, y=75, width=800, height=570)
         presetshitfters = [
-            tkinter.Checkbutton(miningsettingsframe, text=language["Auto start"], onvalue=True, offvalue=False, command=lambda:enableaccept("p"), bg="#46464A", activebackground=defaultbg, fg="black"),
+            tkinter.Checkbutton(miningsettingsframe, text=language["Auto start"][:-1], onvalue=True, offvalue=False, command=lambda:enableaccept("p"), bg="#46464A", activebackground=defaultbg, fg="black"),
+            tkinter.Button(miningsettingsframe, text=language['Edit']),
             tkinter.Button(miningsettingsframe, text=language['Scheduled mining settings'],font=fontregular),
             tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Autostart and how many seconds for it to start.'], anchor=tkinter.W),
             tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Opens the settings to a schedule menu.'], anchor=tkinter.W),
         ]
-        presetshitfters[0].place(x=5, y=100 + presetshift, width=240)
-        presetshitfters[1].place(x=5, y=130 + presetshift, height=20, width=240)
-        presetshitfters[2].place(x=250, y=100 + presetshift, width=800, height=20)
-        presetshitfters[3].place(x=250, y=130 + presetshift, width=800, height=20)
+        presetshitfters[0].place(x=5, y=100 + presetshift, width=200)
+        presetshitfters[1].place(x=210, y=100 + presetshift, width=60)
+        presetshitfters[2].place(x=5, y=130 + presetshift, height=20, width=240)
+        presetshitfters[3].place(x=280, y=100 + presetshift, width=800, height=20)
+        presetshitfters[4].place(x=250, y=130 + presetshift, width=800, height=20)
         #Advanced Settings
 
 
@@ -685,3 +690,16 @@ if __name__ == "__main__":
         os.remove(f'{pydir}\\lang.vbs')
         savedsettings["freshlang"] = False
         savesettings()
+'''
+-CUSTOM TITLEBAR MOTION
+    def get_pos(e):
+        global xwin
+        global ywin
+        xwin = e.x
+        ywin = e.y
+    def move_window(e):
+        root.geometry(f"{e.x_root-xwin}+{e.y_root-ywin}")
+        titlebar.bind("<B1-Motion>", move_window)
+        titlebar.bind("<Button-1>", get_pos)
+
+'''
