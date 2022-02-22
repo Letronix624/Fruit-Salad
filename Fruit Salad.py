@@ -22,6 +22,21 @@ except:
 del gpunamerslkefjeslafjlska
 
 mining = False
+class Lotfi(tkinter.Entry):
+    def __init__(self, master=None, **kwargs):
+        self.var = tkinter.StringVar()
+        tkinter.Entry.__init__(self, master, textvariable=self.var, **kwargs)
+        self.old_value = ''
+        self.var.trace('w', self.check)
+        self.get, self.set = self.var.get, self.var.set
+
+    def check(self, *args):
+        if self.get().isdigit() or self.get() == "": 
+            # the current value is only digits; allow this
+            self.old_value = self.get()
+        else:
+            # there's non-digit characters in the input; reject this 
+            self.set(self.old_value)
 def mainwindow():
     global tempnum
     global startbuttonanimation
@@ -155,6 +170,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
     global settings
     global settingsopen
     global currentlyeditingmanual
+    global editingwalleraddress
+    global presetshift
     currentlyeditingmanual = False
     editingwalleraddress = False
     if savedsettings['presetonoff']:
@@ -222,6 +239,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
     def settingchange():
         global currentlyeditingmanual
         global editingwalleraddress
+        global editingtime
         savedsettings["tempbar"] = selectedtempbar.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
@@ -230,13 +248,19 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         if editingwalleraddress:
             savedsettings['ethwallet'] = givenwallet.get()
             prolabel.configure(text=savedsettings["ethwallet"])
+        if editingtime:
+            savedsettings['autostarttimer'] = givenstarttime.get()
+            presetshitfters[1].configure(text=str(savedsettings['autostarttimer']))
         currentlyeditingmanual = False
         editingwalleraddress = False
+        editingtime = False
         acceptbutton.place_forget()
         givenworker.place_forget()
         givenwallet.place_forget()
+        givenstarttime.place_forget()
         manualworkergetterb.configure(state="normal")
         editwalletadress.configure(state="normal")
+        presetshitfters[2].configure(state="normal")
         savedsettings['miner'] = selectedminer.get()
         savedsettings['algo'] = selectedalgo.get()
         savedsettings["pool"] = selectedpool.get()
@@ -247,11 +271,13 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         globalpool.configure(text=f"{language['Pool:']} {savedsettings['pool']}")
         prelabel.place(x=10, y=45, height=20, width=100)
         prolabel.place(x=5, y=45, width=250, height=20)
+        presetshitfters[1].place(x=210, y=100 + presetshift, width=35, height=24)
         savedsettings['saladmining'] = selectedsaladmining.get()
         if selectedlang.get() != savedsettings["language"]:
             changelang(selectedlang.get())
         savesettings()
     def enableaccept(aseggsaegsdg):
+        global presetshift
         acceptbutton.place(x=595, y=565, width=200, height=30)
         if aseggsaegsdg == "saladmining":
             if selectedsaladmining.get():
@@ -261,25 +287,30 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                 saladsettings.place_forget()
                 nonsaladsettings.place(x=0, y=0, width=800, height=570)
         if aseggsaegsdg == "preset":
+            presetshitfters[2].configure(state="normal")
+            presetshitfters[1].configure(text=str(savedsettings['autostarttimer']))
+            givenstarttime.place_forget()
             if selectedpreset.get():
                 h_haa.place(x=250, y=70, width=150, height=24)
                 presetoffsettings.place_forget()
                 presetshift = 0
-                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=200)
-                presetshitfters[1].place_configure(x=210, y=100 + presetshift, width=60)
-                presetshitfters[2].place_configure(x=5, y=130 + presetshift, height=20, width=240)
-                presetshitfters[3].place_configure(x=280, y=100 + presetshift, width=800, height=20)
-                presetshitfters[4].place_configure(x=250, y=130 + presetshift, width=800, height=20)
+                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=200, height=24)
+                presetshitfters[1].place_configure(x=210, y=100 + presetshift, width=35, height=24)
+                presetshitfters[2].place_configure(x=250, y=100 + presetshift, width=60, height=24)
+                presetshitfters[3].place_configure(x=5, y=130 + presetshift, height=20, width=240)
+                presetshitfters[4].place_configure(x=310, y=100 + presetshift, width=800, height=20)
+                presetshitfters[5].place_configure(x=250, y=130 + presetshift, width=800, height=20)
                 abcdefg.place_configure(y=70, x=410)
             else:
                 h_haa.place_forget()
                 presetoffsettings.place(x=0, y=75, width=800, height=570)
                 presetshift = 90
-                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=200)
-                presetshitfters[1].place_configure(x=210, y=100 + presetshift, width=60)
-                presetshitfters[2].place_configure(x=5, y=130 + presetshift, height=20, width=240)
-                presetshitfters[3].place_configure(x=280, y=100 + presetshift, width=800, height=20)
-                presetshitfters[4].place_configure(x=250, y=130 + presetshift, width=800, height=20)
+                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=200, height=24)
+                presetshitfters[1].place_configure(x=210, y=100 + presetshift, width=35, height=24)
+                presetshitfters[2].place_configure(x=250, y=100 + presetshift, width=60, height=24)
+                presetshitfters[3].place_configure(x=5, y=130 + presetshift, height=20, width=240)
+                presetshitfters[4].place_configure(x=310, y=100 + presetshift, width=800, height=20)
+                presetshitfters[5].place_configure(x=250, y=130 + presetshift, width=800, height=20)
                 abcdefg.place_configure(y=70, x=250)
     def autoworkergetter():
         global currentlyeditingmanual
@@ -311,6 +342,14 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         editwalletadress.configure(state="disabled")
         enableaccept(1)
         givenwallet.place(x=5, y=45, width=250, height=20)
+    def changeautostarttime():
+        global editingtime
+        global presetshift
+        editingtime = True
+        presetshitfters[1].place_forget()
+        presetshitfters[2].configure(state="disabled")
+        enableaccept(1)
+        givenstarttime.place(x=210, y=100 + presetshift, width=35, height=24)
     if not settingsopen:
         settingsopen = True
         settings = tkinter.Toplevel(bg=defaultbg)
@@ -419,17 +458,30 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         if savedsettings['presetonoff']: h_haa.place(x=250, y=71, width=150, height=24)
         else: presetoffsettings.place(x=0, y=75, width=800, height=570)
         presetshitfters = [
-            tkinter.Checkbutton(miningsettingsframe, text=language["Auto start"][:-1], onvalue=True, offvalue=False, command=lambda:enableaccept("p"), bg="#46464A", activebackground=defaultbg, fg="black"),
-            tkinter.Button(miningsettingsframe, text=language['Edit']),
+            tkinter.Checkbutton(miningsettingsframe, text=language["Auto start"], onvalue=True, offvalue=False, command=lambda:enableaccept("p"), bg="#46464A", activebackground=defaultbg, fg="black"),
+            tkinter.Label(miningsettingsframe, text=str(savedsettings['autostarttimer']), anchor=tkinter.W),
+            tkinter.Button(miningsettingsframe, text=language['Edit'], command=changeautostarttime),
             tkinter.Button(miningsettingsframe, text=language['Scheduled mining settings'],font=fontregular),
             tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Autostart and how many seconds for it to start.'], anchor=tkinter.W),
             tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Opens the settings to a schedule menu.'], anchor=tkinter.W),
         ]
-        presetshitfters[0].place(x=5, y=100 + presetshift, width=200)
-        presetshitfters[1].place(x=210, y=100 + presetshift, width=60)
-        presetshitfters[2].place(x=5, y=130 + presetshift, height=20, width=240)
-        presetshitfters[3].place(x=280, y=100 + presetshift, width=800, height=20)
-        presetshitfters[4].place(x=250, y=130 + presetshift, width=800, height=20)
+        givenstarttime = Lotfi(miningsettingsframe)
+        presetshitfters[0].place(x=5, y=100 + presetshift, width=200, height=24)
+        presetshitfters[1].place(x=210, y=100 + presetshift, width=35, height=24)
+        presetshitfters[2].place(x=250, y=100 + presetshift, width=60, height=24)
+        presetshitfters[3].place(x=5, y=130 + presetshift, height=20, width=240)
+        presetshitfters[4].place(x=310, y=100 + presetshift, width=800, height=20)
+        presetshitfters[5].place(x=250, y=130 + presetshift, width=800, height=20)
+
+
+        '''
+        presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=200, height=24)
+        presetshitfters[1].place_configure(x=210, y=100 + presetshift, width=70, height=24)
+        presetshitfters[2].place_configure(x=285, y=100 + presetshift, width=60, height=24)
+        presetshitfters[3].place_configure(x=5, y=130 + presetshift, height=20, width=240)
+        presetshitfters[4].place_configure(x=350, y=100 + presetshift, width=800, height=20)
+        presetshitfters[5].place_configure(x=250, y=130 + presetshift, width=800, height=20)
+        '''
         #Advanced Settings
 
 
@@ -645,7 +697,6 @@ defaultbg = "#303136"
 hashrate = 0
 aboutopen = False
 settingsopen = False
-savedsettings = {'language':'', 'tempbar':True,'worker':'', 'saladmining':True, 'wallet': "", "algo": "", "pool": "", 'presetonoff': False, "preset": "", "freshlang": False}
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
         savedsettings = json.load(data)
@@ -660,7 +711,22 @@ except Exception as e:
         os.makedirs(f"{os.environ['APPDATA']}\\fruitsalad")
     except:
         pass
-    savedsettings = {'language':'English', 'tempbar':True,'worker':'2999rfdr9kp8qbi', 'saladmining':True, 'nicehashwallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi", 'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 'miner': "T-Rex Miner", "algo": "Ethash", "pool": "Nicehash", 'presetonoff': False, "preset": "RTX 3060", "freshlang": False}
+    savedsettings = {
+        'language':'English', 
+        'tempbar':True,
+        'worker':'2999rfdr9kp8qbi', 
+        'saladmining':True, 
+        'nicehashwallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi", 
+        'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 
+        'miner': "T-Rex Miner", 
+        "algo": "Ethash", 
+        "pool": "Nicehash", 
+        'presetonoff': False, 
+        "preset": gpus[0], 
+        "freshlang": False, 
+        "autostart": False, 
+        "autostarttimer": 600
+    }
     if gpus[0] in supportedgpus:
         savedsettings["presetonoff"] = True
         savedsettings["preset"] = gpus[0]
