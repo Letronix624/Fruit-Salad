@@ -1,5 +1,6 @@
 version = "0.0.0"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton
+from tkinter import ttk
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
 try:
@@ -172,8 +173,10 @@ def opensettings():#settings - settings - settings - settings - settings - setti
     global currentlyeditingmanual
     global editingwalleraddress
     global presetshift
+    global editingtime
     currentlyeditingmanual = False
     editingwalleraddress = False
+    editingtime = False
     if savedsettings['presetonoff']:
         presetshift = 0
     else:
@@ -236,7 +239,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         c.place_configure(height=30)
     def kickjesusfromchat():
         changelang("Furry")
-    def settingchange():
+    def settingchange():#kaboooooooooooooooooooooooom ======================================================================
         global currentlyeditingmanual
         global editingwalleraddress
         global editingtime
@@ -276,7 +279,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         if selectedlang.get() != savedsettings["language"]:
             changelang(selectedlang.get())
         savesettings()
-    def enableaccept(aseggsaegsdg):
+    def enableaccept(aseggsaegsdg): #$$$$$$$$$$$$$
         global presetshift
         acceptbutton.place(x=595, y=565, width=200, height=30)
         if aseggsaegsdg == "saladmining":
@@ -312,6 +315,17 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                 presetshitfters[4].place_configure(x=310, y=100 + presetshift, width=800, height=20)
                 presetshitfters[5].place_configure(x=250, y=130 + presetshift, width=800, height=20)
                 abcdefg.place_configure(y=70, x=250)
+        if aseggsaegsdg == "minersettings":
+            hhhha['menu'].delete(0, 'end')
+            hhhaa['menu'].delete(0, 'end')
+            for choice in mineralgos[selectedminer.get()]:
+                hhhha['menu'].add_command(label=choice, command=tkinter._setit(selectedalgo, choice, lambda x:enableaccept("minersettings")))
+            for choice in minerpools[selectedalgo.get()]:
+                hhhaa['menu'].add_command(label=choice, command=tkinter._setit(selectedpool, choice, lambda x:enableaccept("minersettings")))
+            if selectedalgo.get() not in mineralgos[selectedminer.get()]:
+                selectedalgo.set(mineralgos[selectedminer.get()][0])
+            if selectedpool.get() not in minerpools[selectedalgo.get()]:
+                selectedpool.set(minerpools[selectedalgo.get()][0])
     def autoworkergetter():
         global currentlyeditingmanual
         currentlyeditingmanual = False
@@ -435,14 +449,15 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Label(nonsaladsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Wallet address'], anchor=tkinter.W).place(x=330, y=45, width=800, height=20)
 
         tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Miner:'][0:-1], anchor=tkinter.W).place(x=250, y=25, width=800, height=20)
-        hhh = tkinter.OptionMenu(presetoffsettings, selectedminer, command=enableaccept, *supportedminers)
+        hhh = tkinter.OptionMenu(presetoffsettings, selectedminer, command=lambda x:enableaccept("minersettings"), *supportedminers) ##########################
+        
         hhh.configure(highlightthickness=0)
         hhh.place(x=5, y=23, width=240, height=24)
-        hhhha = tkinter.OptionMenu(presetoffsettings, selectedalgo, command=enableaccept, *mineralgos[selectedminer.get()])
+        hhhha = tkinter.OptionMenu(presetoffsettings, selectedalgo, command=lambda x:enableaccept("minersettings"), *mineralgos[selectedminer.get()]) ###############################
         hhhha.configure(highlightthickness=0)
         hhhha.place(x=5, y=53, width=240, height=24)
         tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Algo:'][0:-1], anchor=tkinter.W).place(x=250, y=55, width=800, height=20)
-        hhhaa = tkinter.OptionMenu(presetoffsettings, selectedpool, command=enableaccept, *minerpools[selectedminer.get()])
+        hhhaa = tkinter.OptionMenu(presetoffsettings, selectedpool, command=lambda x:enableaccept("minersettings"), *minerpools[selectedalgo.get()]) ###############################
         hhhaa.configure(highlightthickness=0)
         hhhaa.place(x=5, y=83, width=240, height=24)
         tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Pool:'][0:-1], anchor=tkinter.W).place(x=250, y=85, width=800, height=20)
@@ -472,16 +487,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         presetshitfters[3].place(x=5, y=130 + presetshift, height=20, width=240)
         presetshitfters[4].place(x=310, y=100 + presetshift, width=800, height=20)
         presetshitfters[5].place(x=250, y=130 + presetshift, width=800, height=20)
-
-
-        '''
-        presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=200, height=24)
-        presetshitfters[1].place_configure(x=210, y=100 + presetshift, width=70, height=24)
-        presetshitfters[2].place_configure(x=285, y=100 + presetshift, width=60, height=24)
-        presetshitfters[3].place_configure(x=5, y=130 + presetshift, height=20, width=240)
-        presetshitfters[4].place_configure(x=350, y=100 + presetshift, width=800, height=20)
-        presetshitfters[5].place_configure(x=250, y=130 + presetshift, width=800, height=20)
-        '''
         #Advanced Settings
 
 
@@ -688,10 +693,19 @@ supportedminers = [
     "T-Rex Miner",
 ]
 mineralgos = {
-    "T-Rex Miner": ["Ethash", "Etchash", "Kawpow", "Autolykos2", "Octopus"],
+    "T-Rex Miner": ["Ethash", "Etchash", "kawpow", "Autolykos2", "Octopus"],
 }
 minerpools = {
-    "T-Rex Miner": ["Nicehash", "Ethermine", "Prohashing"],
+    "Ethash": ["Nicehash", "Ethermine", "Prohashing"],
+    "Etchash": ["Ethermine", "Prohashing"],
+    "kawpow": ["Nicehash", "Prohashing"],
+    "Autolykos2": ["Nicehash"],
+    "Octopus": ["Nicehash"],
+}
+minerregions = {
+    "Nicehash": ["eu-west", "eu-north", "usa-west", "usa-east"],
+    "Ethermine": ["eu1", "us1", "asia1"],
+    "Prohashing": ["europe", "us"],
 }
 defaultbg = "#303136"
 hashrate = 0
