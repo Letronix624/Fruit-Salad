@@ -1,5 +1,7 @@
 version = "0.0.0"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton
+from glob import glob
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, tkinter.font
+from numpy import unicode_
 from tkinter import ttk
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
@@ -20,8 +22,8 @@ try:
     gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[15:].replace("\r", "").split("\n")[:-1]
 except:
     gpus = ""
+#if "Cairo" in os.listdir()
 del gpunamerslkefjeslafjlska
-
 mining = False
 class Lotfi(tkinter.Entry):
     def __init__(self, master=None, **kwargs):
@@ -38,6 +40,11 @@ class Lotfi(tkinter.Entry):
         else:
             # there's non-digit characters in the input; reject this 
             self.set(self.old_value)
+def hex_to_string(hex):
+    if hex[:2] == '0x':
+        hex = hex[2:]
+    string_value = bytes.fromhex(hex).decode('utf-8')
+    return string_value
 def mainwindow():
     global tempnum
     global startbuttonanimation
@@ -49,7 +56,11 @@ def mainwindow():
     global globalminer
     global globalalgo
     global globalpool
+    global globalregion
     global s
+    global fontregular
+    global fontbig
+    global fontextremelybig
     windowvisible = True
     traymenu.update_menu()
     root = tkinter.Tk()
@@ -82,6 +93,8 @@ def mainwindow():
     globalpool.place(x=0, y=180+shift, width=400, height=50)
     globalworker = tkinter.Label(root, text=f"{language['Worker:']} {savedsettings['worker']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
     globalworker.place(x=0, y=230+shift, width=400, height=50)
+    globalregion = tkinter.Label(root, text=f"{language['Region:']} {savedsettings['region']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
+    globalregion.place(x=0, y=230+shift, width=400, height=50)
     #middle
     tkinter.Label(root, text='100°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-100*5.2, width=50, height=30)
     tkinter.Label(root, text='90°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-92.5*5.2, width=50, height=30)
@@ -155,7 +168,7 @@ def aboutus():
         about.configure(bg='#303136')
         #About looks
         tkinter.Label(about, text="Fruit Salad,", font=fontbig, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=0)
-        tkinter.Label(about, text=language["a Salad mining manager."], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=10, y=30)
+        tkinter.Label(about, text=language["a Salad mining tool."], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=10, y=30)
         tkinter.Label(about, text=language["Made by Let Software"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=60)
         tkinter.Label(about, text=language["with help by Mezo#0001 from MezoMGMT"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=100)
         tkinter.Button(about, text="seflon.ddns.net", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(1)).place(x=450, y=60)
@@ -269,12 +282,14 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         savedsettings["pool"] = selectedpool.get()
         savedsettings["presetonoff"] = selectedpreset.get()
         savedsettings["preset"] = selectedgpu.get()
+        savedsettings['region'] = selectedregion.get()
         globalalgo.configure(text=f"{language['Algo:']} {savedsettings['algo']}")
         globalminer.configure(text=f"{language['Miner:']} {savedsettings['miner']}")
         globalpool.configure(text=f"{language['Pool:']} {savedsettings['pool']}")
+        globalregion.configure(text=f"{language['Region:']} {savedsettings['region']}")
         prelabel.place(x=10, y=45, height=20, width=100)
         prolabel.place(x=5, y=45, width=250, height=20)
-        presetshitfters[1].place(x=210, y=100 + presetshift, width=35, height=24)
+        presetshitfters[1].place(x=210, y=130 + presetshift, width=35, height=24)
         savedsettings['saladmining'] = selectedsaladmining.get()
         if selectedlang.get() != savedsettings["language"]:
             changelang(selectedlang.get())
@@ -297,35 +312,44 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                 h_haa.place(x=250, y=70, width=150, height=24)
                 presetoffsettings.place_forget()
                 presetshift = 0
-                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=200, height=24)
-                presetshitfters[1].place_configure(x=210, y=100 + presetshift, width=35, height=24)
-                presetshitfters[2].place_configure(x=250, y=100 + presetshift, width=60, height=24)
-                presetshitfters[3].place_configure(x=5, y=130 + presetshift, height=20, width=240)
-                presetshitfters[4].place_configure(x=310, y=100 + presetshift, width=800, height=20)
-                presetshitfters[5].place_configure(x=250, y=130 + presetshift, width=800, height=20)
+                presetshitfters[0].place_configure(x=5, y=130 + presetshift, width=200, height=24)
+                presetshitfters[1].place_configure(x=210, y=130 + presetshift, width=35, height=24)
+                presetshitfters[2].place_configure(x=250, y=130 + presetshift, width=60, height=24)
+                presetshitfters[3].place_configure(x=5, y=160 + presetshift, height=20, width=240)
+                presetshitfters[4].place_configure(x=310, y=130 + presetshift, width=800, height=20)
+                presetshitfters[5].place_configure(x=250, y=160 + presetshift, width=800, height=20)
+                presetshitfters[6].place_configure(x=5, y=98 + presetshift, width=240, height=24)
+                presetshitfters[7].place_configure(x=250, y=100 + presetshift, width=800, height=20)
                 abcdefg.place_configure(y=70, x=410)
             else:
                 h_haa.place_forget()
                 presetoffsettings.place(x=0, y=75, width=800, height=570)
                 presetshift = 90
-                presetshitfters[0].place_configure(x=5, y=100 + presetshift, width=200, height=24)
-                presetshitfters[1].place_configure(x=210, y=100 + presetshift, width=35, height=24)
-                presetshitfters[2].place_configure(x=250, y=100 + presetshift, width=60, height=24)
-                presetshitfters[3].place_configure(x=5, y=130 + presetshift, height=20, width=240)
-                presetshitfters[4].place_configure(x=310, y=100 + presetshift, width=800, height=20)
-                presetshitfters[5].place_configure(x=250, y=130 + presetshift, width=800, height=20)
+                presetshitfters[0].place_configure(x=5, y=130 + presetshift, width=200, height=24)
+                presetshitfters[1].place_configure(x=210, y=130 + presetshift, width=35, height=24)
+                presetshitfters[2].place_configure(x=250, y=130 + presetshift, width=60, height=24)
+                presetshitfters[3].place_configure(x=5, y=160 + presetshift, height=20, width=240)
+                presetshitfters[4].place_configure(x=310, y=130 + presetshift, width=800, height=20)
+                presetshitfters[5].place_configure(x=250, y=160 + presetshift, width=800, height=20)
+                presetshitfters[6].place_configure(x=5, y=98 + presetshift, width=240, height=24)
+                presetshitfters[7].place_configure(x=250, y=100 + presetshift, width=800, height=20)
                 abcdefg.place_configure(y=70, x=250)
         if aseggsaegsdg == "minersettings":
             hhhha['menu'].delete(0, 'end')
             hhhaa['menu'].delete(0, 'end')
+            presetshitfters[6]['menu'].delete(0, 'end')
             for choice in mineralgos[selectedminer.get()]:
                 hhhha['menu'].add_command(label=choice, command=tkinter._setit(selectedalgo, choice, lambda x:enableaccept("minersettings")))
             for choice in minerpools[selectedalgo.get()]:
                 hhhaa['menu'].add_command(label=choice, command=tkinter._setit(selectedpool, choice, lambda x:enableaccept("minersettings")))
+            for choice in minerregions[selectedpool.get()]:
+                presetshitfters[6]['menu'].add_command(label=choice, command=tkinter._setit(selectedregion, choice, lambda x:enableaccept("minersettings")))
             if selectedalgo.get() not in mineralgos[selectedminer.get()]:
                 selectedalgo.set(mineralgos[selectedminer.get()][0])
             if selectedpool.get() not in minerpools[selectedalgo.get()]:
                 selectedpool.set(minerpools[selectedalgo.get()][0])
+            if selectedregion.get() not in minerregions[selectedpool.get()]:
+                selectedregion.set(minerregions[selectedpool.get()][0])
     def autoworkergetter():
         global currentlyeditingmanual
         currentlyeditingmanual = False
@@ -421,6 +445,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedpreset.set(savedsettings['presetonoff'])
         selectedgpu = tkinter.StringVar()
         selectedgpu.set(savedsettings['preset'])
+        selectedregion = tkinter.StringVar()
+        selectedregion.set(savedsettings['region'])
 
             #looks
         saladsettings = tkinter.Frame(miningsettingsframe, bg=defaultbg)
@@ -479,14 +505,19 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             tkinter.Button(miningsettingsframe, text=language['Scheduled mining settings'],font=fontregular),
             tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Autostart and how many seconds for it to start.'], anchor=tkinter.W),
             tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Opens the settings to a schedule menu.'], anchor=tkinter.W),
+            tkinter.OptionMenu(miningsettingsframe, selectedregion, command=lambda x:enableaccept("minersettings"), *minerregions[selectedpool.get()]),
+            tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Region:'][:-1], anchor=tkinter.W),
         ]
         givenstarttime = Lotfi(miningsettingsframe)
-        presetshitfters[0].place(x=5, y=100 + presetshift, width=200, height=24)
-        presetshitfters[1].place(x=210, y=100 + presetshift, width=35, height=24)
-        presetshitfters[2].place(x=250, y=100 + presetshift, width=60, height=24)
-        presetshitfters[3].place(x=5, y=130 + presetshift, height=20, width=240)
-        presetshitfters[4].place(x=310, y=100 + presetshift, width=800, height=20)
-        presetshitfters[5].place(x=250, y=130 + presetshift, width=800, height=20)
+        presetshitfters[0].place(x=5, y=130 + presetshift, width=200, height=24)
+        presetshitfters[1].place(x=210, y=130 + presetshift, width=35, height=24)
+        presetshitfters[2].place(x=250, y=130 + presetshift, width=60, height=24)
+        presetshitfters[3].place(x=5, y=160 + presetshift, height=20, width=240)
+        presetshitfters[4].place(x=310, y=130 + presetshift, width=800, height=20)
+        presetshitfters[5].place(x=250, y=160 + presetshift, width=800, height=20)
+        presetshitfters[6].place(x=5, y=98 + presetshift, width=240, height=24)
+        presetshitfters[6].configure(highlightthickness=0)
+        presetshitfters[7].place(x=250, y=100 + presetshift, width=800, height=20)
         #Advanced Settings
 
 
@@ -595,6 +626,8 @@ def changelang(lang):
     savedsettings["language"] = lang
     with open(f"{pydir}\\languages\\{lang}.json") as data:
         language = json.load(data)
+        for word in language:
+            language[word] = u'{}'.format(word)
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "w") as settings:
         settings.write(json.dumps(savedsettings))
     savedsettings["freshlang"] = True
@@ -651,9 +684,6 @@ tempcolors = [
         (255, 51, 0), #80
         (255, 0, 0), #100
     ]
-fontregular = (f"{pydir}\\GUI\\BarlowCondensed-Medium.ttf", 10, "bold")
-fontbig = (f"{pydir}\\GUI\\BarlowCondensed-Medium.ttf", 17, "bold")
-fontextremelybig = (f"{pydir}\\GUI\\BarlowCondensed-Medium.ttf", 50, "bold")
 a = ""
 quitter = False
 supportedgpus = [
@@ -707,6 +737,11 @@ minerregions = {
     "Ethermine": ["eu1", "us1", "asia1"],
     "Prohashing": ["europe", "us"],
 }
+
+fontregular = ("Calibri", 10)
+fontbig = ("Calibri", 17)#                                                 fonts
+fontextremelybig = ("Calibri", 50, "bold")
+
 defaultbg = "#303136"
 hashrate = 0
 aboutopen = False
@@ -734,7 +769,8 @@ except Exception as e:
         'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 
         'miner': "T-Rex Miner", 
         "algo": "Ethash", 
-        "pool": "Nicehash", 
+        "pool": "Nicehash",
+        "region": "eu-west",
         'presetonoff': False, 
         "preset": gpus[0], 
         "freshlang": False, 
