@@ -154,7 +154,8 @@ def mainwindow():
     tkinter.Canvas(root, bg="#222129", highlightthickness=0).place(x=0,y=0,width=800,height=30)
     tkinter.Button(root, text=language['Settings'], bg='#222129', fg="white", border=1, font=fontregular, command=opensettings).place(x=0, y=0, width=188, height=30)
     tempdisplaycomponents.append(tkinter.Label(root, text=language['GPU Temperature'], bg='#222129', fg="white", font=fontregular))
-    tempdisplaycomponents[20].place(x=200, y=0, width=400, height=30)
+    if savedsettings['tempbar']:
+        tempdisplaycomponents[20].place(x=200, y=0, width=400, height=30)
     tkinter.Button(root, text=language['About us'], bg='#222129', fg="white", border=1, font=fontregular, command=aboutus).place(x=612, y=0, width=188, height=30)
 
 
