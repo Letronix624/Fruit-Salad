@@ -1,8 +1,21 @@
 version = "0.0.0"
-from glob import glob
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, tkinter.font
-from numpy import unicode_
+import time
+import win32api
+import threading
+import os
+import subprocess
+import json
+import tkinter
+import signal
+import pystray
+import webbrowser
+import sys
+import tkinter.messagebox
+import singleton
 from tkinter import ttk
+from PIL import ImageTk, Image
+from pystray import MenuItem as item
+from playsound import playsound
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
 try:
@@ -14,9 +27,7 @@ except:
     except:
         os.startfile(f"{pydir}\\fail.vbs")
         os._exit(0)
-from PIL import ImageTk, Image
-from pystray import MenuItem as item
-from playsound import playsound
+
 try:
     gpunamerslkefjeslafjlska = subprocess.Popen("C:\\Windows\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
     gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[15:].replace("\r", "").split("\n")[:-1]
@@ -94,7 +105,7 @@ def mainwindow():
     globalworker = tkinter.Label(root, text=f"{language['Worker:']} {savedsettings['worker']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
     globalworker.place(x=0, y=230+shift, width=400, height=50)
     globalregion = tkinter.Label(root, text=f"{language['Region:']} {savedsettings['region']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
-    globalregion.place(x=0, y=230+shift, width=400, height=50)
+    globalregion.place(x=0, y=280+shift, width=400, height=50)
     #middle
     tkinter.Label(root, text='100°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-100*5.2, width=50, height=30)
     tkinter.Label(root, text='90°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-92.5*5.2, width=50, height=30)
@@ -357,10 +368,23 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         prelabel.place(x=10, y=45, height=20, width=100)
         manualworkergetterb.configure(state="normal")
         try:
+            autofoundwalletusername = False
             with open(f"{os.environ['appdata']}\\Salad\\logs\\main.log","r")as data:
                 for line in data:
                     if 'worker ID:' in line:
                         savedsettings['worker'] = line[21:-1]
+                        autofoundwalletusername = True
+            if not autofoundwalletusername:
+                try:
+                    with open(f"{os.environ['appdata']}\\Salad\\logs\\main.old.log","r")as data:
+                        for line in data:
+                            if 'worker ID:' in line:
+                                savedsettings['worker'] = line[21:-1]
+                                autofoundwalletusername = True
+                except:
+                    pass
+            if not autofoundwalletusername:
+                tkinter.messagebox.showerror(title="No Wallet ID found.", message="You should mine a few minutes with Salad before pressing this Button.")
         except:
             tkinter.messagebox.showerror(title="Salad not installed", message="You need to install Salad from Salad.com to use this function.")
         globalworker.configure(text=f"{language['Worker:']} {savedsettings['worker']}")
