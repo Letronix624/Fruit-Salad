@@ -1,1 +1,0 @@
-MsgBox"You can only open Fruit Salad once.", 0, "Epic Fail"
