@@ -1,18 +1,5 @@
 version = "0.0.0"
-import string
-import time
-import win32api
-import threading
-import os
-import subprocess
-import json
-import tkinter
-import signal
-import pystray
-import webbrowser
-import sys
-import tkinter.messagebox
-import singleton
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton
 from tkinter import ttk
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
@@ -33,7 +20,7 @@ try:
     gpunamerslkefjeslafjlska = subprocess.Popen("C:\\Windows\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
     gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[15:].replace("\r", "").split("\n")[:-1]
 except:
-    gpus = ""
+    gpus = []
 #if "Cairo" in os.listdir()
 del gpunamerslkefjeslafjlska
 mining = False
@@ -604,6 +591,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Language. When applying program will restart."], anchor=tkinter.W).place(x=150, y=10, width=800, height=20)
         tempcheckbutton = tkinter.Checkbutton(appsettingsframe, text=language["Temperature Bar"], onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg="#46464A", variable=selectedtempbar, activebackground=defaultbg, fg="black")
         tempcheckbutton.place(x=5, y=45)
+        if gpus == []:
+            tempcheckbutton.configure(state="disabled")
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["When checked the temperature bar is visible."], anchor=tkinter.W).place(x=150, y=45, width=800, height=20)
         tkinter.Button(appsettingsframe, bg="red", text=language["RESET EVERYTHING"], command=reset).place(x=5, y=80, height=20)
 
@@ -780,6 +769,8 @@ def byebye(): #quit quit quit quit
     os._exit(0)
 def reset():
     os.remove(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json")
+    restart()
+def restart():
     os.startfile(sys.executable)
     traymenu.visible = False
     os._exit(0)
@@ -831,9 +822,7 @@ def changelang(lang):
         settings.write(json.dumps(savedsettings))
     savedsettings["freshlang"] = True
     savesettings()
-    os.startfile(sys.executable)
-    traymenu.visible = False
-    os._exit(0)
+    restart()
 def temperaturebar():
     
     while 1:
@@ -947,35 +936,36 @@ hashrate = 0
 aboutopen = False
 settingsopen = False
 savedsettings = {
-        'language':'English', 
-        'tempbar':True,
-        'worker':'2999rfdr9kp8qbi', 
-        'saladmining':True, 
-        'nicehashwallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi", 
-        'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 
-        'miner': "T-Rex Miner", 
-        "algo": "Ethash", 
-        "pool": "Nicehash",
-        "region": "eu-west",
-        'presetonoff': False, 
-        "preset": "select", 
-        "freshlang": False, 
-        "autostart": False, 
-        "autostarttimer": 600,
-        "oc": False,
-        "pl": 100,
-        "fan": 0,
-        "fan:t": 0,
-        "fan:tonoff": False,
-        "core": 0,
-        "mem": 0,
-        "mt": 0,
-        "intensity": 0,
-    }
+    'language':'English', 
+    'tempbar':False,
+    'worker':'2999rfdr9kp8qbi', 
+    'saladmining':True, 
+    'nicehashwallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi", 
+    'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 
+    'miner': "T-Rex Miner", 
+    "algo": "Ethash", 
+    "pool": "Nicehash",
+    "region": "eu-west",
+    'presetonoff': False, 
+    "preset": "select", 
+    "freshlang": False, 
+    "autostart": False, 
+    "autostarttimer": 600,
+    "oc": False,
+    "pl": 100,
+    "fan": 70,
+    "fan:t": 60,
+    "fan:tonoff": False,
+    "core": 0,
+    "mem": 0,
+    "mt": 0,
+    "intensity": 22,
+}
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
-        for setting in json.load(data):
-            savedsettings[setting] = json.load(data)[setting]
+        tempvalue = json.load(data)
+        for setting in tempvalue:
+            savedsettings[setting] = tempvalue[setting]
         tempbar = savedsettings['tempbar']
     with open(f"{pydir}\\languages\\{(savedsettings['language'])}.json") as data:
         language = json.load(data)
@@ -988,24 +978,29 @@ except Exception as e:
     except:
         pass
     preset(savedsettings['preset'])
-    if gpus[0] in supportedgpus:
-        savedsettings["presetonoff"] = True
-        savedsettings["preset"] = gpus[0]
+    if gpus == []: savedsettings["tempbar"] = False
+    else: 
+        savedsettings["tempbar"] = True
+        if gpus[0] in supportedgpus:
+            savedsettings["presetonoff"] = True
+            savedsettings["preset"] = gpus[0]
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
         settings.write(json.dumps(savedsettings))
     with open(f"{pydir}\\languages\\{savedsettings['language']}.json") as data:
         language = json.load(data)
 traymenucontent = (
     item('Show or hide', windowopen, default=True, visible=False),
-    item('Quit', byebye, default=False)
+    item('Quit', byebye, default=False),
+    item('restart', restart, default=False),
 )
 traymenu = pystray.Icon("Fruit Salad", icon, "Fruit Salad", traymenucontent)
+
 setupthreads = [
     threading.Thread(target=mainwindow),
-    threading.Thread(target=temperaturebar),
     threading.Thread(target=traymenu.run)
 ]
-
+if gpus != []:
+    setupthreads.append(threading.Thread(target=temperaturebar))
 if __name__ == "__main__":
     for thread in setupthreads:
         thread.start()
