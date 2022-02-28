@@ -1,9 +1,8 @@
 version = "0.0.0"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound
 from tkinter import ttk
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
-from playsound import playsound
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
 try:
@@ -17,7 +16,7 @@ except:
         os._exit(0)
 
 try:
-    gpunamerslkefjeslafjlska = subprocess.Popen("C:\\Windows\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
+    gpunamerslkefjeslafjlska = subprocess.Popen(f"{os.environ['WINDIR']}\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
     gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[15:].replace("\r", "").split("\n")[:-1]
 except:
     gpus = []
@@ -178,114 +177,220 @@ def preset(thething):
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Etchash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
         case "GTX 1050 TI":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Etchash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 0
+            savedsettings["mem"] = 700
+            savedsettings["pl"] = 70
         case "GTX 1060 3GB":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Autolykos2"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 100
+            savedsettings["mem"] = 650
+            savedsettings["pl"] = 100
         case "GTX 1060 6GB":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 100
+            savedsettings["mem"] = 800
+            savedsettings["pl"] = 80
         case "GTX 1070":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 170
+            savedsettings["mem"] = 350
+            savedsettings["pl"] = 97
         case "GTX 1070 TI":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 205
+            savedsettings["mem"] = 740
+            savedsettings["pl"] = 70
         case "GTX 1080":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 200
+            savedsettings["mem"] = 800
+            savedsettings["pl"] = 81
         case "GTX 1080 TI":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 60
+            savedsettings["mem"] = 500
+            savedsettings["pl"] = 90
         case "GTX 1650":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "kawpow"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 150
+            savedsettings["mem"] = 700
+            savedsettings["pl"] = 100
         case "GTX 1650 Super":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "kawpow"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 200
+            savedsettings["mem"] = 1250
+            savedsettings["pl"] = 90
         case "GTX 1660":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = -300
+            savedsettings["mem"] = 970
+            savedsettings["pl"] = 65
         case "GTX 1660 Super":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 0
+            savedsettings["mem"] = 1000
+            savedsettings["pl"] = 62
         case "GTX 1660 Ti":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = -200
+            savedsettings["mem"] = 1125
+            savedsettings["pl"] = 58
         case "RTX 2060":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 150
+            savedsettings["mem"] = 1200
+            savedsettings["pl"] = 75
         case "RTX 2060 Super": 
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 0
+            savedsettings["mem"] = 1200
+            savedsettings["pl"] = 67
         case "RTX 2070":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = -502
+            savedsettings["mem"] = 1150
+            savedsettings["pl"] = 75
         case "RTX 2070 Super":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = -502
+            savedsettings["mem"] = 1200
+            savedsettings["pl"] = 58
         case "RTX 2080":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = -200
+            savedsettings["mem"] = 1400
+            savedsettings["pl"] = 63
         case "RTX 2080 Super":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 100
+            savedsettings["mem"] = 1500
+            savedsettings["pl"] = 70
         case "RTX 2080 Ti":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 196
+            savedsettings["mem"] = 1186
+            savedsettings["pl"] = 60
         case "RTX 3050":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
         case "RTX 3060":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = -200
+            savedsettings["mem"] = 1500
+            savedsettings["pl"] = 70
         case "RTX 3060 Ti":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 0
+            savedsettings["mem"] = 1250
+            savedsettings["pl"] = 65
         case "RTX 3070":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 0
+            savedsettings["mem"] = 1500
+            savedsettings["pl"] = 60
         case "RTX 3070 Ti":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = 0
+            savedsettings["mem"] = 1600
+            savedsettings["pl"] = 70
         case "RTX 3080":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = -222
+            savedsettings["mem"] = 1500
+            savedsettings["pl"] = 69
         case "RTX 3080 TI":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = -250
+            savedsettings["mem"] = 1400
+            savedsettings["pl"] = 84
         case "RTX 3090":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = -200
+            savedsettings["mem"] = 1500
+            savedsettings["pl"] = 90
 def aboutus():
     global about
     global aboutopen
@@ -700,7 +805,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         settings.deiconify()
         settings.focus()
 def megaguide():
-    playsound(f"{pydir}\\MEGAGUIDE.mp3", False)
+    winsound.PlaySound(pydir+"\\MEGAGUIDE.wav", winsound.SND_ASYNC)
 def windowclose():
     global windowvisible
     windowvisible = False
