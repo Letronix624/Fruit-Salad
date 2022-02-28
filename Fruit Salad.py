@@ -1,4 +1,5 @@
 version = "0.0.0"
+import string
 import time
 import win32api
 import threading
@@ -72,6 +73,7 @@ def mainwindow():
     global fontregular
     global fontbig
     global fontextremelybig
+    global tempdisplaycomponents
     windowvisible = True
     traymenu.update_menu()
     root = tkinter.Tk()
@@ -107,27 +109,51 @@ def mainwindow():
     globalregion = tkinter.Label(root, text=f"{language['Region:']} {savedsettings['region']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
     globalregion.place(x=0, y=280+shift, width=400, height=50)
     #middle
-    tkinter.Label(root, text='100°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-100*5.2, width=50, height=30)
-    tkinter.Label(root, text='90°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-92.5*5.2, width=50, height=30)
-    tkinter.Label(root, text='80°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-82.5*5.2, width=50, height=30)
-    tkinter.Label(root, text='70°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-72.5*5.2, width=50, height=30)
-    tkinter.Label(root, text='60°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-62.5*5.2, width=50, height=30)
-    tkinter.Label(root, text='50°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-52.5*5.2, width=50, height=30)
-    tkinter.Label(root, text='40°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-42.5*5.2, width=50, height=30)
-    tkinter.Label(root, text='30°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-32.5*5.2, width=50, height=30)
-    tkinter.Label(root, text='20°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-22.5*5.2, width=50, height=30)
-    tkinter.Label(root, text='10°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=550-12.5*5.2, width=50, height=30)
-    tkinter.Label(root, text='0°C', bg='#303136', fg="white", font=fontregular).place(x=325, y=520, width=50, height=30)
     tkinter.Canvas(root, bg="#2D2C36", highlightthickness=0).place(x=375,y=30,width=50,height=520)#temptemptemptemp
-    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-90*5.2, width=60, height=2)
-    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-80*5.2, width=60, height=2)
-    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-70*5.2, width=60, height=2)
-    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-60*5.2, width=60, height=2)
-    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-50*5.2, width=60, height=2)
-    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-40*5.2, width=60, height=2)
-    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-30*5.2, width=60, height=2)
-    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-20*5.2, width=60, height=2)
-    tkinter.Canvas(root, bg='#212126', highlightthickness=0).place(x=370, y=550-10*5.2, width=60, height=2)
+    tempdisplaycomponents = [
+        tkinter.Label(root, text='100°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='90°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='80°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='70°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='60°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='50°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='40°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='30°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='20°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='10°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='0°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Canvas(root, bg='#212126', highlightthickness=0),
+        tkinter.Canvas(root, bg='#212126', highlightthickness=0),
+        tkinter.Canvas(root, bg='#212126', highlightthickness=0),
+        tkinter.Canvas(root, bg='#212126', highlightthickness=0),
+        tkinter.Canvas(root, bg='#212126', highlightthickness=0),
+        tkinter.Canvas(root, bg='#212126', highlightthickness=0),
+        tkinter.Canvas(root, bg='#212126', highlightthickness=0),
+        tkinter.Canvas(root, bg='#212126', highlightthickness=0),
+        tkinter.Canvas(root, bg='#212126', highlightthickness=0),
+    ]
+    if savedsettings['tempbar']:
+        tempdisplaycomponents[0].place(x=325, y=550-100*5.2, width=50, height=30)
+        tempdisplaycomponents[1].place(x=325, y=550-92.5*5.2, width=50, height=30)
+        tempdisplaycomponents[2].place(x=325, y=550-82.5*5.2, width=50, height=30)
+        tempdisplaycomponents[3].place(x=325, y=550-72.5*5.2, width=50, height=30)
+        tempdisplaycomponents[4].place(x=325, y=550-62.5*5.2, width=50, height=30)
+        tempdisplaycomponents[5].place(x=325, y=550-52.5*5.2, width=50, height=30)
+        tempdisplaycomponents[6].place(x=325, y=550-42.5*5.2, width=50, height=30)
+        tempdisplaycomponents[7].place(x=325, y=550-32.5*5.2, width=50, height=30)
+        tempdisplaycomponents[8].place(x=325, y=550-22.5*5.2, width=50, height=30)
+        tempdisplaycomponents[9].place(x=325, y=550-12.5*5.2, width=50, height=30)
+        tempdisplaycomponents[10].place(x=325, y=520, width=50, height=30)
+        tempdisplaycomponents[11].place(x=370, y=550-90*5.2, width=60, height=2)
+        tempdisplaycomponents[12].place(x=370, y=550-80*5.2, width=60, height=2)
+        tempdisplaycomponents[13].place(x=370, y=550-70*5.2, width=60, height=2)
+        tempdisplaycomponents[14].place(x=370, y=550-60*5.2, width=60, height=2)
+        tempdisplaycomponents[15].place(x=370, y=550-50*5.2, width=60, height=2)
+        tempdisplaycomponents[16].place(x=370, y=550-40*5.2, width=60, height=2)
+        tempdisplaycomponents[17].place(x=370, y=550-30*5.2, width=60, height=2)
+        tempdisplaycomponents[18].place(x=370, y=550-20*5.2, width=60, height=2)
+        tempdisplaycomponents[19].place(x=370, y=550-10*5.2, width=60, height=2)
+        
     tempbar = tkinter.Canvas(root, bg="red", highlightthickness=0)
     tempnum = tkinter.Label(root, bg="red", fg="white", font=fontregular)
     #bottom
@@ -140,7 +166,8 @@ def mainwindow():
     #top
     tkinter.Canvas(root, bg="#222129", highlightthickness=0).place(x=0,y=0,width=800,height=30)
     tkinter.Button(root, text=language['Settings'], bg='#222129', fg="white", border=1, font=fontregular, command=opensettings).place(x=0, y=0, width=188, height=30)
-    tkinter.Label(root, text=language['GPU Temperature'], bg='#222129', fg="white", font=fontregular).place(x=200, y=0, width=400, height=30)
+    tempdisplaycomponents.append(tkinter.Label(root, text=language['GPU Temperature'], bg='#222129', fg="white", font=fontregular))
+    tempdisplaycomponents[20].place(x=200, y=0, width=400, height=30)
     tkinter.Button(root, text=language['About us'], bg='#222129', fg="white", border=1, font=fontregular, command=aboutus).place(x=612, y=0, width=188, height=30)
 
 
@@ -157,6 +184,120 @@ def mainwindow():
     root.mainloop()
     print('root stopped')
 def rgb_to_hex(rgb): return '#%02x%02x%02x' % rgb
+def preset(thething):
+    match thething:
+        case "GTX 1050":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Etchash"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1050 TI":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Etchash"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1060 3GB":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Autolykos2"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1060 6GB":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1070":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1070 TI":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1080":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1080 TI":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1650":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "kawpow"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1650 Super":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "kawpow"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1660":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1660 Super":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "GTX 1660 Ti":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 2060":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 2060 Super": 
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 2070":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 2070 Super":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 2080":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 2080 Super":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 2080 Ti":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 3050":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 3060":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 3060 Ti":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 3070":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 3070 Ti":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 3080":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 3080 TI":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+        case "RTX 3090":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
 def aboutus():
     global about
     global aboutopen
@@ -263,11 +404,16 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         c.place_configure(height=30)
     def kickjesusfromchat():
         changelang("Furry")
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#///////////////Big Thing Here//////////////////////////////////////////////////accept button happenings//////////////
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     def settingchange():#kaboooooooooooooooooooooooom ======================================================================
         global currentlyeditingmanual
         global editingwalleraddress
         global editingtime
         savedsettings["tempbar"] = selectedtempbar.get()
+        savedsettings["presetonoff"] = selectedpreset.get()
+        savedsettings["preset"] = selectedgpu.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -278,6 +424,14 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         if editingtime:
             savedsettings['autostarttimer'] = givenstarttime.get()
             presetshitfters[1].configure(text=str(savedsettings['autostarttimer']))
+        if savedsettings['presetonoff']:
+            preset(savedsettings["preset"])
+        else:
+            savedsettings['miner'] = selectedminer.get()
+            savedsettings['algo'] = selectedalgo.get()
+            savedsettings["pool"] = selectedpool.get()
+
+        savedsettings['region'] = selectedregion.get()
         currentlyeditingmanual = False
         editingwalleraddress = False
         editingtime = False
@@ -288,12 +442,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         manualworkergetterb.configure(state="normal")
         editwalletadress.configure(state="normal")
         presetshitfters[2].configure(state="normal")
-        savedsettings['miner'] = selectedminer.get()
-        savedsettings['algo'] = selectedalgo.get()
-        savedsettings["pool"] = selectedpool.get()
-        savedsettings["presetonoff"] = selectedpreset.get()
-        savedsettings["preset"] = selectedgpu.get()
-        savedsettings['region'] = selectedregion.get()
         globalalgo.configure(text=f"{language['Algo:']} {savedsettings['algo']}")
         globalminer.configure(text=f"{language['Miner:']} {savedsettings['miner']}")
         globalpool.configure(text=f"{language['Pool:']} {savedsettings['pool']}")
@@ -305,6 +453,9 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         if selectedlang.get() != savedsettings["language"]:
             changelang(selectedlang.get())
         savesettings()
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#///////////////Big Thing Here//////////////////////////////////////////////////accept button happenings//////////////
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     def enableaccept(aseggsaegsdg): #$$$$$$$$$$$$$
         global presetshift
         acceptbutton.place(x=595, y=565, width=200, height=30)
@@ -633,15 +784,39 @@ def reset():
     traymenu.visible = False
     os._exit(0)
 def savesettings():
+    global tempdisplaycomponents
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
         settings.write(json.dumps(savedsettings))
     if savedsettings["tempbar"]:
         gputemperature = gputemp()
         tempnum.place(x=380,y=int(550-gputemperature*5.2),width=40,height=30)
         tempbar.place(x=380,y=int(550-gputemperature*5.2),width=40,height=520)
+        tempdisplaycomponents[0].place(x=325, y=550-100*5.2, width=50, height=30)
+        tempdisplaycomponents[1].place(x=325, y=550-92.5*5.2, width=50, height=30)
+        tempdisplaycomponents[2].place(x=325, y=550-82.5*5.2, width=50, height=30)
+        tempdisplaycomponents[3].place(x=325, y=550-72.5*5.2, width=50, height=30)
+        tempdisplaycomponents[4].place(x=325, y=550-62.5*5.2, width=50, height=30)
+        tempdisplaycomponents[5].place(x=325, y=550-52.5*5.2, width=50, height=30)
+        tempdisplaycomponents[6].place(x=325, y=550-42.5*5.2, width=50, height=30)
+        tempdisplaycomponents[7].place(x=325, y=550-32.5*5.2, width=50, height=30)
+        tempdisplaycomponents[8].place(x=325, y=550-22.5*5.2, width=50, height=30)
+        tempdisplaycomponents[9].place(x=325, y=550-12.5*5.2, width=50, height=30)
+        tempdisplaycomponents[10].place(x=325, y=520, width=50, height=30)
+        tempdisplaycomponents[11].place(x=370, y=550-90*5.2, width=60, height=2)
+        tempdisplaycomponents[12].place(x=370, y=550-80*5.2, width=60, height=2)
+        tempdisplaycomponents[13].place(x=370, y=550-70*5.2, width=60, height=2)
+        tempdisplaycomponents[14].place(x=370, y=550-60*5.2, width=60, height=2)
+        tempdisplaycomponents[15].place(x=370, y=550-50*5.2, width=60, height=2)
+        tempdisplaycomponents[16].place(x=370, y=550-40*5.2, width=60, height=2)
+        tempdisplaycomponents[17].place(x=370, y=550-30*5.2, width=60, height=2)
+        tempdisplaycomponents[18].place(x=370, y=550-20*5.2, width=60, height=2)
+        tempdisplaycomponents[19].place(x=370, y=550-10*5.2, width=60, height=2)
+        tempdisplaycomponents[20].place(x=200, y=0, width=400, height=30)
     else:
         tempnum.place_forget()
         tempbar.place_forget()
+        for thing in tempdisplaycomponents:
+            thing.place_forget()
 def gputemp():
     gputemperature = subprocess.Popen("C:\\Windows\\System32\\nvidia-smi.exe --query-gpu=temperature.gpu --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
     return int(gputemperature.stdout.read().decode("UTF-8").replace("\r", "").split("\n")[:-1][0])
@@ -713,7 +888,8 @@ quitter = False
 supportedgpus = [
     "GTX 1050",
     "GTX 1050 Ti",
-    "GTX 1060",
+    "GTX 1060 3GB",
+    "GTX 1060 6GB",
     "GTX 1070",
     "GTX 1070 Ti",
     "GTX 1080",
@@ -770,21 +946,7 @@ defaultbg = "#303136"
 hashrate = 0
 aboutopen = False
 settingsopen = False
-try:
-    with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
-        savedsettings = json.load(data)
-        tempbar = savedsettings['tempbar']
-    with open(f"{pydir}\\languages\\{(savedsettings['language'])}.json") as data:
-        language = json.load(data)
-    with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "w") as settings:
-        settings.write(json.dumps(savedsettings))
-except Exception as e:
-    print(e)
-    try:
-        os.makedirs(f"{os.environ['APPDATA']}\\fruitsalad")
-    except:
-        pass
-    savedsettings = {
+savedsettings = {
         'language':'English', 
         'tempbar':True,
         'worker':'2999rfdr9kp8qbi', 
@@ -796,11 +958,36 @@ except Exception as e:
         "pool": "Nicehash",
         "region": "eu-west",
         'presetonoff': False, 
-        "preset": gpus[0], 
+        "preset": "select", 
         "freshlang": False, 
         "autostart": False, 
-        "autostarttimer": 600
+        "autostarttimer": 600,
+        "oc": False,
+        "pl": 100,
+        "fan": 0,
+        "fan:t": 0,
+        "fan:tonoff": False,
+        "core": 0,
+        "mem": 0,
+        "mt": 0,
+        "intensity": 0,
     }
+try:
+    with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
+        for setting in json.load(data):
+            savedsettings[setting] = json.load(data)[setting]
+        tempbar = savedsettings['tempbar']
+    with open(f"{pydir}\\languages\\{(savedsettings['language'])}.json") as data:
+        language = json.load(data)
+    with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "w") as settings:
+        settings.write(json.dumps(savedsettings))
+except Exception as e:
+    print(e)
+    try:
+        os.makedirs(f"{os.environ['APPDATA']}\\fruitsalad")
+    except:
+        pass
+    preset(savedsettings['preset'])
     if gpus[0] in supportedgpus:
         savedsettings["presetonoff"] = True
         savedsettings["preset"] = gpus[0]
