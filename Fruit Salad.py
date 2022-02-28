@@ -5,22 +5,16 @@ from PIL import ImageTk, Image
 from pystray import MenuItem as item
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
-try:
+try: #only one instance
     FruitSaladSession = singleton.SingleInstance()
-except:
-    time.sleep(2)
-    try:
-        FruitSaladSession = singleton.SingleInstance()
-    except:
-        os.startfile(f"{pydir}\\fail.vbs")
-        os._exit(0)
-
-try:
+except:#error message
+    os.startfile(f"{pydir}\\fail.vbs")
+    os._exit(0)
+try: #to get the name of the gpu
     gpunamerslkefjeslafjlska = subprocess.Popen(f"{os.environ['WINDIR']}\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
     gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[15:].replace("\r", "").split("\n")[:-1]
-except:
+except: #no gpu
     gpus = []
-#if "Cairo" in os.listdir()
 del gpunamerslkefjeslafjlska
 mining = False
 class Lotfi(tkinter.Entry):
@@ -391,7 +385,7 @@ def preset(thething):
             savedsettings["core"] = -200
             savedsettings["mem"] = 1500
             savedsettings["pl"] = 90
-def aboutus():
+def aboutus():#about us page
     global about
     global aboutopen
     def close():
@@ -512,7 +506,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             prelabel.configure(text=savedsettings['worker'])
             globalworker.configure(text=f"{language['Worker:']} {savedsettings['worker']}")
         if editingwalleraddress:
-            savedsettings['ethwallet'] = givenwallet.get()
+            savedsettings['wallet'] = givenwallet.get()
             prolabel.configure(text=savedsettings["ethwallet"])
         if editingtime:
             savedsettings['autostarttimer'] = givenstarttime.get()
@@ -683,6 +677,10 @@ def opensettings():#settings - settings - settings - settings - settings - setti
 
 
         #App Settings
+        """
+        todo:
+            Add Profiles
+        """
             #vars
         selectedlang = tkinter.StringVar()
         selectedlang.set(savedsettings['language'])
@@ -788,8 +786,24 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         presetshitfters[6].place(x=5, y=98 + presetshift, width=240, height=24)
         presetshitfters[6].configure(highlightthickness=0)
         presetshitfters[7].place(x=250, y=100 + presetshift, width=800, height=20)
-        #Advanced Settings
+        #Advanced Settings - lets start
+        """
+        Contents:
+        Custom arguments for Trex Miner [V]
+        #when off hidden - [   input   ]
+        #shown when custom args are off - Overclock [V] Unlocks OC settings. (Know what you are doing...)
+        shown when oc = True
+        [   input   ] Power Limit
+        [   input   ] Core Clock
+        [   input   ] Memory Clock
+        [Slider----O] 1 - 25 Intensity
+        (V) Fixed fan speed
+        shows when radio button above is checked -[Slider----O] 0% - 100% Fan Speed. (Careful)
+        (V) Temp bound fan speed
+        same - [Slider----O] 0c - 90c
+        [ Button ] Open logs
 
+        """
 
         #Megaguide Settings
         tkinter.Label(megaguidesettingsframe, text=language["Secret Settings"], bg="pink", fg="white", font=fontextremelybig).pack()
@@ -1042,29 +1056,28 @@ hashrate = 0
 aboutopen = False
 settingsopen = False
 savedsettings = {
-    'language':'English', 
+    'language':'English',
     'tempbar':False,
-    'worker':'2999rfdr9kp8qbi', 
-    'saladmining':True, 
-    'nicehashwallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi", 
-    'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731", 
-    'miner': "T-Rex Miner", 
-    "algo": "Ethash", 
+    'worker':'2999rfdr9kp8qbi',
+    'saladmining':True,
+    'wallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi",
+    'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731",
+    'miner': "T-Rex Miner",
+    "algo": "Ethash",
     "pool": "Nicehash",
     "region": "eu-west",
-    'presetonoff': False, 
-    "preset": "select", 
-    "freshlang": False, 
-    "autostart": False, 
+    'presetonoff': False,
+    "preset": "select",
+    "freshlang": False,
+    "autostart": False,
     "autostarttimer": 600,
     "oc": False,
     "pl": 100,
     "fan": 70,
-    "fan:t": 60,
+    "fan:t": 62,
     "fan:tonoff": False,
     "core": 0,
     "mem": 0,
-    "mt": 0,
     "intensity": 22,
 }
 try:
@@ -1129,5 +1142,4 @@ if __name__ == "__main__":
         root.geometry(f"{e.x_root-xwin}+{e.y_root-ywin}")
         titlebar.bind("<B1-Motion>", move_window)
         titlebar.bind("<Button-1>", get_pos)
-
 '''
