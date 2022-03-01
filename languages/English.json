@@ -40,5 +40,16 @@
     "Welcome to the -langname- version of Fruitsalad!": "Welcome to the english version of Fruit Salad!",
     "Edit": "Edit",
     "Wallet address": "Wallet address",
+    "Overclock GPU": "Overclock GPU",
+    "Unlocks OC settings. (Know what you are doing!)": "Unlocks OC settings. (Know what you are doing!)",
+    "Power Limit": "Power Limit",
+    "Core Clock": "Core Clock",
+    "Memory Clock": "Memory Clock",
+    "Intensity": "Intensity",
+    "Custom fan speed": "Custom fan speed",
+    "Fixed fan speed": "Fixed fan speed",
+    "Temp bound fan speed": "Temp bound fan speed",
+    "Hashrate update frequency": "Hashrate update frequency",
+    "Open miner logs": "Open miner logs",
     "RESET EVERYTHING": "RESET EVERYTHING"
 }

@@ -1,5 +1,5 @@
 version = "0.0.0"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile
 from tkinter import ttk
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
@@ -501,6 +501,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         savedsettings["tempbar"] = selectedtempbar.get()
         savedsettings["presetonoff"] = selectedpreset.get()
         savedsettings["preset"] = selectedgpu.get()
+        usecustomargscheck.configure(state=ocstate)
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -558,6 +559,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             presetshitfters[1].configure(text=str(savedsettings['autostarttimer']))
             givenstarttime.place_forget()
             if selectedpreset.get():
+                usecustomargscheck.configure(state="disabled")
                 h_haa.place(x=250, y=70, width=150, height=24)
                 presetoffsettings.place_forget()
                 presetshift = 0
@@ -571,6 +573,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                 presetshitfters[7].place_configure(x=250, y=100 + presetshift, width=800, height=20)
                 abcdefg.place_configure(y=70, x=410)
             else:
+                usecustomargscheck.configure(state="normal")
                 h_haa.place_forget()
                 presetoffsettings.place(x=0, y=75, width=800, height=570)
                 presetshift = 90
@@ -787,11 +790,11 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         presetshitfters[6].configure(highlightthickness=0)
         presetshitfters[7].place(x=250, y=100 + presetshift, width=800, height=20)
         #Advanced Settings - lets start
+        selectedoc = tkinter.BooleanVar()
+        selectedoc.set(savedsettings["oc"])
         """
         Contents:
-        Custom arguments for Trex Miner [V]
-        #when off hidden - [   input   ]
-        #shown when custom args are off - Overclock [V] Unlocks OC settings. (Know what you are doing...)
+        Overclock [V] Unlocks OC settings. (Know what you are doing...)
         shown when oc = True
         [   input   ] Power Limit
         [   input   ] Core Clock
@@ -801,9 +804,13 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         shows when radio button above is checked -[Slider----O] 0% - 100% Fan Speed. (Careful)
         (V) Temp bound fan speed
         same - [Slider----O] 0c - 90c
+        Slider--O] update rate for hashrate in seconds 1 - 30 seconds.
         [ Button ] Open logs
-
         """
+        if savedsettings["presetonoff"]: ocstate = "disabled"
+        else: ocstate = "normal"
+        usecustomargscheck = tkinter.Checkbutton(advancedsettingsframe, text=language["Use preset"], onvalue=True, offvalue=False, command=lambda:enableaccept(), bg="#46464A", variable=selectedoc, activebackground=defaultbg, fg="black", state=ocstate)
+        usecustomargscheck.place(x=5, y=15, width=240)
 
         #Megaguide Settings
         tkinter.Label(megaguidesettingsframe, text=language["Secret Settings"], bg="pink", fg="white", font=fontextremelybig).pack()
@@ -1086,8 +1093,10 @@ try:
         for setting in tempvalue:
             savedsettings[setting] = tempvalue[setting]
         tempbar = savedsettings['tempbar']
-    with open(f"{pydir}\\languages\\{(savedsettings['language'])}.json") as data:
-        language = json.load(data)
+
+    with zipfile.ZipFile(f'{pydir}\\.lang') as langpack:
+        with langpack.open(f"{savedsettings['language']}.json") as data:
+            language = json.load(data)
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "w") as settings:
         settings.write(json.dumps(savedsettings))
 except Exception as e:
@@ -1105,8 +1114,9 @@ except Exception as e:
             savedsettings["preset"] = gpus[0]
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
         settings.write(json.dumps(savedsettings))
-    with open(f"{pydir}\\languages\\{savedsettings['language']}.json") as data:
-        language = json.load(data)
+    with zipfile.ZipFile(f'{pydir}\\.lang') as langpack:
+        with langpack.open(f"{savedsettings['language']}.json") as data:
+            language = json.load(data)
 traymenucontent = (
     item('Show or hide', windowopen, default=True, visible=False),
     item('Quit', byebye, default=False),

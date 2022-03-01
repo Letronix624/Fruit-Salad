@@ -41,5 +41,16 @@
     "_Comment to the translator:": "at -langname- insert your language that you are translating right now. Delete this comment for the final version.",
     "Edit": "",
     "Wallet address": "",
+    "Overclock GPU": "",
+    "Unlocks OC settings. (Know what you are doing!)": "",
+    "Power Limit": "",
+    "Core Clock": "",
+    "Memory Clock": "",
+    "Intensity": "",
+    "Custom fan speed": "",
+    "Fixed fan speed": "",
+    "Temp bound fan speed": "",
+    "Hashrate update frequency": "",
+    "Open miner logs": "",
     "RESET EVERYTHING": ""
 }
