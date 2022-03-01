@@ -601,33 +601,44 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             else:
                 saladsettings.place_forget()
                 nonsaladsettings.place(x=0, y=0, width=800, height=570)
-        if selectedoc.get(): 
-            state = "normal"
-            pllot.configure(state=state)
-            cclot.configure(state=state)
-            mclot.configure(state=state)
-            ocsettings0.configure(state=state, troughcolor='lightgrey')
-            ocsettings1.configure(state=state)
-            if not selectedcustomfan.get(): state = "disabled"
-            ocsettings2.configure(state=state)
-            ocsettings4.configure(state=state)
-            if selectedtempboundfanonoff.get(): 
-                ocsettings5.configure(state="normal", troughcolor='lightgrey')
-                ocsettings3.configure(state="disabled", troughcolor='grey')
-            else:
-                ocsettings5.configure(state="disabled", troughcolor='grey')
-                ocsettings3.configure(state="normal", troughcolor='lightgrey')
-        else: 
-            state = "disabled"
-            pllot.configure(state=state)
-            cclot.configure(state=state)
-            mclot.configure(state=state)
-            ocsettings0.configure(state=state, troughcolor='grey')
-            ocsettings1.configure(state=state)
-            ocsettings2.configure(state=state)
-            ocsettings3.configure(state=state, troughcolor='grey')
-            ocsettings4.configure(state=state)
-            ocsettings5.configure(state=state, troughcolor='grey')
+        if selectedpreset.get():
+            pllot.configure(state="disabled")
+            cclot.configure(state="disabled")
+            mclot.configure(state="disabled")
+            ocsettings0.configure(state="disabled", troughcolor='grey')
+            ocsettings1.configure(state="disabled")
+            ocsettings2.configure(state="disabled")
+            ocsettings3.configure(state="disabled", troughcolor='grey')
+            ocsettings4.configure(state="disabled")
+            ocsettings5.configure(state="disabled", troughcolor='grey')
+        else:
+            if selectedoc.get(): 
+                state = "normal"
+                pllot.configure(state=state)
+                cclot.configure(state=state)
+                mclot.configure(state=state)
+                ocsettings0.configure(state=state, troughcolor='lightgrey')
+                ocsettings1.configure(state=state)
+                if not selectedcustomfan.get(): state = "disabled"
+                ocsettings2.configure(state=state)
+                ocsettings4.configure(state=state)
+                if selectedtempboundfanonoff.get(): 
+                    ocsettings5.configure(state="normal", troughcolor='lightgrey')
+                    ocsettings3.configure(state="disabled", troughcolor='grey')
+                else:
+                    ocsettings5.configure(state="disabled", troughcolor='grey')
+                    ocsettings3.configure(state="normal", troughcolor='lightgrey')
+            else: 
+                state = "disabled"
+                pllot.configure(state=state)
+                cclot.configure(state=state)
+                mclot.configure(state=state)
+                ocsettings0.configure(state=state, troughcolor='grey')
+                ocsettings1.configure(state=state)
+                ocsettings2.configure(state=state)
+                ocsettings3.configure(state=state, troughcolor='grey')
+                ocsettings4.configure(state=state)
+                ocsettings5.configure(state=state, troughcolor='grey')
         if aseggsaegsdg == "preset":
             presetshitfters[2].configure(state="normal")
             presetshitfters[1].configure(text=str(savedsettings['autostarttimer']))
@@ -899,7 +910,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         shows when radio button above is checked -[Slider----O] 0% - 100% Fan Speed. (Careful)
         (V) Temp bound fan speed
         same - [Slider----O] 0c - 90c
-        Slider--O] update rate for hashrate in seconds 1 - 30 seconds.
+        Slider--O] update rate for hashrate in seconds 5 - 60 seconds. --gpu-report-interval (default 5)
         [ Button ] Open logs
         """
         if savedsettings["presetonoff"]: ocstate = "disabled"
@@ -931,6 +942,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         ocsettings4.place(x=5, y=255)
         ocsettings5 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedtempboundfan, from_=0, to=90, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
         ocsettings5.place(x=5, y=275, width=240)
+        tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selectedhashrateupdatetime, from_=5, to=60, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=345, width=240)
 
 
 
@@ -944,6 +956,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Target fan speed in RPM"], anchor=tkinter.W).place(x=250, y=232, width=800, height=20)
         tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Temp bound fan speed"], anchor=tkinter.W).place(x=40, y=260, width=800, height=20)
         tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Target temperature in C"], anchor=tkinter.W).place(x=250, y=292, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Hashrate update frequency in seconds"], anchor=tkinter.W).place(x=250, y=362, width=800, height=20)
         #Megaguide Settings
         tkinter.Label(megaguidesettingsframe, text=language["Secret Settings"], bg="pink", fg="white", font=fontextremelybig).pack()
         tkinter.Button(megaguidesettingsframe, text="Megaguide", bg="Red", fg="White", command=megaguide, font=fontregular, padx=10, pady=5).pack(anchor=tkinter.NW)
@@ -952,33 +965,44 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             hhh = tkinter.Button(megaguidesettingsframe, text=language["Furry Language"], bg="yellow", fg="pink", font=fontregular, command=kickjesusfromchat)
             hhh.pack(anchor=tkinter.NW) #messageinblood
         #finishing touch
-        if selectedoc.get(): 
-            state = "normal"
-            pllot.configure(state=state)
-            cclot.configure(state=state)
-            mclot.configure(state=state)
-            ocsettings0.configure(state=state, troughcolor='lightgrey')
-            ocsettings1.configure(state=state)
-            if not selectedcustomfan.get(): state = "disabled"
-            ocsettings2.configure(state=state)
-            ocsettings4.configure(state=state)
-            if selectedtempboundfanonoff.get(): 
-                ocsettings5.configure(state="normal", troughcolor='lightgrey')
-                ocsettings3.configure(state="disabled", troughcolor='grey')
-            else:
-                ocsettings5.configure(state="disabled", troughcolor='grey')
-                ocsettings3.configure(state="normal", troughcolor='lightgrey')
-        else: 
-            state = "disabled"
-            pllot.configure(state=state)
-            cclot.configure(state=state)
-            mclot.configure(state=state)
-            ocsettings0.configure(state=state, troughcolor='grey')
-            ocsettings1.configure(state=state)
-            ocsettings2.configure(state=state)
-            ocsettings3.configure(state=state, troughcolor='grey')
-            ocsettings4.configure(state=state)
-            ocsettings5.configure(state=state, troughcolor='grey')
+        if selectedpreset.get():
+            pllot.configure(state="disabled")
+            cclot.configure(state="disabled")
+            mclot.configure(state="disabled")
+            ocsettings0.configure(state="disabled", troughcolor='grey')
+            ocsettings1.configure(state="disabled")
+            ocsettings2.configure(state="disabled")
+            ocsettings3.configure(state="disabled", troughcolor='grey')
+            ocsettings4.configure(state="disabled")
+            ocsettings5.configure(state="disabled", troughcolor='grey')
+        else:
+            if selectedoc.get(): 
+                state = "normal"
+                pllot.configure(state=state)
+                cclot.configure(state=state)
+                mclot.configure(state=state)
+                ocsettings0.configure(state=state, troughcolor='lightgrey')
+                ocsettings1.configure(state=state)
+                if not selectedcustomfan.get(): state = "disabled"
+                ocsettings2.configure(state=state)
+                ocsettings4.configure(state=state)
+                if selectedtempboundfanonoff.get(): 
+                    ocsettings5.configure(state="normal", troughcolor='lightgrey')
+                    ocsettings3.configure(state="disabled", troughcolor='grey')
+                else:
+                    ocsettings5.configure(state="disabled", troughcolor='grey')
+                    ocsettings3.configure(state="normal", troughcolor='lightgrey')
+            else: 
+                state = "disabled"
+                pllot.configure(state=state)
+                cclot.configure(state=state)
+                mclot.configure(state=state)
+                ocsettings0.configure(state=state, troughcolor='grey')
+                ocsettings1.configure(state=state)
+                ocsettings2.configure(state=state)
+                ocsettings3.configure(state=state, troughcolor='grey')
+                ocsettings4.configure(state=state)
+                ocsettings5.configure(state=state, troughcolor='grey')
         
     else:
         settings.deiconify()
@@ -1099,8 +1123,9 @@ def gputemp():
 def changelang(lang):
     global language
     savedsettings["language"] = lang
-    with open(f"{pydir}\\languages\\{lang}.json") as data:
-        language = json.load(data)
+    with zipfile.ZipFile(f'{pydir}\\data\\.lang') as langpack:
+        with langpack.open(f"{savedsettings['language']}.json") as data:
+            language = json.load(data)
         for word in language:
             language[word] = u'{}'.format(word)
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "w") as settings:
@@ -1245,7 +1270,7 @@ savedsettings = {
     "core": 0,
     "mem": 0,
     "intensity": 22,
-    "updatetime": 10,
+    "updatetime": 5,
 }
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:

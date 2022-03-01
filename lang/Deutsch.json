@@ -51,7 +51,7 @@
     "Temp bound fan speed": "Temperatur bezogene L\u00FCfter Geschwindigkeit",
     "Target fan speed in RPM": "Ziel Geschwindigkeit",
     "Target temperature in C": "Ziel Temperatur in C",
-    "Hashrate update frequency": "Hashrate Aktualisierungsrate",
+    "Hashrate update frequency in seconds": "Hashrate Aktualisierungsrate pro sekunde",
     "Open miner logs": "Miner Protokolle \u00F6ffnen.",
     "RESET EVERYTHING": "ALLES ZUR\u00DCCKSETZEN"
 }
