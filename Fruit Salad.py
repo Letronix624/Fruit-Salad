@@ -258,7 +258,7 @@ def preset(thething):
             savedsettings["core"] = 150
             savedsettings["mem"] = 700
             savedsettings["pl"] = 100
-        case "GTX 1650 Super":
+        case "GTX 1650 SUPER":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "kawpow"
             savedsettings["pool"] = "Nicehash"
@@ -274,7 +274,7 @@ def preset(thething):
             savedsettings["core"] = -300
             savedsettings["mem"] = 970
             savedsettings["pl"] = 65
-        case "GTX 1660 Super":
+        case "GTX 1660 SUPER":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
@@ -298,7 +298,7 @@ def preset(thething):
             savedsettings["core"] = 150
             savedsettings["mem"] = 1200
             savedsettings["pl"] = 75
-        case "RTX 2060 Super": 
+        case "RTX 2060 SUPER": 
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
@@ -314,7 +314,7 @@ def preset(thething):
             savedsettings["core"] = -502
             savedsettings["mem"] = 1150
             savedsettings["pl"] = 75
-        case "RTX 2070 Super":
+        case "RTX 2070 SUPER":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
@@ -330,7 +330,7 @@ def preset(thething):
             savedsettings["core"] = -200
             savedsettings["mem"] = 1400
             savedsettings["pl"] = 63
-        case "RTX 2080 Super":
+        case "RTX 2080 SUPER":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
@@ -1169,16 +1169,16 @@ supportedgpus = [
     "GTX 1080",
     "GTX 1080 Ti",
     "GTX 1650",
-    "GTX 1650 Super",
+    "GTX 1650 SUPER",
     "GTX 1660",
-    "GTX 1660 Super",
+    "GTX 1660 SUPER",
     "GTX 1660 Ti",
     "RTX 2060",
-    "RTX 2060 Super",
+    "RTX 2060 SUPER",
     "RTX 2070",
-    "RTX 2070 Super",
+    "RTX 2070 SUPER",
     "RTX 2080",
-    "RTX 2080 Super",
+    "RTX 2080 SUPER",
     "RTX 2080 Ti",
     "RTX 3050",
     "RTX 3060",
