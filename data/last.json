@@ -1,7 +1,0 @@
-{
-    "algo": "ethash",
-    "url": "stratum+tcp://daggerhashimoto.eu-west.nicehash.com:3353",
-    "user": "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi",
-    "worker": "2999rfdr9kp8qbi",
-    "3060": "--pl 70 --cclock -220 --mclock 1460 --fan t:55"
-}

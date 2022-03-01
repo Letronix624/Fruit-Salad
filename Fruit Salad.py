@@ -1,4 +1,5 @@
 version = "0.0.0"
+from glob import glob
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile
 from tkinter import ttk
 from PIL import ImageTk, Image
@@ -26,7 +27,7 @@ class Lotfi(tkinter.Entry):
         self.get, self.set = self.var.get, self.var.set
 
     def check(self, *args):
-        if self.get().isdigit() or self.get() == "": 
+        if self.get().isdigit() or self.get() == "" or self.get().startswith("-"): 
             # the current value is only digits; allow this
             self.old_value = self.get()
         else:
@@ -58,18 +59,40 @@ def mainwindow():
     traymenu.update_menu()
     root = tkinter.Tk()
     root.configure(bg='#303136')
-    startbuttonanimation = [
-        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 1.png"),
-        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 2.png"),
-        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 3.png"),
-        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 4.png"),
-        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 5.png"),
-        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 6.png"),
-        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 7.png"),
-        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 8.png"),
-        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 9.png"),
-        ImageTk.PhotoImage(file=f"{pydir}\\GUI\\On Switch 10.png")
-    ]
+    with zipfile.ZipFile(f'{pydir}\\data\\.gui') as getimages:
+        with getimages.open('On Switch 1.png', 'r') as data:
+            im1 = data.read()
+        with getimages.open('On Switch 2.png', 'r') as data:
+            im2 = data.read()
+        with getimages.open('On Switch 3.png', 'r') as data:
+            im3 = data.read()
+        with getimages.open('On Switch 4.png', 'r') as data:
+            im4 = data.read()
+        with getimages.open('On Switch 5.png', 'r') as data:
+            im5 = data.read()
+        with getimages.open('On Switch 6.png', 'r') as data:
+            im6 = data.read()
+        with getimages.open('On Switch 7.png', 'r') as data:
+            im7 = data.read()
+        with getimages.open('On Switch 8.png', 'r') as data:
+            im8 = data.read()
+        with getimages.open('On Switch 9.png', 'r') as data:
+            im9 = data.read()
+        with getimages.open('On Switch 10.png', 'r') as data:
+            im10 = data.read()
+        startbuttonanimation = [
+            ImageTk.PhotoImage(data=im1, format='png'),
+            ImageTk.PhotoImage(data=im2, format='png'),
+            ImageTk.PhotoImage(data=im3, format='png'),
+            ImageTk.PhotoImage(data=im4, format='png'),
+            ImageTk.PhotoImage(data=im5, format='png'),
+            ImageTk.PhotoImage(data=im6, format='png'),
+            ImageTk.PhotoImage(data=im7, format='png'),
+            ImageTk.PhotoImage(data=im8, format='png'),
+            ImageTk.PhotoImage(data=im9, format='png'),
+            ImageTk.PhotoImage(data=im10, format='png'),
+            
+        ]
     root.wm_attributes("-transparentcolor", '#010110')
     #Stats
     tkinter.Label(root, text=f'{hashrate} mh/s', bg='#303136', fg="white", font=fontextremelybig).place(x=425, y=480, width=350, height=70)
@@ -494,14 +517,18 @@ def opensettings():#settings - settings - settings - settings - settings - setti
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////Big Thing Here//////////////////////////////////////////////////accept button happenings//////////////
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    global selectedoc
     def settingchange():#kaboooooooooooooooooooooooom ======================================================================
         global currentlyeditingmanual
         global editingwalleraddress
         global editingtime
+        global selectedoc
+        pllot.delete(0, "end")
+        cclot.delete(0, "end")
+        mclot.delete(0, "end")
         savedsettings["tempbar"] = selectedtempbar.get()
         savedsettings["presetonoff"] = selectedpreset.get()
         savedsettings["preset"] = selectedgpu.get()
-        usecustomargscheck.configure(state=ocstate)
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -514,6 +541,13 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             presetshitfters[1].configure(text=str(savedsettings['autostarttimer']))
         if savedsettings['presetonoff']:
             preset(savedsettings["preset"])
+            if savedsettings['oc']:
+                selectedoc = True
+                usecustomargscheck.select()
+            else:
+                selectedoc = False
+                usecustomargscheck.deselect()
+
         else:
             savedsettings['miner'] = selectedminer.get()
             savedsettings['algo'] = selectedalgo.get()
@@ -538,6 +572,9 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         prolabel.place(x=5, y=45, width=250, height=20)
         presetshitfters[1].place(x=210, y=130 + presetshift, width=35, height=24)
         savedsettings['saladmining'] = selectedsaladmining.get()
+        pllot.insert(tkinter.END, str(savedsettings["pl"]))
+        cclot.insert(tkinter.END, str(savedsettings["core"]))
+        mclot.insert(tkinter.END, str(savedsettings["mem"]))
         if selectedlang.get() != savedsettings["language"]:
             changelang(selectedlang.get())
         savesettings()
@@ -809,9 +846,21 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         """
         if savedsettings["presetonoff"]: ocstate = "disabled"
         else: ocstate = "normal"
-        usecustomargscheck = tkinter.Checkbutton(advancedsettingsframe, text=language["Use preset"], onvalue=True, offvalue=False, command=lambda:enableaccept(), bg="#46464A", variable=selectedoc, activebackground=defaultbg, fg="black", state=ocstate)
-        usecustomargscheck.place(x=5, y=15, width=240)
-
+        usecustomargscheck = tkinter.Checkbutton(advancedsettingsframe, text=language["Overclock GPU"], onvalue=True, offvalue=False, command=lambda:enableaccept(""), bg="#46464A", variable=selectedoc, activebackground=defaultbg, fg="black", state=ocstate)
+        usecustomargscheck.place(x=5, y=15, width=240, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Unlocks OC settings. (Know what you are doing!)'], anchor=tkinter.W).place(x=250, y=15, width=800, height=20)
+        pllot = Lotfi(advancedsettingsframe)
+        cclot = Lotfi(advancedsettingsframe)
+        mclot = Lotfi(advancedsettingsframe)
+        pllot.insert(tkinter.END, str(savedsettings["pl"]))
+        cclot.insert(tkinter.END, str(savedsettings["core"]))
+        mclot.insert(tkinter.END, str(savedsettings["mem"]))
+        pllot.place(x=5, y=45, width=30, height=20)
+        cclot.place(x=5, y=75, width=30, height=20)
+        mclot.place(x=5, y=105, width=30, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Power Limit"], anchor=tkinter.W).place(x=40, y=45, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Core Clock"], anchor=tkinter.W).place(x=40, y=75, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Memory Clock"], anchor=tkinter.W).place(x=40, y=105, width=800, height=20)
         #Megaguide Settings
         tkinter.Label(megaguidesettingsframe, text=language["Secret Settings"], bg="pink", fg="white", font=fontextremelybig).pack()
         tkinter.Button(megaguidesettingsframe, text="Megaguide", bg="Red", fg="White", command=megaguide, font=fontregular, padx=10, pady=5).pack(anchor=tkinter.NW)
@@ -819,9 +868,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             tkinter.Label(megaguidesettingsframe, text=language["Button below restarts the program."], font=fontregular).pack(anchor=tkinter.NW)
             hhh = tkinter.Button(megaguidesettingsframe, text=language["Furry Language"], bg="yellow", fg="pink", font=fontregular, command=kickjesusfromchat)
             hhh.pack(anchor=tkinter.NW) #messageinblood
-        
-
-        
     else:
         settings.deiconify()
         settings.focus()
@@ -1094,7 +1140,7 @@ try:
             savedsettings[setting] = tempvalue[setting]
         tempbar = savedsettings['tempbar']
 
-    with zipfile.ZipFile(f'{pydir}\\.lang') as langpack:
+    with zipfile.ZipFile(f'{pydir}\\data\\.lang') as langpack:
         with langpack.open(f"{savedsettings['language']}.json") as data:
             language = json.load(data)
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "w") as settings:
@@ -1114,7 +1160,7 @@ except Exception as e:
             savedsettings["preset"] = gpus[0]
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
         settings.write(json.dumps(savedsettings))
-    with zipfile.ZipFile(f'{pydir}\\.lang') as langpack:
+    with zipfile.ZipFile(f'{pydir}\\data\\.lang') as langpack:
         with langpack.open(f"{savedsettings['language']}.json") as data:
             language = json.load(data)
 traymenucontent = (
