@@ -1,5 +1,4 @@
 version = "0.0.0"
-from glob import glob
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile
 from tkinter import ttk
 from PIL import ImageTk, Image
@@ -147,15 +146,15 @@ def mainwindow():
         tempdisplaycomponents[8].place(x=325, y=550-22.5*5.2, width=50, height=30)
         tempdisplaycomponents[9].place(x=325, y=550-12.5*5.2, width=50, height=30)
         tempdisplaycomponents[10].place(x=325, y=520, width=50, height=30)
-        tempdisplaycomponents[11].place(x=370, y=550-90*5.2, width=60, height=2)
-        tempdisplaycomponents[12].place(x=370, y=550-80*5.2, width=60, height=2)
-        tempdisplaycomponents[13].place(x=370, y=550-70*5.2, width=60, height=2)
-        tempdisplaycomponents[14].place(x=370, y=550-60*5.2, width=60, height=2)
-        tempdisplaycomponents[15].place(x=370, y=550-50*5.2, width=60, height=2)
-        tempdisplaycomponents[16].place(x=370, y=550-40*5.2, width=60, height=2)
-        tempdisplaycomponents[17].place(x=370, y=550-30*5.2, width=60, height=2)
-        tempdisplaycomponents[18].place(x=370, y=550-20*5.2, width=60, height=2)
-        tempdisplaycomponents[19].place(x=370, y=550-10*5.2, width=60, height=2)
+        tempdisplaycomponents[11].place(x=370, y=550-90.25*5.2, width=60, height=2)
+        tempdisplaycomponents[12].place(x=370, y=550-80.25*5.2, width=60, height=2)
+        tempdisplaycomponents[13].place(x=370, y=550-70.25*5.2, width=60, height=2)
+        tempdisplaycomponents[14].place(x=370, y=550-60.25*5.2, width=60, height=2)
+        tempdisplaycomponents[15].place(x=370, y=550-50.25*5.2, width=60, height=2)
+        tempdisplaycomponents[16].place(x=370, y=550-40.25*5.2, width=60, height=2)
+        tempdisplaycomponents[17].place(x=370, y=550-30.25*5.2, width=60, height=2)
+        tempdisplaycomponents[18].place(x=370, y=550-20.25*5.2, width=60, height=2)
+        tempdisplaycomponents[19].place(x=370, y=550-10.25*5.2, width=60, height=2)
         
     tempbar = tkinter.Canvas(root, bg="red", highlightthickness=0)
     tempnum = tkinter.Label(root, bg="red", fg="white", font=fontregular)
@@ -517,18 +516,26 @@ def opensettings():#settings - settings - settings - settings - settings - setti
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////Big Thing Here//////////////////////////////////////////////////accept button happenings//////////////
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    global selectedoc
     def settingchange():#kaboooooooooooooooooooooooom ======================================================================
         global currentlyeditingmanual
         global editingwalleraddress
         global editingtime
-        global selectedoc
+        pllot.configure(state="normal")
+        cclot.configure(state="normal")
+        mclot.configure(state="normal")
         pllot.delete(0, "end")
         cclot.delete(0, "end")
         mclot.delete(0, "end")
         savedsettings["tempbar"] = selectedtempbar.get()
         savedsettings["presetonoff"] = selectedpreset.get()
         savedsettings["preset"] = selectedgpu.get()
+        savedsettings["intensity"] = selectedintensity.get()
+        savedsettings["fan:tonoff"] = selectedtempboundfanonoff.get()
+        savedsettings["fanbool"] = selectedcustomfan.get()
+        savedsettings["fan:t"] = selectedtempboundfan.get()
+        savedsettings["updatetime"] = selectedhashrateupdatetime.get()
+        savedsettings['fan'] = selectedfixedfan.get()
+        savedsettings['oc'] = selectedoc.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -542,12 +549,11 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         if savedsettings['presetonoff']:
             preset(savedsettings["preset"])
             if savedsettings['oc']:
-                selectedoc = True
+                selectedoc.set(True)
                 usecustomargscheck.select()
             else:
-                selectedoc = False
+                selectedoc.set(False)
                 usecustomargscheck.deselect()
-
         else:
             savedsettings['miner'] = selectedminer.get()
             savedsettings['algo'] = selectedalgo.get()
@@ -575,6 +581,10 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         pllot.insert(tkinter.END, str(savedsettings["pl"]))
         cclot.insert(tkinter.END, str(savedsettings["core"]))
         mclot.insert(tkinter.END, str(savedsettings["mem"]))
+        if savedsettings["presetonoff"]:
+            pllot.configure(state="disabled")
+            cclot.configure(state="disabled")
+            mclot.configure(state="disabled")
         if selectedlang.get() != savedsettings["language"]:
             changelang(selectedlang.get())
         savesettings()
@@ -591,12 +601,48 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             else:
                 saladsettings.place_forget()
                 nonsaladsettings.place(x=0, y=0, width=800, height=570)
+        if selectedoc.get(): 
+            state = "normal"
+            pllot.configure(state=state)
+            cclot.configure(state=state)
+            mclot.configure(state=state)
+            ocsettings0.configure(state=state, troughcolor='lightgrey')
+            ocsettings1.configure(state=state)
+            if not selectedcustomfan.get(): state = "disabled"
+            ocsettings2.configure(state=state)
+            ocsettings4.configure(state=state)
+            if selectedtempboundfanonoff.get(): 
+                ocsettings5.configure(state="normal", troughcolor='lightgrey')
+                ocsettings3.configure(state="disabled", troughcolor='grey')
+            else:
+                ocsettings5.configure(state="disabled", troughcolor='grey')
+                ocsettings3.configure(state="normal", troughcolor='lightgrey')
+        else: 
+            state = "disabled"
+            pllot.configure(state=state)
+            cclot.configure(state=state)
+            mclot.configure(state=state)
+            ocsettings0.configure(state=state, troughcolor='grey')
+            ocsettings1.configure(state=state)
+            ocsettings2.configure(state=state)
+            ocsettings3.configure(state=state, troughcolor='grey')
+            ocsettings4.configure(state=state)
+            ocsettings5.configure(state=state, troughcolor='grey')
         if aseggsaegsdg == "preset":
             presetshitfters[2].configure(state="normal")
             presetshitfters[1].configure(text=str(savedsettings['autostarttimer']))
             givenstarttime.place_forget()
             if selectedpreset.get():
                 usecustomargscheck.configure(state="disabled")
+                pllot.configure(state="disabled")
+                cclot.configure(state="disabled")
+                mclot.configure(state="disabled")
+                ocsettings0.configure(state="disabled", troughcolor='grey')
+                ocsettings1.configure(state="disabled")
+                ocsettings2.configure(state="disabled")
+                ocsettings3.configure(state="disabled", troughcolor='grey')
+                ocsettings4.configure(state="disabled")
+                ocsettings5.configure(state="disabled", troughcolor='grey')
                 h_haa.place(x=250, y=70, width=150, height=24)
                 presetoffsettings.place_forget()
                 presetshift = 0
@@ -829,6 +875,18 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         #Advanced Settings - lets start
         selectedoc = tkinter.BooleanVar()
         selectedoc.set(savedsettings["oc"])
+        selectedintensity = tkinter.IntVar()
+        selectedintensity.set(savedsettings["intensity"])
+        selectedtempboundfanonoff = tkinter.BooleanVar()
+        selectedtempboundfanonoff.set(savedsettings["fan:tonoff"])
+        selectedcustomfan = tkinter.BooleanVar()
+        selectedcustomfan.set(savedsettings["fanbool"])
+        selectedtempboundfan = tkinter.IntVar()
+        selectedtempboundfan.set(savedsettings["fan:t"])
+        selectedhashrateupdatetime = tkinter.IntVar()
+        selectedhashrateupdatetime.set(savedsettings["updatetime"])
+        selectedfixedfan = tkinter.IntVar()
+        selectedfixedfan.set(savedsettings["fan"])
         """
         Contents:
         Overclock [V] Unlocks OC settings. (Know what you are doing...)
@@ -836,7 +894,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         [   input   ] Power Limit
         [   input   ] Core Clock
         [   input   ] Memory Clock
-        [Slider----O] 1 - 25 Intensity
+        [Slider----O] 8 - 25 Intensity
         (V) Fixed fan speed
         shows when radio button above is checked -[Slider----O] 0% - 100% Fan Speed. (Careful)
         (V) Temp bound fan speed
@@ -846,21 +904,46 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         """
         if savedsettings["presetonoff"]: ocstate = "disabled"
         else: ocstate = "normal"
-        usecustomargscheck = tkinter.Checkbutton(advancedsettingsframe, text=language["Overclock GPU"], onvalue=True, offvalue=False, command=lambda:enableaccept(""), bg="#46464A", variable=selectedoc, activebackground=defaultbg, fg="black", state=ocstate)
-        usecustomargscheck.place(x=5, y=15, width=240, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Unlocks OC settings. (Know what you are doing!)'], anchor=tkinter.W).place(x=250, y=15, width=800, height=20)
+        usecustomargscheck = tkinter.Checkbutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, variable=selectedoc, onvalue=True, state=ocstate, offvalue=False, command=lambda:enableaccept(''))
+        usecustomargscheck.place(x=5, y=12)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Overclock GPU'] + " | " + language['Unlocks OC settings. (Know what you are doing!)'], anchor=tkinter.W).place(x=40, y=15, width=800, height=20)
         pllot = Lotfi(advancedsettingsframe)
         cclot = Lotfi(advancedsettingsframe)
         mclot = Lotfi(advancedsettingsframe)
         pllot.insert(tkinter.END, str(savedsettings["pl"]))
         cclot.insert(tkinter.END, str(savedsettings["core"]))
         mclot.insert(tkinter.END, str(savedsettings["mem"]))
+        pllot.configure(state=ocstate)
+        cclot.configure(state=ocstate)
+        mclot.configure(state=ocstate)
         pllot.place(x=5, y=45, width=30, height=20)
         cclot.place(x=5, y=75, width=30, height=20)
         mclot.place(x=5, y=105, width=30, height=20)
+        ocsettings0 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedintensity, from_=8, to=25, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
+        ocsettings0.place(x=5, y=125, width=240)
+        ocsettings1 = tkinter.Checkbutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, state=ocstate, variable=selectedcustomfan, onvalue=True, offvalue=False, command=lambda:enableaccept(''))
+        ocsettings1.place(x=5, y=165)
+        ocsettings2 = tkinter.Radiobutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, state=ocstate, variable=selectedtempboundfanonoff, value=False, command=lambda:enableaccept(''))
+        ocsettings2.place(x=5, y=195)
+        ocsettings3 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedfixedfan, from_=0, to=100, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
+        ocsettings3.place(x=5, y=215, width=240)
+        ocsettings4 = tkinter.Radiobutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, state=ocstate, variable=selectedtempboundfanonoff, value=True, command=lambda:enableaccept(''))
+        ocsettings4.place(x=5, y=255)
+        ocsettings5 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedtempboundfan, from_=0, to=90, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
+        ocsettings5.place(x=5, y=275, width=240)
+
+
+
+
         tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Power Limit"], anchor=tkinter.W).place(x=40, y=45, width=800, height=20)
         tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Core Clock"], anchor=tkinter.W).place(x=40, y=75, width=800, height=20)
         tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Memory Clock"], anchor=tkinter.W).place(x=40, y=105, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Intensity"], anchor=tkinter.W).place(x=250, y=142, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Custom fan speed"], anchor=tkinter.W).place(x=40, y=167, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Fixed fan speed"], anchor=tkinter.W).place(x=40, y=197, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Target fan speed in RPM"], anchor=tkinter.W).place(x=250, y=232, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Temp bound fan speed"], anchor=tkinter.W).place(x=40, y=260, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Target temperature in C"], anchor=tkinter.W).place(x=250, y=292, width=800, height=20)
         #Megaguide Settings
         tkinter.Label(megaguidesettingsframe, text=language["Secret Settings"], bg="pink", fg="white", font=fontextremelybig).pack()
         tkinter.Button(megaguidesettingsframe, text="Megaguide", bg="Red", fg="White", command=megaguide, font=fontregular, padx=10, pady=5).pack(anchor=tkinter.NW)
@@ -868,6 +951,35 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             tkinter.Label(megaguidesettingsframe, text=language["Button below restarts the program."], font=fontregular).pack(anchor=tkinter.NW)
             hhh = tkinter.Button(megaguidesettingsframe, text=language["Furry Language"], bg="yellow", fg="pink", font=fontregular, command=kickjesusfromchat)
             hhh.pack(anchor=tkinter.NW) #messageinblood
+        #finishing touch
+        if selectedoc.get(): 
+            state = "normal"
+            pllot.configure(state=state)
+            cclot.configure(state=state)
+            mclot.configure(state=state)
+            ocsettings0.configure(state=state, troughcolor='lightgrey')
+            ocsettings1.configure(state=state)
+            if not selectedcustomfan.get(): state = "disabled"
+            ocsettings2.configure(state=state)
+            ocsettings4.configure(state=state)
+            if selectedtempboundfanonoff.get(): 
+                ocsettings5.configure(state="normal", troughcolor='lightgrey')
+                ocsettings3.configure(state="disabled", troughcolor='grey')
+            else:
+                ocsettings5.configure(state="disabled", troughcolor='grey')
+                ocsettings3.configure(state="normal", troughcolor='lightgrey')
+        else: 
+            state = "disabled"
+            pllot.configure(state=state)
+            cclot.configure(state=state)
+            mclot.configure(state=state)
+            ocsettings0.configure(state=state, troughcolor='grey')
+            ocsettings1.configure(state=state)
+            ocsettings2.configure(state=state)
+            ocsettings3.configure(state=state, troughcolor='grey')
+            ocsettings4.configure(state=state)
+            ocsettings5.configure(state=state, troughcolor='grey')
+        
     else:
         settings.deiconify()
         settings.focus()
@@ -1126,12 +1238,14 @@ savedsettings = {
     "autostarttimer": 600,
     "oc": False,
     "pl": 100,
+    "fanbool": False,
     "fan": 70,
     "fan:t": 62,
     "fan:tonoff": False,
     "core": 0,
     "mem": 0,
     "intensity": 22,
+    "updatetime": 10,
 }
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:

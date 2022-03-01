@@ -50,6 +50,8 @@
     "Custom fan speed": "",
     "Fixed fan speed": "",
     "Temp bound fan speed": "",
+    "Target fan speed in RPM": "",
+    "Target temperature in C": "",
     "Hashrate update frequency": "",
     "Open miner logs": "",
     "RESET EVERYTHING": ""

@@ -49,6 +49,8 @@
     "Custom fan speed": "Benutzerdefinierte L\u00FCfter Geschwindigkeit",
     "Fixed fan speed": "Feste L\u00FCfter Geschwindigkeit",
     "Temp bound fan speed": "Temperatur bezogene L\u00FCfter Geschwindigkeit",
+    "Target fan speed in RPM": "Ziel Geschwindigkeit",
+    "Target temperature in C": "Ziel Temperatur in C",
     "Hashrate update frequency": "Hashrate Aktualisierungsrate",
     "Open miner logs": "Miner Protokolle \u00F6ffnen.",
     "RESET EVERYTHING": "ALLES ZUR\u00DCCKSETZEN"
