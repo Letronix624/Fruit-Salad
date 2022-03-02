@@ -95,21 +95,20 @@ def mainwindow():
     root.wm_attributes("-transparentcolor", '#010110')
     #Stats
     tkinter.Label(root, text=f'{hashrate} mh/s', bg='#303136', fg="white", font=fontextremelybig).place(x=425, y=480, width=350, height=70)
-    if gpus != []:
-        tkinter.Label(root, text=f"{language['GPU:']} {gpus[0]}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=30, width=400, height=50)
-        shift = 0
-    else:
-        shift = -50
+    shift = 0
+    for gpu in gpus:
+        tkinter.Label(root, text=f"{language['GPU:'][:-1]+str(gpus.index(gpu))}: {gpu}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=30+shift, width=400, height=50)
+        shift = shift + 50
     globalminer = tkinter.Label(root, text=f"{language['Miner:']} {savedsettings['miner']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
-    globalminer.place(x=0, y=80+shift, width=400, height=50)
+    globalminer.place(x=0, y=30+shift, width=400, height=50)
     globalalgo = tkinter.Label(root, text=f"{language['Algo:']} {savedsettings['algo']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
-    globalalgo.place(x=0, y=130+shift, width=400, height=50)
+    globalalgo.place(x=0, y=80+shift, width=400, height=50)
     globalpool = tkinter.Label(root, text=f"{language['Pool:']} {savedsettings['pool']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
-    globalpool.place(x=0, y=180+shift, width=400, height=50)
+    globalpool.place(x=0, y=130+shift, width=400, height=50)
     globalworker = tkinter.Label(root, text=f"{language['Worker:']} {savedsettings['worker']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
-    globalworker.place(x=0, y=230+shift, width=400, height=50)
+    globalworker.place(x=0, y=180+shift, width=400, height=50)
     globalregion = tkinter.Label(root, text=f"{language['Region:']} {savedsettings['region']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
-    globalregion.place(x=0, y=280+shift, width=400, height=50)
+    globalregion.place(x=0, y=230+shift, width=400, height=50)
     #middle
     tkinter.Canvas(root, bg="#2D2C36", highlightthickness=0).place(x=375,y=30,width=50,height=520)#temptemptemptemp
     tempdisplaycomponents = [
@@ -943,7 +942,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         ocsettings5 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedtempboundfan, from_=0, to=90, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
         ocsettings5.place(x=5, y=275, width=240)
         tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selectedhashrateupdatetime, from_=5, to=60, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=345, width=240)
-
+        tkinter.Button(advancedsettingsframe, text=language['Open miner logs'], command=lambda:os.startfile(pydir+"\\logs.txt")).place(x=5, y=390)
 
 
 
