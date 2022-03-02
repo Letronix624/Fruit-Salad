@@ -192,13 +192,16 @@ def preset(thething):
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Etchash"
             savedsettings["pool"] = "Nicehash"
-            savedsettings["oc"] = False
+            savedsettings["oc"] = True
+            savedsettings["core"] = -400
+            savedsettings["mem"] = 550
+            savedsettings["pl"] = 70
         case "GTX 1050 TI":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Etchash"
             savedsettings["pool"] = "Nicehash"
             savedsettings["oc"] = True
-            savedsettings["core"] = 0
+            savedsettings["core"] = -400
             savedsettings["mem"] = 700
             savedsettings["pl"] = 70
         case "GTX 1060 3GB":
@@ -430,7 +433,7 @@ def aboutus():#about us page
         tkinter.Label(about, text="Fruit Salad,", font=fontbig, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=0)
         tkinter.Label(about, text=language["a Salad mining tool."], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=10, y=30)
         tkinter.Label(about, text=language["Made by Let Software"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=60)
-        tkinter.Label(about, text=language["with help by Mezo#0001 from MezoMGMT"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=100)
+        tkinter.Label(about, text=language["with help by Mezo#0001 from Mezo Management"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=100)
         tkinter.Button(about, text="seflon.ddns.net", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(1)).place(x=450, y=60)
         tkinter.Label(about, text="Let Software:", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y= 140)
         tkinter.Label(about, text="Letronix624#9040 (Let)", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 160)
