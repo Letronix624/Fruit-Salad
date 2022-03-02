@@ -174,7 +174,7 @@ def mainwindow():
 
 
     root.title("Fruit Salad")
-    root.iconbitmap(f'{pydir}\\3060.ico')
+    root.iconbitmap(f'{pydir}\\FuitSalad.ico')
     root.geometry("800x600")
     root.resizable(False, False)
     
@@ -424,7 +424,7 @@ def aboutus():#about us page
         about.title(language["About us"])
         about.geometry("600x400")
         about.resizable(False, False)
-        about.iconbitmap(f'{pydir}\\3060.ico')
+        about.iconbitmap(f'{pydir}\\FuitSalad.ico')
         about.configure(bg='#303136')
         #About looks
         tkinter.Label(about, text="Fruit Salad,", font=fontbig, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=0)
@@ -752,7 +752,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         settings.title(language["Settings"])
         settings.geometry("800x600")
         settings.resizable(False, False)
-        settings.iconbitmap(f'{pydir}\\3060.ico')
+        settings.iconbitmap(f'{pydir}\\FuitSalad.ico')
         settings.protocol("WM_DELETE_WINDOW", close)
         settings.bind("<Return>", lambda event:settingchange())
         #nice cock ----- Layout ----- settings layout. Mining settings, app settings, advanced settings, SECRET SETTINGS\\\\\ CIGARO CIGARO CIGAR
@@ -1172,7 +1172,7 @@ def temperaturebar():
         if quitter:
             break
     print("tempbar closed")
-icon = Image.open(f"{pydir}\\3060.ico")
+icon = Image.open(f"{pydir}\\FuitSalad.ico")
 tempcolors = [
         (0, 234, 255), #0
         (0, 234, 255), #40
