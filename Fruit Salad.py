@@ -188,9 +188,14 @@ def mainwindow():
 def rgb_to_hex(rgb): return '#%02x%02x%02x' % rgb
 def preset(thething):
     match thething:
+        case "Tesla K80":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "KawPow"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
         case "GTX 1050":
             savedsettings['miner'] = "T-Rex Miner"
-            savedsettings['algo'] = "Etchash"
+            savedsettings['algo'] = "KawPow"
             savedsettings["pool"] = "Nicehash"
             savedsettings["oc"] = True
             savedsettings["core"] = -400
@@ -198,7 +203,7 @@ def preset(thething):
             savedsettings["pl"] = 70
         case "GTX 1050 TI":
             savedsettings['miner'] = "T-Rex Miner"
-            savedsettings['algo'] = "Etchash"
+            savedsettings['algo'] = "KawPow"
             savedsettings["pool"] = "Nicehash"
             savedsettings["oc"] = True
             savedsettings["core"] = -400
@@ -348,6 +353,11 @@ def preset(thething):
             savedsettings["core"] = 196
             savedsettings["mem"] = 1186
             savedsettings["pl"] = 60
+        case "Tesla P100-PCIE-16GB":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
         case "RTX 3050":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
@@ -409,6 +419,16 @@ def preset(thething):
             savedsettings["core"] = -200
             savedsettings["mem"] = 1500
             savedsettings["pl"] = 90
+        case "Tesla T4":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
+        case "A100-SMX4-40GB":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
 def aboutus():#about us page
     global about
     global aboutopen
@@ -1187,6 +1207,7 @@ tempcolors = [
 a = ""
 quitter = False
 supportedgpus = [
+    "Tesla K80",
     "GTX 1050",
     "GTX 1050 Ti",
     "GTX 1060 3GB",
@@ -1214,7 +1235,10 @@ supportedgpus = [
     "RTX 3070 Ti",
     "RTX 3080",
     "RTX 3080 TI",
-    "RTX 3090",    
+    "RTX 3090",  
+    "Tesla T4",
+    "A100-SMX4-40GB",
+    "Tesla P100-PCIE-16GB",
 ]
 supportedlanguages = [
     "English",
@@ -1224,12 +1248,12 @@ supportedminers = [
     "T-Rex Miner",
 ]
 mineralgos = {
-    "T-Rex Miner": ["Ethash", "Etchash", "kawpow", "Autolykos2", "Octopus"],
+    "T-Rex Miner": ["Ethash", "Etchash", "KawPow", "Autolykos2", "Octopus"],
 }
 minerpools = {
     "Ethash": ["Nicehash", "Ethermine", "Prohashing"],
     "Etchash": ["Ethermine", "Prohashing"],
-    "kawpow": ["Nicehash", "Prohashing"],
+    "KawPow": ["Nicehash", "Prohashing"],
     "Autolykos2": ["Nicehash"],
     "Octopus": ["Nicehash"],
 }
