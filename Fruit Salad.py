@@ -7,8 +7,6 @@ except:
     win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
 from tkinter import ttk
 from pypresence import Presence
-
-import time
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
 pydir = os.path.dirname(os.path.realpath(__file__))
@@ -774,9 +772,14 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         presetshitfters[2].configure(state="disabled")
         enableaccept(1)
         givenstarttime.place(x=210, y=100 + presetshift, width=35, height=24)
+    def reset():
+        PSYCHO_GROUPY_COCAIN_CRAZY = tkinter.messagebox.askokcancel(message=language["Are you sure you want to reset your settings?"], title="PSYCHO GROUPY COCAIN CRAZY", )
+        if PSYCHO_GROUPY_COCAIN_CRAZY:
+            os.remove(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json")
+            restart()
     if not settingsopen:
         settingsopen = True
-        settings = tkinter.Toplevel(bg=defaultbg)
+        settings = tkinter.Toplevel(bg=defaultbg)#PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY
         settings.title(language["Settings"])
         settings.geometry("800x600")
         settings.resizable(False, False)
@@ -816,12 +819,12 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages, command=enableaccept)
         hhhh.place(x=5, y=13, width=100, height=24)
         hhhh.configure(highlightthickness=0)
-        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Language. When applying program will restart."], anchor=tkinter.W).place(x=150, y=10, width=800, height=20)
-        tempcheckbutton = tkinter.Checkbutton(appsettingsframe, text=language["Temperature Bar"], onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg="#46464A", variable=selectedtempbar, activebackground=defaultbg, fg="black")
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Language. When applying program will restart."], anchor=tkinter.W).place(x=110, y=15, width=800, height=20)
+        tempcheckbutton = tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedtempbar, activebackground=defaultbg, fg="black")
         tempcheckbutton.place(x=5, y=45)
         if gpus == []:
             tempcheckbutton.configure(state="disabled")
-        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["When checked the temperature bar is visible."], anchor=tkinter.W).place(x=150, y=45, width=800, height=20)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Temperature Bar']} | {language['When checked the temperature bar is visible.']}", anchor=tkinter.W).place(x=40, y=47, width=800, height=20)
         tkinter.Button(appsettingsframe, bg="red", text=language["RESET EVERYTHING"], command=reset).place(x=5, y=80, height=20)
 
         #Mining Settings
@@ -966,7 +969,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         ocsettings3 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedfixedfan, from_=0, to=100, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
         ocsettings3.place(x=5, y=215, width=240)
         ocsettings4 = tkinter.Radiobutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, state=ocstate, variable=selectedtempboundfanonoff, value=True, command=lambda:enableaccept(''))
-        ocsettings4.place(x=5, y=255)
+        ocsettings4.place(x=5, y=257)
         ocsettings5 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedtempboundfan, from_=0, to=90, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
         ocsettings5.place(x=5, y=275, width=240)
         tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selectedhashrateupdatetime, from_=5, to=60, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=345, width=240)
@@ -1120,9 +1123,6 @@ def byebye(): #quit quit quit quit
     traymenu.visible = False
     traymenu.stop()
     os._exit(0)
-def reset():
-    os.remove(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json")
-    restart()
 def restart():
     os.startfile(sys.executable)
     traymenu.visible = False
@@ -1293,16 +1293,14 @@ def miner():
             session.send_signal(signal.CTRL_BREAK_EVENT)
             session.wait()
             hashratemonitor.configure(text='0 mh/s')
-def presence():
-    client_id = "948739944908738700" 
-    RPC = Presence(client_id=client_id)
-    RPC.connect()
-    RPC.update(buttons=[{"label":"Test RPC", "url":"https://discord.gg/salad"}])
-    while 1:
-        time.sleep(15)
-#=======
+def presence(command):
+    if command == "connect":
+        rpc.connect()
+        rpc.update(buttons=[{"label":"Test RPC", "url":"https://discord.gg/salad"}])
+    if command == "disconnect":
+        rpc.close()
+rpc = Presence(client_id="948739944908738700")
 icon = Image.open(f"{pydir}\\FuitSalad.ico")
-#>>>>>>> 74247baf046dbf523759d5b526d9b613f7ffce60
 tempcolors = [
         (0, 234, 255), #0
         (0, 234, 255), #40
@@ -1461,7 +1459,7 @@ if __name__ == "__main__":
         time.sleep(0.1)
         os.remove(f'{pydir}\\lang.vbs')
         savedsettings["freshlang"] = False
-        savesettings()    
+        savesettings()
 '''
 -CUSTOM TITLEBAR MOTION
     def get_pos(e):

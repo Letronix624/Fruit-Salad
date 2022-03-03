@@ -53,5 +53,11 @@
     "Target temperature in C": "Ziel Temperatur in C",
     "Hashrate update frequency in seconds": "Hashrate Aktualisierungsrate pro sekunde",
     "Open miner logs": "Miner Protokolle \u00F6ffnen.",
-    "RESET EVERYTHING": "ALLES ZUR\u00DCCKSETZEN"
+    "Discord Presence | Show what you are mining and how long you mined for.": "Discord Presenz | Zeig was und wie lange du minest.",
+    "Start with OS | Starts Fruit Salad on startup.": "Mit OS starten | Startet Fruit Salad beim hochfahren.",
+    "Save settings profile": "Einstellungsprofil speichern",
+    "Load settings profile": "Einstellungsprofil laden",
+    "Start in tray | Minimizes the program on start.": "Im hintergrund starten | Verkleinert das program bei start.",
+    "RESET EVERYTHING": "ALLES ZUR\u00DCCKSETZEN",
+    "Are you sure you want to reset your settings?": "Bist du dir sicher, dass du alle Einstellungen zur\u00FCcksetzen willst?"
 }

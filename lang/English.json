@@ -53,5 +53,11 @@
     "Target temperature in C": "Target temperature in C",
     "Hashrate update frequency in seconds": "Hashrate update frequency in seconds",
     "Open miner logs": "Open miner logs",
-    "RESET EVERYTHING": "RESET EVERYTHING"
+    "Discord Presence | Show what you are mining and how long you mined for.": "Discord Presence | Show what you are mining and how long you mined for.",
+    "Start with OS | Starts Fruit Salad on startup.": "Start with OS | Starts Fruit Salad on startup.",
+    "Save settings profile": "Save settings profile",
+    "Load settings profile": "Load settings profile",
+    "Start in tray | Minimizes the program on start.": "Start in tray | Minimizes the program on start.",
+    "RESET EVERYTHING": "RESET EVERYTHING",
+    "Are you sure you want to reset your settings?": "Are you sure you want to reset your settings?"
 }
