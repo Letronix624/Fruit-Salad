@@ -353,7 +353,12 @@ def preset(thething):
             savedsettings["core"] = 196
             savedsettings["mem"] = 1186
             savedsettings["pl"] = 60
-        case "Tesla P100-PCIE-16GB":
+        case "Tesla P100":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
+        case "Tesla V100":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
@@ -424,7 +429,7 @@ def preset(thething):
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
             savedsettings["oc"] = False
-        case "A100-SMX4-40GB":
+        case "A100 SXM4":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
@@ -1237,8 +1242,9 @@ supportedgpus = [
     "RTX 3080 TI",
     "RTX 3090",  
     "Tesla T4",
-    "A100-SMX4-40GB",
-    "Tesla P100-PCIE-16GB",
+    "A100 SXM4",
+    "Tesla P100",
+    "Tesla V100",
 ]
 supportedlanguages = [
     "English",
