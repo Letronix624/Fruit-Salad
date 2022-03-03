@@ -184,7 +184,7 @@ def preset(thething):
     match thething:
         case "Tesla K80":
             savedsettings['miner'] = "T-Rex Miner"
-            savedsettings['algo'] = "Kawpow"
+            savedsettings['algo'] = "KawPow"
             savedsettings["pool"] = "Nicehash"
 #>>>>>>> 74247baf046dbf523759d5b526d9b613f7ffce60
             savedsettings["oc"] = False
@@ -198,7 +198,7 @@ def preset(thething):
             savedsettings["pl"] = 70
         case "GTX 1050 TI":
             savedsettings['miner'] = "T-Rex Miner"
-            savedsettings['algo'] = "Kawpow"
+            savedsettings['algo'] = "KawPow"
             savedsettings["pool"] = "Nicehash"
 #>>>>>>> 74247baf046dbf523759d5b526d9b613f7ffce60
             savedsettings["oc"] = True
@@ -255,7 +255,7 @@ def preset(thething):
             savedsettings["pl"] = 90
         case "GTX 1650":
             savedsettings['miner'] = "T-Rex Miner"
-            savedsettings['algo'] = "kawpow"
+            savedsettings['algo'] = "kawPow"
             savedsettings["pool"] = "Nicehash"
             savedsettings["oc"] = True
             savedsettings["core"] = 150
@@ -263,7 +263,7 @@ def preset(thething):
             savedsettings["pl"] = 100
         case "GTX 1650 SUPER":
             savedsettings['miner'] = "T-Rex Miner"
-            savedsettings['algo'] = "kawpow"
+            savedsettings['algo'] = "kawPow"
             savedsettings["pool"] = "Nicehash"
             savedsettings["oc"] = True
             savedsettings["core"] = 200
@@ -1231,8 +1231,8 @@ def miner():
                 else:wallet = savedsettings["wallet"]
                 if savedsettings["algo"] == "Ethash":
                     stratum = f"stratum+tcp://daggerhashimoto.{savedsettings['region']}.nicehash.com:3353"
-                elif savedsettings['algo'] == "Kawpow":
-                    stratum = f"stratum+tcp://kawpow.{savedsettings['region']}.nicehash.com:3385"
+                elif savedsettings['algo'] == "KawPow":
+                    stratum = f"stratum+tcp://kawPow.{savedsettings['region']}.nicehash.com:3385"
                 elif savedsettings['algo'] == "Autolykos2":
                     stratum = f"stratum+tcp://autolykos.{savedsettings['region']}.nicehash.com:3390"
                 elif savedsettings["algo"] == "Octopus":
@@ -1255,7 +1255,7 @@ def miner():
                     stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3339"
                 elif savedsettings["algo"] == "Etchash":
                     stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3357"
-                elif savedsettings["algo"] == "Kawpow":
+                elif savedsettings["algo"] == "KawPow":
                     stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3361"
                 user = f"-u {wallet}"
                 worker = ""
@@ -1296,6 +1296,8 @@ def presence():
     RPC = Presence(client_id=client_id)
     RPC.connect()
     RPC.update(buttons=[{"label":"Test RPC", "url":"https://discord.gg/salad"}])
+    while 1:
+        time.sleep(15)
 #=======
 icon = Image.open(f"{pydir}\\FuitSalad.ico")
 #>>>>>>> 74247baf046dbf523759d5b526d9b613f7ffce60
@@ -1457,12 +1459,7 @@ if __name__ == "__main__":
         time.sleep(0.1)
         os.remove(f'{pydir}\\lang.vbs')
         savedsettings["freshlang"] = False
-        savesettings()
-
-
-while 1:
-    time.sleep(15)
-    
+        savesettings()    
 '''
 -CUSTOM TITLEBAR MOTION
     def get_pos(e):
