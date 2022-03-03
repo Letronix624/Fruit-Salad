@@ -1,6 +1,8 @@
 version = "0.0.0"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile
 from tkinter import ttk
+from pypresence import Presence
+import time
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
 pydir = os.path.dirname(os.path.realpath(__file__))
@@ -1358,6 +1360,17 @@ if __name__ == "__main__":
         os.remove(f'{pydir}\\lang.vbs')
         savedsettings["freshlang"] = False
         savesettings()
+
+def presence:
+
+client_id = "948739944908738700" 
+
+RPC - Presence(client_id-client_id)
+RPC.connect()
+RPC.update(buttons-[{"label":"Test RPC", "url":"https://discord.gg/salad"}])
+while 1:
+    time.sleep(15)
+    
 '''
 -CUSTOM TITLEBAR MOTION
     def get_pos(e):
