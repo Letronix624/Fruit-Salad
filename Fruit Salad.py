@@ -1,10 +1,14 @@
 version = "0.0.0"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con
 try:
-    if not "-console" in sys.argv[1]:
+    if not ".py" in sys.argv[0]:
         win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
-except:win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
+except:
+    win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
 from tkinter import ttk
+from pypresence import Presence
+
+import time
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
 pydir = os.path.dirname(os.path.realpath(__file__))
@@ -16,7 +20,7 @@ except:#error message
     os._exit(0)
 try: #to get the name of the gpu
     gpunamerslkefjeslafjlska = subprocess.Popen(f"{os.environ['WINDIR']}\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
-    gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[15:].replace("\r", "").split("\n")[:-1]
+    gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[6:].replace("\r", "").replace(" GeForce ", "").split("\n")[:-1]
 except: #no gpu
     gpus = []
 del gpunamerslkefjeslafjlska
@@ -164,7 +168,7 @@ def mainwindow():
     miningtext.place(y=550, x=800, width=400, height=50)
 
     root.title("Fruit Salad")
-    root.iconbitmap(f'{pydir}\\3060.ico')
+    root.iconbitmap(f'{pydir}\\FuitSalad.ico')
     root.geometry("800x600")
     root.resizable(False, False)
     
@@ -178,17 +182,27 @@ def mainwindow():
 def rgb_to_hex(rgb): return '#%02x%02x%02x' % rgb
 def preset(thething):
     match thething:
+        case "Tesla K80":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Kawpow"
+            savedsettings["pool"] = "Nicehash"
+#>>>>>>> 74247baf046dbf523759d5b526d9b613f7ffce60
+            savedsettings["oc"] = False
         case "GTX 1050":
             savedsettings['miner'] = "T-Rex Miner"
-            savedsettings['algo'] = "Etchash"
-            savedsettings["pool"] = "Ethermine"
-            savedsettings["oc"] = False
+            savedsettings['algo'] = "KawPow"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = True
+            savedsettings["core"] = -400
+            savedsettings["mem"] = 550
+            savedsettings["pl"] = 70
         case "GTX 1050 TI":
             savedsettings['miner'] = "T-Rex Miner"
-            savedsettings['algo'] = "Etchash"
-            savedsettings["pool"] = "Ethermine"
+            savedsettings['algo'] = "Kawpow"
+            savedsettings["pool"] = "Nicehash"
+#>>>>>>> 74247baf046dbf523759d5b526d9b613f7ffce60
             savedsettings["oc"] = True
-            savedsettings["core"] = 0
+            savedsettings["core"] = -400
             savedsettings["mem"] = 700
             savedsettings["pl"] = 70
         case "GTX 1060 3GB":
@@ -335,6 +349,16 @@ def preset(thething):
             savedsettings["core"] = 196
             savedsettings["mem"] = 1186
             savedsettings["pl"] = 60
+        case "Tesla P100":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
+        case "Tesla V100":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
         case "RTX 3050":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
@@ -396,6 +420,16 @@ def preset(thething):
             savedsettings["core"] = -200
             savedsettings["mem"] = 1500
             savedsettings["pl"] = 90
+        case "Tesla T4":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
+        case "A100 SXM4":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "Ethash"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
 def aboutus():#about us page
     global about
     global aboutopen
@@ -414,18 +448,18 @@ def aboutus():#about us page
         about.title(language["About us"])
         about.geometry("600x400")
         about.resizable(False, False)
-        about.iconbitmap(f'{pydir}\\3060.ico')
+        about.iconbitmap(f'{pydir}\\FuitSalad.ico')
         about.configure(bg='#303136')
         #About looks
         tkinter.Label(about, text="Fruit Salad,", font=fontbig, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=0)
         tkinter.Label(about, text=language["a Salad mining tool."], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=10, y=30)
         tkinter.Label(about, text=language["Made by Let Software"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=60)
-        tkinter.Label(about, text=language["with help by Mezo#0001 from MezoMGMT"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=100)
+        tkinter.Label(about, text=language["with help by Mezo#0001 from Mezo Management"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=100)
         tkinter.Button(about, text="seflon.ddns.net", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(1)).place(x=450, y=60)
         tkinter.Label(about, text="Let Software:", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y= 140)
         tkinter.Label(about, text="Letronix624#9040 (Let)", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 160)
         tkinter.Label(about, text="Nilsipilzi#9733 (brot)", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 180)
-        tkinter.Button(about, text="mezomgmt.com", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(2)).place(x=450, y=100)
+        tkinter.Button(about, text="mezomgmt.com/fruitsalad", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(2)).place(x=450, y=100)
         about.protocol("WM_DELETE_WINDOW", close)
     else:
         about.deiconify()
@@ -746,7 +780,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         settings.title(language["Settings"])
         settings.geometry("800x600")
         settings.resizable(False, False)
-        settings.iconbitmap(f'{pydir}\\3060.ico')
+        settings.iconbitmap(f'{pydir}\\FuitSalad.ico')
         settings.protocol("WM_DELETE_WINDOW", close)
         settings.bind("<Return>", lambda event:settingchange())
         #nice cock ----- Layout ----- settings layout. Mining settings, app settings, advanced settings, SECRET SETTINGS\\\\\ CIGARO CIGARO CIGAR
@@ -1183,6 +1217,7 @@ def temperaturebar():
         if quitter:
             break
     print("tempbar closed")
+#<<<<<<< HEAD
 def miner():
     global savedsettings, hashrate, mining, hashratemonitor
     while 1:
@@ -1256,7 +1291,14 @@ def miner():
             session.send_signal(signal.CTRL_BREAK_EVENT)
             session.wait()
             hashratemonitor.configure(text='0 mh/s')
-icon = Image.open(f"{pydir}\\3060.ico")
+def presence():
+    client_id = "948739944908738700" 
+    RPC = Presence(client_id=client_id)
+    RPC.connect()
+    RPC.update(buttons=[{"label":"Test RPC", "url":"https://discord.gg/salad"}])
+#=======
+icon = Image.open(f"{pydir}\\FuitSalad.ico")
+#>>>>>>> 74247baf046dbf523759d5b526d9b613f7ffce60
 tempcolors = [
         (0, 234, 255), #0
         (0, 234, 255), #40
@@ -1268,6 +1310,7 @@ tempcolors = [
 a = ""
 quitter = False
 supportedgpus = [
+    "Tesla K80",
     "GTX 1050",
     "GTX 1050 Ti",
     "GTX 1060 3GB",
@@ -1295,7 +1338,11 @@ supportedgpus = [
     "RTX 3070 Ti",
     "RTX 3080",
     "RTX 3080 TI",
-    "RTX 3090",    
+    "RTX 3090",  
+    "Tesla T4",
+    "A100 SXM4",
+    "Tesla P100",
+    "Tesla V100",
 ]
 supportedlanguages = [
     "English",
@@ -1305,12 +1352,12 @@ supportedminers = [
     "T-Rex Miner",
 ]
 mineralgos = {
-    "T-Rex Miner": ["Ethash", "Etchash", "kawpow", "Autolykos2", "Octopus"],
+    "T-Rex Miner": ["Ethash", "Etchash", "KawPow", "Autolykos2", "Octopus"],
 }
 minerpools = {
     "Ethash": ["Nicehash", "Ethermine", "Prohashing"],
     "Etchash": ["Ethermine", "Prohashing"],
-    "kawpow": ["Nicehash", "Prohashing"],
+    "KawPow": ["Nicehash", "Prohashing"],
     "Autolykos2": ["Nicehash"],
     "Octopus": ["Nicehash"],
 }
@@ -1411,6 +1458,11 @@ if __name__ == "__main__":
         os.remove(f'{pydir}\\lang.vbs')
         savedsettings["freshlang"] = False
         savesettings()
+
+
+while 1:
+    time.sleep(15)
+    
 '''
 -CUSTOM TITLEBAR MOTION
     def get_pos(e):
