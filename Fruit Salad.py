@@ -1,4 +1,4 @@
-version = "0.0.0"
+version = "0.0.2"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con
 try:
     if not ".py" in sys.argv[0]:
@@ -1249,15 +1249,17 @@ def miner():
                 user = f"-u {wallet}.{savedsettings['worker']}"
                 worker = f"-w {savedsettings['worker']}"
             elif savedsettings['pool'] == "Prohashing":
-                if savedsettings['saladmining']:wallet = "0x6ff85749ffac2d3a36efa2bc916305433fa93731"
-                else:wallet = "salad"
+                if not savedsettings['saladmining']:
+                    wallet = savedsettings["wallet"]
+                else:
+                    user = "-u salad"
+                    wallet = ""
                 if savedsettings["algo"] == "Ethash":
                     stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3339"
                 elif savedsettings["algo"] == "Etchash":
                     stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3357"
                 elif savedsettings["algo"] == "KawPow":
                     stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3361"
-                user = f"-u {wallet}"
                 worker = ""
                 p = f"-p {savedsettings['prohashingpass']}"
             pl = 100
@@ -1276,18 +1278,18 @@ def miner():
                 mc = savedsettings["mem"]
             if savedsettings["miner"] == "T-Rex Miner":
                 session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan}", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
-            sefjeslkf = False
+            hashratemonitor.configure(text='Prepping')
             while mining:
                 output = session.stdout.readline().decode("utf-8").replace('\n', "")
+                if "generating DAG" in output:
+                    hashratemonitor.configure(text='Generating DAG', font=fontbig)
+                if "DAG generated" in output:
+                    hashratemonitor.configure(text='Waiting for hashrate')
                 if "MH/s," in output:
                     hashrate = output.split()[output.split().index('MH/s,') - 1]
-                    sefjeslkf = True
-                if sefjeslkf:
-                    hashratemonitor.configure(text=f'{hashrate} mh/s')
-                else:
-                    hashratemonitor.configure(text='Prepping')
+                    hashratemonitor.configure(text=f'{hashrate} mh/s', font=fontextremelybig)
                 print(output)
-            hashratemonitor.configure(text='Stopping')
+            hashratemonitor.configure(text='Stopping', font=fontextremelybig)
             session.send_signal(signal.CTRL_BREAK_EVENT)
             session.wait()
             hashratemonitor.configure(text='0 mh/s')
@@ -1423,13 +1425,13 @@ except Exception as e:
         os.makedirs(f"{os.environ['APPDATA']}\\fruitsalad")
     except:
         pass
-    preset(savedsettings['preset'])
     if gpus == []: savedsettings["tempbar"] = False
     else: 
         savedsettings["tempbar"] = True
         if gpus[0] in supportedgpus:
             savedsettings["presetonoff"] = True
             savedsettings["preset"] = gpus[0]
+            preset(savedsettings['preset'])
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
         settings.write(json.dumps(savedsettings))
     with zipfile.ZipFile(f'{pydir}\\data\\.lang') as langpack:
