@@ -1,5 +1,9 @@
 version = "0.0.0"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con
+try:
+    if not "-console" in sys.argv[1]:
+        win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
+except:win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
 from tkinter import ttk
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
@@ -38,22 +42,7 @@ def hex_to_string(hex):
     string_value = bytes.fromhex(hex).decode('utf-8')
     return string_value
 def mainwindow():
-    global tempnum
-    global startbuttonanimation
-    global tempbar
-    global root
-    global windowvisible
-    global startbutton
-    global globalworker
-    global globalminer
-    global globalalgo
-    global globalpool
-    global globalregion
-    global s
-    global fontregular
-    global fontbig
-    global fontextremelybig
-    global tempdisplaycomponents
+    global hashratemonitor, tempnum, startbuttonanimation, tempbar, root, windowvisible, startbutton, globalworker, globalminer, globalalgo, globalpool, globalregion, hashrate, fontregular, fontbig, fontextremelybig, tempdisplaycomponents, miningtext
     windowvisible = True
     traymenu.update_menu()
     root = tkinter.Tk()
@@ -94,7 +83,8 @@ def mainwindow():
         ]
     root.wm_attributes("-transparentcolor", '#010110')
     #Stats
-    tkinter.Label(root, text=f'{hashrate} mh/s', bg='#303136', fg="white", font=fontextremelybig).place(x=425, y=480, width=350, height=70)
+    hashratemonitor = tkinter.Label(root, text=f'{hashrate} mh/s', bg='#303136', fg="white", font=fontextremelybig)
+    hashratemonitor.place(x=425, y=480, width=350, height=70)
     shift = 0
     for gpu in gpus:
         tkinter.Label(root, text=f"{language['GPU:'][:-1]+str(gpus.index(gpu))}: {gpu}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=30+shift, width=400, height=50)
@@ -159,11 +149,8 @@ def mainwindow():
     tempnum = tkinter.Label(root, bg="red", fg="white", font=fontregular)
     #bottom
     tkinter.Canvas(root, bg="#0A2133", highlightthickness=0).place(x=0, y=550 ,width=375, height=50)
-    s = threading.Thread(target=startminer)
-    startbutton = tkinter.Button(root,fg="white",bg="#0A2133", border=0, font=fontregular, command=lambda: s.start(), image=startbuttonanimation[1], activebackground="#0A2133")
+    startbutton = tkinter.Label(root,fg="white",bg="#0A2133", font=fontregular, image=startbuttonanimation[9])
     startbutton.place(x=375,y=550,width=425,height=50)
-    tkinter.Button(root,fg="white", text=language['Auto start'],bg="red", border=2, font=fontregular).place(x=430,y=35,width=182,height=50)
-    tkinter.Button(root,fg="white", text=language['Auto start'],bg="red", border=2, font=fontregular).place(x=615,y=35,width=182,height=50)
     #top
     tkinter.Canvas(root, bg="#222129", highlightthickness=0).place(x=0,y=0,width=800,height=30)
     tkinter.Button(root, text=language['Settings'], bg='#222129', fg="white", border=1, font=fontregular, command=opensettings).place(x=0, y=0, width=188, height=30)
@@ -171,7 +158,10 @@ def mainwindow():
     if savedsettings['tempbar']:
         tempdisplaycomponents[20].place(x=200, y=0, width=400, height=30)
     tkinter.Button(root, text=language['About us'], bg='#222129', fg="white", border=1, font=fontregular, command=aboutus).place(x=612, y=0, width=188, height=30)
-
+    #miningarea
+    tkinter.Button(root, text="cool round button with start\n on it and nice animation", font=fontregular, command=startminer).place(y=280, height=40, width=200, x=512)
+    miningtext = tkinter.Label(root, text='Mining', font=fontbig, anchor=tkinter.W, background="black", foreground="yellow")
+    miningtext.place(y=550, x=800, width=400, height=50)
 
     root.title("Fruit Salad")
     root.iconbitmap(f'{pydir}\\3060.ico')
@@ -191,12 +181,12 @@ def preset(thething):
         case "GTX 1050":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Etchash"
-            savedsettings["pool"] = "Nicehash"
+            savedsettings["pool"] = "Ethermine"
             savedsettings["oc"] = False
         case "GTX 1050 TI":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Etchash"
-            savedsettings["pool"] = "Nicehash"
+            savedsettings["pool"] = "Ethermine"
             savedsettings["oc"] = True
             savedsettings["core"] = 0
             savedsettings["mem"] = 700
@@ -708,6 +698,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                     if 'worker ID:' in line:
                         savedsettings['worker'] = line[21:-1]
                         autofoundwalletusername = True
+                    if '-wal salad -pass' in line:
+                        savedsettings["prohashingpass"] = line.split()[line.split().index('-pass')+1]
             if not autofoundwalletusername:
                 try:
                     with open(f"{os.environ['appdata']}\\Salad\\logs\\main.old.log","r")as data:
@@ -715,6 +707,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                             if 'worker ID:' in line:
                                 savedsettings['worker'] = line[21:-1]
                                 autofoundwalletusername = True
+                        if '-wal salad -pass' in line:
+                            savedsettings["prohashingpass"] = line.split()[line.split().index('-pass')+1]
                 except:
                     pass
             if not autofoundwalletusername:
@@ -1012,53 +1006,70 @@ def windowclose():
     global windowvisible
     windowvisible = False
     root.withdraw()
+done = True
 def startminer():
-    global mining
-    global s
-    if mining:
-        mining = False
-        startbutton.configure(image=startbuttonanimation[8])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[7])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[6])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[5])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[4])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[3])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[2])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[1])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[0])
-        time.sleep(0.05)
-        del s
-        s = threading.Thread(target=startminer)
-    else:
-        mining = True
-        startbutton.configure(image=startbuttonanimation[1])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[2])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[3])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[4])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[5])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[6])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[7])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[8])
-        time.sleep(0.05)
-        startbutton.configure(image=startbuttonanimation[9])
-        time.sleep(0.05)
-        del s
-        s = threading.Thread(target=startminer)
+    def t():
+        global mining
+        global miningtext
+        global done
+        done = False
+        if mining:
+            mining = False
+            miningtext.place_configure(x=680)
+            startbutton.configure(image=startbuttonanimation[1])
+            time.sleep(0.05)
+            miningtext.place_configure(x=700)
+            startbutton.configure(image=startbuttonanimation[2])
+            time.sleep(0.05)
+            miningtext.place_configure(x=720)
+            startbutton.configure(image=startbuttonanimation[3])
+            time.sleep(0.05)
+            miningtext.place_configure(x=740)
+            startbutton.configure(image=startbuttonanimation[4])
+            time.sleep(0.05)
+            miningtext.place_configure(x=760)
+            startbutton.configure(image=startbuttonanimation[5])
+            time.sleep(0.05)
+            miningtext.place_configure(x=780)
+            startbutton.configure(image=startbuttonanimation[6])
+            time.sleep(0.05)
+            miningtext.place_configure(x=800)
+            startbutton.configure(image=startbuttonanimation[7])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[8])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[9])
+            time.sleep(0.05)
+        else:
+            mining = True
+            startbutton.configure(image=startbuttonanimation[8])
+            time.sleep(0.05)
+            startbutton.configure(image=startbuttonanimation[7])
+            time.sleep(0.05)
+            miningtext.place_configure(x=800)
+            startbutton.configure(image=startbuttonanimation[6])
+            time.sleep(0.05)
+            miningtext.place_configure(x=780)
+            startbutton.configure(image=startbuttonanimation[5])
+            time.sleep(0.05)
+            miningtext.place_configure(x=760)
+            startbutton.configure(image=startbuttonanimation[4])
+            time.sleep(0.05)
+            miningtext.place_configure(x=720)
+            startbutton.configure(image=startbuttonanimation[3])
+            time.sleep(0.05)
+            miningtext.place_configure(x=700)
+            startbutton.configure(image=startbuttonanimation[2])
+            time.sleep(0.05)
+            miningtext.place_configure(x=680)
+            startbutton.configure(image=startbuttonanimation[1])
+            time.sleep(0.05)
+            miningtext.place_configure(x=660)
+            startbutton.configure(image=startbuttonanimation[0])
+            time.sleep(0.05)
+        done=True
+    if done:
+        threading.Thread(target=t).start()
 def windowopen():
     global windowvisible
     if windowvisible:
@@ -1172,6 +1183,79 @@ def temperaturebar():
         if quitter:
             break
     print("tempbar closed")
+def miner():
+    global savedsettings, hashrate, mining, hashratemonitor
+    while 1:
+        time.sleep(1)
+        if mining:
+            algo = savedsettings["algo"]
+            user = ""
+            p = ""
+            if savedsettings["pool"] == 'Nicehash':
+                if savedsettings['saladmining']:wallet = "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi"
+                else:wallet = savedsettings["wallet"]
+                if savedsettings["algo"] == "Ethash":
+                    stratum = f"stratum+tcp://daggerhashimoto.{savedsettings['region']}.nicehash.com:3353"
+                elif savedsettings['algo'] == "Kawpow":
+                    stratum = f"stratum+tcp://kawpow.{savedsettings['region']}.nicehash.com:3385"
+                elif savedsettings['algo'] == "Autolykos2":
+                    stratum = f"stratum+tcp://autolykos.{savedsettings['region']}.nicehash.com:3390"
+                elif savedsettings["algo"] == "Octopus":
+                    stratum = f"stratum+tcp://octopus.{savedsettings['region']}.nicehash.com:3389"
+                user = f"-u {wallet}.{savedsettings['worker']}"
+                worker = f"-w {savedsettings['worker']}"
+            elif savedsettings['pool'] == "Ethermine":
+                if savedsettings['saladmining']:wallet = "0x6ff85749ffac2d3a36efa2bc916305433fa93731"
+                else:wallet = savedsettings["wallet"]
+                if savedsettings["algo"] == "Ethash":
+                    stratum = f"ethproxy+ssl://{savedsettings['region']}.ethermine.org:5555"
+                elif savedsettings["algo"] == "Etchash":
+                    stratum = f"ethproxy+ssl://{savedsettings['region']}-etc.ethermine.org:5555"
+                user = f"-u {wallet}.{savedsettings['worker']}"
+                worker = f"-w {savedsettings['worker']}"
+            elif savedsettings['pool'] == "Prohashing":
+                if savedsettings['saladmining']:wallet = "0x6ff85749ffac2d3a36efa2bc916305433fa93731"
+                else:wallet = "salad"
+                if savedsettings["algo"] == "Ethash":
+                    stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3339"
+                elif savedsettings["algo"] == "Etchash":
+                    stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3357"
+                elif savedsettings["algo"] == "Kawpow":
+                    stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3361"
+                user = f"-u {wallet}"
+                worker = ""
+                p = f"-p {savedsettings['prohashingpass']}"
+            pl = 100
+            cc = 0
+            mc = 0
+            fan = ""
+            if savedsettings["fanbool"]:
+                if savedsettings["fan:tonoff"]:
+                    fan = f"--fan t:{savedsettings['fan:t']}"
+                else:
+                    fan = f"--fan {savedsettings['fan']}"
+            print(fan)
+            if savedsettings['oc']:
+                pl = savedsettings["pl"]
+                cc = savedsettings["core"]
+                mc = savedsettings["mem"]
+            if savedsettings["miner"] == "T-Rex Miner":
+                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan}", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+            sefjeslkf = False
+            while mining:
+                output = session.stdout.readline().decode("utf-8").replace('\n', "")
+                if "MH/s," in output:
+                    hashrate = output.split()[output.split().index('MH/s,') - 1]
+                    sefjeslkf = True
+                if sefjeslkf:
+                    hashratemonitor.configure(text=f'{hashrate} mh/s')
+                else:
+                    hashratemonitor.configure(text='Prepping')
+                print(output)
+            hashratemonitor.configure(text='Stopping')
+            session.send_signal(signal.CTRL_BREAK_EVENT)
+            session.wait()
+            hashratemonitor.configure(text='0 mh/s')
 icon = Image.open(f"{pydir}\\3060.ico")
 tempcolors = [
         (0, 234, 255), #0
@@ -1233,7 +1317,7 @@ minerpools = {
 minerregions = {
     "Nicehash": ["eu-west", "eu-north", "usa-west", "usa-east"],
     "Ethermine": ["eu1", "us1", "asia1"],
-    "Prohashing": ["europe", "us"],
+    "Prohashing": ["eu", "us"],
 }
 
 fontregular = ("Calibri", 10)
@@ -1241,7 +1325,7 @@ fontbig = ("Calibri", 17)#                                                 fonts
 fontextremelybig = ("Calibri", 50, "bold")
 
 defaultbg = "#303136"
-hashrate = 0
+hashrate = "0"
 aboutopen = False
 settingsopen = False
 savedsettings = {
@@ -1251,6 +1335,7 @@ savedsettings = {
     'saladmining':True,
     'wallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi",
     'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731",
+    'prohashingpass': 'o=5b214562-877c-405a-b7a6-625608e6198f,n=5b214562-877c-405a-b7a6-625608e6198f',
     'miner': "T-Rex Miner",
     "algo": "Ethash",
     "pool": "Nicehash",
@@ -1310,7 +1395,8 @@ traymenu = pystray.Icon("Fruit Salad", icon, "Fruit Salad", traymenucontent)
 
 setupthreads = [
     threading.Thread(target=mainwindow),
-    threading.Thread(target=traymenu.run)
+    threading.Thread(target=traymenu.run),
+    threading.Thread(target=miner),
 ]
 if gpus != []:
     setupthreads.append(threading.Thread(target=temperaturebar))
