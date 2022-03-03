@@ -557,6 +557,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         savedsettings["updatetime"] = selectedhashrateupdatetime.get()
         savedsettings['fan'] = selectedfixedfan.get()
         savedsettings['oc'] = selectedoc.get()
+        savedsettings["dcpresence"] = selectedpresence.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -579,7 +580,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             savedsettings['miner'] = selectedminer.get()
             savedsettings['algo'] = selectedalgo.get()
             savedsettings["pool"] = selectedpool.get()
-
         savedsettings['region'] = selectedregion.get()
         currentlyeditingmanual = False
         editingwalleraddress = False
@@ -814,6 +814,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedtempbar =tkinter.BooleanVar()
         selectedtempbar.set(savedsettings['tempbar'])
         selectedminer = tkinter.StringVar()
+        selectedpresence = tkinter.BooleanVar()
+        selectedpresence.set(savedsettings["dcpresence"])
         
             #looks
         hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages, command=enableaccept)
@@ -822,10 +824,12 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Language. When applying program will restart."], anchor=tkinter.W).place(x=110, y=15, width=800, height=20)
         tempcheckbutton = tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedtempbar, activebackground=defaultbg, fg="black")
         tempcheckbutton.place(x=5, y=45)
+        tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedpresence, activebackground=defaultbg, fg="black").place(x=5, y=75)
         if gpus == []:
             tempcheckbutton.configure(state="disabled")
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Temperature Bar']} | {language['When checked the temperature bar is visible.']}", anchor=tkinter.W).place(x=40, y=47, width=800, height=20)
-        tkinter.Button(appsettingsframe, bg="red", text=language["RESET EVERYTHING"], command=reset).place(x=5, y=80, height=20)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Discord Presence | Show what you are mining and how long you mined for.']}", anchor=tkinter.W).place(x=40, y=77, width=800, height=20)
+        tkinter.Button(appsettingsframe, bg="red", text=language["RESET EVERYTHING"], command=reset).place(x=5, y=200, height=20)
 
         #Mining Settings
             #vars
@@ -1404,6 +1408,7 @@ savedsettings = {
     "mem": 0,
     "intensity": 22,
     "updatetime": 5,
+    "dcpresence": False,
 }
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
@@ -1441,7 +1446,7 @@ traymenucontent = (
     item('restart', restart, default=False),
 )
 traymenu = pystray.Icon("Fruit Salad", icon, "Fruit Salad", traymenucontent)
-
+kaboom = True
 setupthreads = [
     threading.Thread(target=mainwindow),
     threading.Thread(target=traymenu.run),
@@ -1460,6 +1465,14 @@ if __name__ == "__main__":
         os.remove(f'{pydir}\\lang.vbs')
         savedsettings["freshlang"] = False
         savesettings()
+    while 1:
+        time.sleep(1)
+        if savedsettings["dcpresence"] and kaboom:
+            kaboom = False
+            presence('connect')
+        elif not savedsettings["dcpresence"] and not kaboom:
+            kaboom = True
+            presence("disconnect")
 '''
 -CUSTOM TITLEBAR MOTION
     def get_pos(e):
