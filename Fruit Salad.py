@@ -944,7 +944,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         else: ocstate = "normal"
         usecustomargscheck = tkinter.Checkbutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, variable=selectedoc, onvalue=True, state=ocstate, offvalue=False, command=lambda:enableaccept(''))
         usecustomargscheck.place(x=5, y=12)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Overclock GPU'] + " | " + language['Unlocks OC settings. (Know what you are doing!)'], anchor=tkinter.W).place(x=40, y=15, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Overclock GPU'] + " | " + language['Unlocks Overclock settings. (Know what you are doing!)'], anchor=tkinter.W).place(x=40, y=15, width=800, height=20)
         pllot = Lotfi(advancedsettingsframe)
         cclot = Lotfi(advancedsettingsframe)
         mclot = Lotfi(advancedsettingsframe)
