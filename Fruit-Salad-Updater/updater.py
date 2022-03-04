@@ -20,14 +20,17 @@ def update():
     #download
     filename = "hello.howareyou"
     with requests.get("http://seflon.ddns.net/secret/FruitSalad.zip", stream=True) as r:
+        print('Downloading Package')
         r.raise_for_status()
-        print(pydir)
         with open(f"{pydir}//{filename}", 'wb') as f:
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
+        print("Package made")
     display.configure(text="Extracting")
+    print(f"Extracting files to {pydir}")
     with zipfile.ZipFile(f"{pydir}\\{filename}", "r") as data:
         data.extractall(pydir)
+    print(f'Downloaded Fruit Salad {version}')
     display.configure(text="Version "+version)
     os.remove(f"{pydir}\\{filename}")
     os.startfile(f"{pydir}\\Fruit Salad.exe")
