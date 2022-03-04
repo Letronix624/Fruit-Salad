@@ -1,1 +1,0 @@
-MsgBox"Hey there sadly you can only open Fruit Salad once", 0, "Epic Mining Fail!"

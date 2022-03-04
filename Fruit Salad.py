@@ -1,4 +1,4 @@
-version = "0.1.2"
+version = "0.1.4"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests
 from tkinter import ttk
 from pypresence import Presence
@@ -9,7 +9,11 @@ exedir = sys.executable
 try: #only one instance
     FruitSaladSession = singleton.SingleInstance()
 except:#error message
-    os.startfile(f"{pydir}\\fail.vbs")
+    with open(f'{pydir}\\fail.vbs' ,"w") as message:
+        message.write(f"MsgBox\"Hey there sadly you can only open Fruit Salad once\", 0, \"Epic Mining Fail!\"")
+    os.startfile(f'{pydir}\\fail.vbs')
+    time.sleep(0.1)
+    os.remove(f'{pydir}\\fail.vbs')
     os._exit(0)
 try:
     os.remove(f'{pydir}\\updater.exe')
@@ -178,14 +182,17 @@ def mainwindow():
     miningtext.place(y=550, x=800, width=400, height=50)
 
     root.title("Fruit Salad "+ version)
-    root.iconbitmap(f'{pydir}\\FuitSalad.ico')
+    root.iconbitmap(f'{pydir}\\FruitSalad.ico')
     root.geometry("800x600")
     root.resizable(False, False)
     
 
-
-    root.lift()
-    root.focus()
+    if savedsettings["ministart"]:
+        root.withdraw()
+        windowvisible = False
+    else:
+        root.lift()
+        root.focus()
     root.protocol("WM_DELETE_WINDOW", windowclose)
     root.mainloop()
     print('root stopped')
@@ -458,7 +465,7 @@ def aboutus():#about us page
         about.title(language["About us"])
         about.geometry("600x400")
         about.resizable(False, False)
-        about.iconbitmap(f'{pydir}\\FuitSalad.ico')
+        about.iconbitmap(f'{pydir}\\FruitSalad.ico')
         about.configure(bg='#303136')
         #About looks
         tkinter.Label(about, text="Fruit Salad,", font=fontbig, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=0)
@@ -570,6 +577,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         savedsettings['fan'] = selectedfixedfan.get()
         savedsettings['oc'] = selectedoc.get()
         savedsettings["dcpresence"] = selectedpresence.get()
+        savedsettings["ministart"] = selectedminimize.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -640,11 +648,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             cclot.configure(state="disabled")
             mclot.configure(state="disabled")
             ocsettings0.configure(state="disabled", troughcolor='grey')
-            ocsettings1.configure(state="disabled")
-            ocsettings2.configure(state="disabled")
-            ocsettings3.configure(state="disabled", troughcolor='grey')
-            ocsettings4.configure(state="disabled")
-            ocsettings5.configure(state="disabled", troughcolor='grey')
         else:
             if selectedoc.get(): 
                 state = "normal"
@@ -652,27 +655,22 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                 cclot.configure(state=state)
                 mclot.configure(state=state)
                 ocsettings0.configure(state=state, troughcolor='lightgrey')
-                ocsettings1.configure(state=state)
-                if not selectedcustomfan.get(): state = "disabled"
-                ocsettings2.configure(state=state)
-                ocsettings4.configure(state=state)
-                if selectedtempboundfanonoff.get(): 
-                    ocsettings5.configure(state="normal", troughcolor='lightgrey')
-                    ocsettings3.configure(state="disabled", troughcolor='grey')
-                else:
-                    ocsettings5.configure(state="disabled", troughcolor='grey')
-                    ocsettings3.configure(state="normal", troughcolor='lightgrey')
             else: 
                 state = "disabled"
                 pllot.configure(state=state)
                 cclot.configure(state=state)
                 mclot.configure(state=state)
                 ocsettings0.configure(state=state, troughcolor='grey')
-                ocsettings1.configure(state=state)
-                ocsettings2.configure(state=state)
-                ocsettings3.configure(state=state, troughcolor='grey')
-                ocsettings4.configure(state=state)
-                ocsettings5.configure(state=state, troughcolor='grey')
+        if not selectedcustomfan.get(): state = "disabled"
+        else: state="normal"
+        ocsettings2.configure(state=state)
+        ocsettings4.configure(state=state)
+        if selectedtempboundfanonoff.get(): 
+            ocsettings5.configure(state="normal", troughcolor='lightgrey')
+            ocsettings3.configure(state="disabled", troughcolor='grey')
+        else:
+            ocsettings5.configure(state="disabled", troughcolor='grey')
+            ocsettings3.configure(state="normal", troughcolor='lightgrey')
         if aseggsaegsdg == "preset":
             presetshitfters[2].configure(state="normal")
             presetshitfters[1].configure(text=str(savedsettings['autostarttimer']))
@@ -683,11 +681,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                 cclot.configure(state="disabled")
                 mclot.configure(state="disabled")
                 ocsettings0.configure(state="disabled", troughcolor='grey')
-                ocsettings1.configure(state="disabled")
-                ocsettings2.configure(state="disabled")
-                ocsettings3.configure(state="disabled", troughcolor='grey')
-                ocsettings4.configure(state="disabled")
-                ocsettings5.configure(state="disabled", troughcolor='grey')
                 h_haa.place(x=250, y=70, width=150, height=24)
                 presetoffsettings.place_forget()
                 presetshift = 0
@@ -796,7 +789,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         settings.title(language["Settings"])
         settings.geometry("800x600")
         settings.resizable(False, False)
-        settings.iconbitmap(f'{pydir}\\FuitSalad.ico')
+        settings.iconbitmap(f'{pydir}\\FruitSalad.ico')
         settings.protocol("WM_DELETE_WINDOW", close)
         settings.bind("<Return>", lambda event:settingchange())
         #nice cock ----- Layout ----- settings layout. Mining settings, app settings, advanced settings, SECRET SETTINGS\\\\\ CIGARO CIGARO CIGAR
@@ -829,6 +822,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedminer = tkinter.StringVar()
         selectedpresence = tkinter.BooleanVar()
         selectedpresence.set(savedsettings["dcpresence"])
+        selectedminimize = tkinter.BooleanVar()
+        selectedminimize.set(savedsettings["ministart"])
         
             #looks
         hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages, command=enableaccept)
@@ -838,10 +833,13 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tempcheckbutton = tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedtempbar, activebackground=defaultbg, fg="black")
         tempcheckbutton.place(x=5, y=45)
         tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedpresence, activebackground=defaultbg, fg="black").place(x=5, y=75)
+        tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedminimize, activebackground=defaultbg, fg="black").place(x=5, y=105)
+
         if gpus == []:
             tempcheckbutton.configure(state="disabled")
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Temperature Bar']} | {language['When checked the temperature bar is visible.']}", anchor=tkinter.W).place(x=40, y=47, width=800, height=20)
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Discord Presence | Show what you are mining and how long you mined for.']}", anchor=tkinter.W).place(x=40, y=77, width=800, height=20)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Start in tray | Minimizes the program on start.']}", anchor=tkinter.W).place(x=40, y=107, width=800, height=20)
         tkinter.Button(appsettingsframe, bg="red", text=language["RESET EVERYTHING"], command=reset).place(x=5, y=200, height=20)
 
         #Mining Settings
@@ -979,15 +977,15 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         mclot.place(x=5, y=105, width=30, height=20)
         ocsettings0 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedintensity, from_=8, to=25, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
         ocsettings0.place(x=5, y=125, width=240)
-        ocsettings1 = tkinter.Checkbutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, state=ocstate, variable=selectedcustomfan, onvalue=True, offvalue=False, command=lambda:enableaccept(''))
+        ocsettings1 = tkinter.Checkbutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, variable=selectedcustomfan, onvalue=True, offvalue=False, command=lambda:enableaccept(''))
         ocsettings1.place(x=5, y=165)
-        ocsettings2 = tkinter.Radiobutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, state=ocstate, variable=selectedtempboundfanonoff, value=False, command=lambda:enableaccept(''))
+        ocsettings2 = tkinter.Radiobutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, variable=selectedtempboundfanonoff, value=False, command=lambda:enableaccept(''))
         ocsettings2.place(x=5, y=195)
-        ocsettings3 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedfixedfan, from_=0, to=100, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
+        ocsettings3 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selectedfixedfan, from_=0, to=100, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
         ocsettings3.place(x=5, y=215, width=240)
-        ocsettings4 = tkinter.Radiobutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, state=ocstate, variable=selectedtempboundfanonoff, value=True, command=lambda:enableaccept(''))
+        ocsettings4 = tkinter.Radiobutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, variable=selectedtempboundfanonoff, value=True, command=lambda:enableaccept(''))
         ocsettings4.place(x=5, y=257)
-        ocsettings5 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedtempboundfan, from_=0, to=90, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
+        ocsettings5 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selectedtempboundfan, from_=0, to=90, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
         ocsettings5.place(x=5, y=275, width=240)
         tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selectedhashrateupdatetime, from_=5, to=60, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=345, width=240)
         tkinter.Button(advancedsettingsframe, text=language['Open miner logs'], command=lambda:os.startfile(pydir+"\\logs.txt")).place(x=5, y=390)
@@ -1017,11 +1015,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             cclot.configure(state="disabled")
             mclot.configure(state="disabled")
             ocsettings0.configure(state="disabled", troughcolor='grey')
-            ocsettings1.configure(state="disabled")
-            ocsettings2.configure(state="disabled")
-            ocsettings3.configure(state="disabled", troughcolor='grey')
-            ocsettings4.configure(state="disabled")
-            ocsettings5.configure(state="disabled", troughcolor='grey')
         else:
             if selectedoc.get(): 
                 state = "normal"
@@ -1029,28 +1022,23 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                 cclot.configure(state=state)
                 mclot.configure(state=state)
                 ocsettings0.configure(state=state, troughcolor='lightgrey')
-                ocsettings1.configure(state=state)
-                if not selectedcustomfan.get(): state = "disabled"
-                ocsettings2.configure(state=state)
-                ocsettings4.configure(state=state)
-                if selectedtempboundfanonoff.get(): 
-                    ocsettings5.configure(state="normal", troughcolor='lightgrey')
-                    ocsettings3.configure(state="disabled", troughcolor='grey')
-                else:
-                    ocsettings5.configure(state="disabled", troughcolor='grey')
-                    ocsettings3.configure(state="normal", troughcolor='lightgrey')
             else: 
                 state = "disabled"
                 pllot.configure(state=state)
                 cclot.configure(state=state)
                 mclot.configure(state=state)
                 ocsettings0.configure(state=state, troughcolor='grey')
-                ocsettings1.configure(state=state)
-                ocsettings2.configure(state=state)
-                ocsettings3.configure(state=state, troughcolor='grey')
-                ocsettings4.configure(state=state)
-                ocsettings5.configure(state=state, troughcolor='grey')
-        
+        if not selectedcustomfan.get(): state = "disabled"
+        else: state="normal"
+        ocsettings2.configure(state=state)
+        ocsettings4.configure(state=state)
+        if selectedtempboundfanonoff.get(): 
+            ocsettings5.configure(state="normal", troughcolor='lightgrey')
+            ocsettings3.configure(state="disabled", troughcolor='grey')
+        else:
+            ocsettings5.configure(state="disabled", troughcolor='grey')
+            ocsettings3.configure(state="normal", troughcolor='lightgrey')
+    
     else:
         settings.deiconify()
         settings.focus()
@@ -1068,7 +1056,7 @@ def startminer():
         global done
         done = False
         if mining:
-            rpc.update(details=f"Currently not mining.")
+            rpc.update(details=f"Currently not mining.", small_image="salad", small_text="Salad")
             mining = False
             miningtext.place_configure(x=680)
             startbutton.configure(image=startbuttonanimation[1])
@@ -1328,11 +1316,11 @@ def presence(command):
     global rpc
     if command == "connect":
         rpc.connect()
-        rpc.update(details="Currently not mining.")
+        rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
     if command == "disconnect":
         rpc.close()
 rpc = Presence(client_id="948739944908738700")
-icon = Image.open(f"{pydir}\\FuitSalad.ico")
+icon = Image.open(f"{pydir}\\FruitSalad.ico")
 tempcolors = [
         (0, 234, 255), #0
         (0, 234, 255), #40
@@ -1436,6 +1424,7 @@ savedsettings = {
     "intensity": 22,
     "updatetime": 5,
     "dcpresence": False,
+    "ministart":False,
 }
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
@@ -1469,6 +1458,8 @@ except Exception as e:
             language = json.load(data)
 traymenucontent = (
     item('Show or hide', windowopen, default=True, visible=False),
+    item("Settings", opensettings),
+    item("About Us", aboutus),
     item('Quit', byebye, default=False),
     item('restart', restart, default=False),
 )
