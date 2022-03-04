@@ -559,7 +559,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
     def settingchange():#kaboooooooooooooooooooooooom ======================================================================
         global currentlyeditingmanual
         global editingwalleraddress
-        global editingtime, rpc
+        global editingtime
         pllot.configure(state="normal")
         cclot.configure(state="normal")
         mclot.configure(state="normal")
@@ -1056,7 +1056,7 @@ def startminer():
         global done
         done = False
         if mining:
-            rpc.update(details=f"Currently not mining.", small_image="salad", small_text="Salad")
+            rpc.update(instance=False, details=f"Currently not mining.", small_image="salad", small_text="Salad")
             mining = False
             miningtext.place_configure(x=680)
             startbutton.configure(image=startbuttonanimation[1])
@@ -1316,7 +1316,7 @@ def presence(command):
     global rpc
     if command == "connect":
         rpc.connect()
-        rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
+        rpc.update(instance=False, details="Currently not mining.", small_image="salad", small_text="Salad")
     if command == "disconnect":
         rpc.close()
 rpc = Presence(client_id="948739944908738700")
@@ -1505,7 +1505,7 @@ if __name__ == "__main__":
                 currencylogo = f"ergo"
             elif savedsettings["algo"] == "Octopus":
                 currencylogo = f"octopus"
-            rpc.update(details=f"Mining on a {gpus[0]}, {gputemperature}C, {hashrate[:-3]}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}")
+            rpc.update(instance=True, details=f"Mining on a {gpus[0]}, {gputemperature}C, {hashrate[:-3]}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}")
             rpcupdatecount = 0
 '''
 -CUSTOM TITLEBAR MOTION
