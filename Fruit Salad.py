@@ -1,4 +1,4 @@
-version = "0.1.0"
+version = "0.1.1"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests
 from tkinter import ttk
 from pypresence import Presence
@@ -11,12 +11,6 @@ try: #only one instance
 except:#error message
     os.startfile(f"{pydir}\\fail.vbs")
     os._exit(0)
-try: #to get the name of the gpu
-    gpunamerslkefjeslafjlska = subprocess.Popen(f"{os.environ['WINDIR']}\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
-    gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[6:].replace("\r", "").replace(" GeForce ", "").split("\n")[:-1]
-except: #no gpu
-    gpus = []
-del gpunamerslkefjeslafjlska
 try:
     os.remove(f'{pydir}\\updater.exe')
 except:pass
@@ -34,6 +28,12 @@ if sys.argv[0].endswith(".exe"):
                 os.startfile(f'{pydir}\\updater.exe')
                 os._exit(0)
     except:pass
+try: #to get the name of the gpu
+    gpunamerslkefjeslafjlska = subprocess.Popen(f"{os.environ['WINDIR']}\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
+    gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[6:].replace("\r", "").replace(" GeForce ", "").split("\n")[:-1]
+except: #no gpu
+    gpus = []
+del gpunamerslkefjeslafjlska
 mining = False
 class Lotfi(tkinter.Entry):
     def __init__(self, master=None, **kwargs):
