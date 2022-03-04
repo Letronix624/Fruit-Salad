@@ -1,10 +1,5 @@
-version = "0.0.2"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con
-try:
-    if not ".py" in sys.argv[0]:
-        win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
-except:
-    win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
+version = "0.1.0"
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests
 from tkinter import ttk
 from pypresence import Presence
 from PIL import ImageTk, Image
@@ -22,6 +17,23 @@ try: #to get the name of the gpu
 except: #no gpu
     gpus = []
 del gpunamerslkefjeslafjlska
+try:
+    os.remove(f'{pydir}\\updater.exe')
+except:pass
+if sys.argv[0].endswith(".exe"):
+    win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
+    try:
+        if requests.get('http://seflon.ddns.net/secret/version.txt').text != version:
+            with requests.get('http://seflon.ddns.net/secret/updater.exe') as updaterbytes:
+                updaterbytes.raise_for_status()
+                print(pydir)
+                with open(f"{pydir}\\updater.exe", 'wb') as f:
+                    for chunk in updaterbytes.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                time.sleep(0.1)
+                os.startfile(f'{pydir}\\updater.exe')
+                os._exit(0)
+    except:pass
 mining = False
 class Lotfi(tkinter.Entry):
     def __init__(self, master=None, **kwargs):
@@ -165,7 +177,7 @@ def mainwindow():
     miningtext = tkinter.Label(root, text='Mining', font=fontbig, anchor=tkinter.W, background="black", foreground="yellow")
     miningtext.place(y=550, x=800, width=400, height=50)
 
-    root.title("Fruit Salad")
+    root.title("Fruit Salad "+ version)
     root.iconbitmap(f'{pydir}\\FuitSalad.ico')
     root.geometry("800x600")
     root.resizable(False, False)
