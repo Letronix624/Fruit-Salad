@@ -1,4 +1,4 @@
-version = "0.1.1"
+version = "0.1.2"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests
 from tkinter import ttk
 from pypresence import Presence
@@ -44,7 +44,7 @@ class Lotfi(tkinter.Entry):
         self.get, self.set = self.var.get, self.var.set
 
     def check(self, *args):
-        if self.get().isdigit() or self.get() == "" or self.get().startswith("-"): 
+        if self.get().isdigit() or self.get() == "" or self.get().startswith("-"):
             # the current value is only digits; allow this
             self.old_value = self.get()
         else:
@@ -552,7 +552,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
     def settingchange():#kaboooooooooooooooooooooooom ======================================================================
         global currentlyeditingmanual
         global editingwalleraddress
-        global editingtime
+        global editingtime, rpc
         pllot.configure(state="normal")
         cclot.configure(state="normal")
         mclot.configure(state="normal")
@@ -596,6 +596,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         currentlyeditingmanual = False
         editingwalleraddress = False
         editingtime = False
+        stopminer()
         acceptbutton.place_forget()
         givenworker.place_forget()
         givenwallet.place_forget()
@@ -1067,6 +1068,7 @@ def startminer():
         global done
         done = False
         if mining:
+            rpc.update(details=f"Currently not mining.")
             mining = False
             miningtext.place_configure(x=680)
             startbutton.configure(image=startbuttonanimation[1])
@@ -1093,6 +1095,7 @@ def startminer():
             time.sleep(0.05)
             startbutton.configure(image=startbuttonanimation[9])
             time.sleep(0.05)
+            stopminer()
         else:
             mining = True
             startbutton.configure(image=startbuttonanimation[8])
@@ -1134,12 +1137,18 @@ def windowopen():
 def byebye(): #quit quit quit quit
     global quitter
     global windowvisible
+    global mining
+    mining = False
+    stopminer()
     windowvisible = False
     quitter = True
     traymenu.visible = False
     traymenu.stop()
     os._exit(0)
 def restart():
+    global mining
+    mining = False
+    stopminer()
     os.startfile(sys.executable)
     traymenu.visible = False
     os._exit(0)
@@ -1194,7 +1203,7 @@ def changelang(lang):
     savesettings()
     restart()
 def temperaturebar():
-    
+    global gputemperature
     while 1:
         time.sleep(1)
         
@@ -1234,8 +1243,16 @@ def temperaturebar():
             break
     print("tempbar closed")
 #<<<<<<< HEAD
+def stopminer():
+    global mineractive, hashratemonitor, session
+    if mineractive:
+        hashratemonitor.configure(text='Stopping', font=fontextremelybig)
+        session.send_signal(signal.CTRL_BREAK_EVENT)
+        session.wait()
+        hashratemonitor.configure(text='0 mh/s')
+        mineractive = False
 def miner():
-    global savedsettings, hashrate, mining, hashratemonitor
+    global savedsettings, hashrate, mining, hashratemonitor, mineractive, session
     while 1:
         time.sleep(1)
         if mining:
@@ -1294,25 +1311,24 @@ def miner():
                 mc = savedsettings["mem"]
             if savedsettings["miner"] == "T-Rex Miner":
                 session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan}", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+            mineractive = True
             hashratemonitor.configure(text='Prepping')
-            while mining:
+            while mining and mineractive:
                 output = session.stdout.readline().decode("utf-8").replace('\n', "")
-                if "generating DAG" in output:
-                    hashratemonitor.configure(text='Generating DAG', font=fontbig)
-                if "DAG generated" in output:
-                    hashratemonitor.configure(text='Waiting for hashrate')
-                if "MH/s," in output:
-                    hashrate = output.split()[output.split().index('MH/s,') - 1]
-                    hashratemonitor.configure(text=f'{hashrate} mh/s', font=fontextremelybig)
+                if mineractive:
+                    if "generating DAG" in output:
+                        hashratemonitor.configure(text='Generating DAG', font=fontbig)
+                    if "DAG generated" in output:
+                        hashratemonitor.configure(text='Waiting for hashrate')
+                    if "MH/s," in output:
+                        hashrate = output.split()[output.split().index('MH/s,') - 1]
+                        hashratemonitor.configure(text=f'{hashrate} mh/s', font=fontextremelybig)
                 print(output)
-            hashratemonitor.configure(text='Stopping', font=fontextremelybig)
-            session.send_signal(signal.CTRL_BREAK_EVENT)
-            session.wait()
-            hashratemonitor.configure(text='0 mh/s')
 def presence(command):
+    global rpc
     if command == "connect":
         rpc.connect()
-        rpc.update(buttons=[{"label":"Test RPC", "url":"https://discord.gg/salad"}])
+        rpc.update(details="Currently not mining.")
     if command == "disconnect":
         rpc.close()
 rpc = Presence(client_id="948739944908738700")
@@ -1384,13 +1400,12 @@ minerregions = {
     "Ethermine": ["eu1", "us1", "asia1"],
     "Prohashing": ["eu", "us"],
 }
-
 fontregular = ("Calibri", 10)
 fontbig = ("Calibri", 17)#                                                 fonts
 fontextremelybig = ("Calibri", 50, "bold")
-
+mineractive = False
 defaultbg = "#303136"
-hashrate = "0"
+hashrate = "0.00"
 aboutopen = False
 settingsopen = False
 savedsettings = {
@@ -1457,8 +1472,10 @@ traymenucontent = (
     item('Quit', byebye, default=False),
     item('restart', restart, default=False),
 )
+gputemperature = 0
 traymenu = pystray.Icon("Fruit Salad", icon, "Fruit Salad", traymenucontent)
 kaboom = True
+rpcupdatecount = 15
 setupthreads = [
     threading.Thread(target=mainwindow),
     threading.Thread(target=traymenu.run),
@@ -1479,12 +1496,26 @@ if __name__ == "__main__":
         savesettings()
     while 1:
         time.sleep(1)
+        rpcupdatecount += 1
         if savedsettings["dcpresence"] and kaboom:
             kaboom = False
             presence('connect')
         elif not savedsettings["dcpresence"] and not kaboom:
             kaboom = True
             presence("disconnect")
+        if mining and rpcupdatecount > 15:
+            if savedsettings["algo"] == "Ethash":
+                currencylogo = f"eth"
+            elif savedsettings["algo"] == "Etchash":
+                currencylogo = f"etc"
+            elif savedsettings["algo"] == "KawPow":
+                currencylogo = f"raven"
+            elif savedsettings["algo"] == "Autolykos2":
+                currencylogo = f"ergo"
+            elif savedsettings["algo"] == "Octopus":
+                currencylogo = f"octopus"
+            rpc.update(details=f"Mining on a {gpus[0]}, {gputemperature}C, {hashrate[:-3]}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}")
+            rpcupdatecount = 0
 '''
 -CUSTOM TITLEBAR MOTION
     def get_pos(e):
