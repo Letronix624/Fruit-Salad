@@ -591,6 +591,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         savedsettings['oc'] = selectedoc.get()
         savedsettings["dcpresence"] = selectedpresence.get()
         savedsettings["ministart"] = selectedminimize.get()
+        savedsettings["autostart"] = selectedautostart.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -599,7 +600,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             savedsettings['wallet'] = givenwallet.get()
             prolabel.configure(text=savedsettings["ethwallet"])
         if editingtime:
-            savedsettings['autostarttimer'] = givenstarttime.get()
+            savedsettings['autostarttimer'] = int(givenstarttime.get())
             presetshitfters[1].configure(text=str(savedsettings['autostarttimer']))
         if savedsettings['presetonoff']:
             preset(savedsettings["preset"])
@@ -790,7 +791,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         presetshitfters[1].place_forget()
         presetshitfters[2].configure(state="disabled")
         enableaccept(1)
-        givenstarttime.place(x=210, y=100 + presetshift, width=35, height=24)
+        givenstarttime.place(x=210, y=130 + presetshift, width=35, height=24)
     def reset():
         PSYCHO_GROUPY_COCAIN_CRAZY = tkinter.messagebox.askokcancel(message=language["Are you sure you want to reset your settings?"], title="PSYCHO GROUPY COCAIN CRAZY", )
         if PSYCHO_GROUPY_COCAIN_CRAZY:
@@ -871,6 +872,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedgpu.set(savedsettings['preset'])
         selectedregion = tkinter.StringVar()
         selectedregion.set(savedsettings['region'])
+        selectedautostart = tkinter.BooleanVar()
+        selectedautostart.set(savedsettings["autostart"])
 
             #looks
         saladsettings = tkinter.Frame(miningsettingsframe, bg=defaultbg)
@@ -923,7 +926,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         if savedsettings['presetonoff']: h_haa.place(x=250, y=71, width=150, height=24)
         else: presetoffsettings.place(x=0, y=75, width=800, height=570)
         presetshitfters = [
-            tkinter.Checkbutton(miningsettingsframe, text=language["Auto start"], onvalue=True, offvalue=False, command=lambda:enableaccept("p"), bg="#46464A", activebackground=defaultbg, fg="black"),
+            tkinter.Checkbutton(miningsettingsframe, text=language["Auto start"], onvalue=True, offvalue=False, variable=selectedautostart, command=lambda:enableaccept("p"), bg="#46464A", activebackground=defaultbg, fg="black"),
             tkinter.Label(miningsettingsframe, text=str(savedsettings['autostarttimer']), anchor=tkinter.W),
             tkinter.Button(miningsettingsframe, text=language['Edit'], command=changeautostarttime),
             tkinter.Button(miningsettingsframe, text=language['Scheduled mining settings'],font=fontregular),
@@ -1099,7 +1102,6 @@ def startminer():
             time.sleep(0.05)
             stopminer()
         else:
-            rpcstarttime = int(time.time())
             mining = True
             startbutton.configure(image=startbuttonanimation[8])
             time.sleep(0.05)
@@ -1141,7 +1143,9 @@ def byebye(): #quit quit quit quit
     global quitter
     global windowvisible
     global mining
+    global autostarttimer
     mining = False
+    autostarttimer = 69420
     windowvisible = False
     root.withdraw()
     quitter = True
@@ -1150,7 +1154,8 @@ def byebye(): #quit quit quit quit
     stopminer()
     os._exit(0)
 def restart():
-    global mining
+    global mining, autostarttimer
+    autostarttimer = 69420
     mining = False
     traymenu.visible = False
     traymenu.stop()
@@ -1260,7 +1265,7 @@ def miner():
     global savedsettings, hashrate, mining, hashratemonitor, mineractive, session
     while 1:
         time.sleep(1)
-        if mining:
+        if mining or automining:
             algo = savedsettings["algo"]
             user = ""
             p = ""
@@ -1313,11 +1318,14 @@ def miner():
                 pl = savedsettings["pl"]
                 cc = savedsettings["core"]
                 mc = savedsettings["mem"]
+            try:
+                os.remove(f"{pydir}\\logs.txt")
+            except: print("no logs used before")
             if savedsettings["miner"] == "T-Rex Miner":
-                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -l ..\\..\\logs.txt -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan}", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -l {pydir}\\logs.txt -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
             mineractive = True
             hashratemonitor.configure(text='Prepping')
-            while mining and mineractive:
+            while mining or automining and mineractive:
                 output = session.stdout.readline().decode("utf-8").replace('\n', "")
                 if mineractive:
                     if "generating DAG" in output:
@@ -1333,20 +1341,20 @@ def presence(command):
     if command == "connect":
         rpc.connect()
         rpc.update(instance=False, details="Currently not mining.", small_image="salad", small_text="Salad")
-    if command == "disconnect":
+    elif command == "disconnect":
         rpc.close()
 rpc = Presence(client_id="948739944908738700")
 icon = Image.open(f"{pydir}\\FruitSalad.ico")
 tempcolors = [
-        (0, 234, 255), #0
-        (0, 234, 255), #40
-        (64, 255, 0), #60
-        (255, 251, 0), #70
-        (255, 51, 0), #80
-        (255, 0, 0), #100
-    ]
-a = ""
+    (0, 234, 255), #0
+    (0, 234, 255), #40
+    (64, 255, 0), #60
+    (255, 251, 0), #70
+    (255, 51, 0), #80
+    (255, 0, 0), #100
+]
 quitter = False
+automining = False
 supportedgpus = [
     "Tesla K80",
     "GTX 1050",
@@ -1482,7 +1490,9 @@ traymenucontent = (
 gputemperature = 0
 traymenu = pystray.Icon("Fruit Salad", icon, "Fruit Salad", traymenucontent)
 kaboom = True
+autostarttimer = int(savedsettings["autostarttimer"])
 rpcupdatecount = 15
+lastinputid = 0
 setupthreads = [
     threading.Thread(target=mainwindow),
     threading.Thread(target=traymenu.run),
@@ -1500,7 +1510,6 @@ if __name__ == "__main__":
         time.sleep(0.1)
         os.remove(f'{pydir}\\lang.vbs')
         savedsettings["freshlang"] = False
-        savesettings()
     if sys.executable.endswith(".exe"):
         regadd()
     while 1:
@@ -1512,7 +1521,7 @@ if __name__ == "__main__":
         elif not savedsettings["dcpresence"] and not kaboom:
             kaboom = True
             presence("disconnect")
-        if mining and rpcupdatecount > 15:
+        if mining or automining and rpcupdatecount > 15:
             if savedsettings["algo"] == "Ethash":
                 currencylogo = f"eth"
             elif savedsettings["algo"] == "Etchash":
@@ -1523,8 +1532,19 @@ if __name__ == "__main__":
                 currencylogo = f"ergo"
             elif savedsettings["algo"] == "Octopus":
                 currencylogo = f"octopus"
-            rpc.update(start=rpcstarttime, instance=True, details=f"Mining on a {gpus[0]}.", state=f"{gputemperature}C, {hashrate[:-3]}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}")
+            rpc.update(instance=True, details=f"Mining on a {gpus[0]}.", state=f"{gputemperature}C, {hashrate[:-3]}MH/s", large_image=currencylogo, large_text=f"Mining {savedsettings['algo']}")
             rpcupdatecount = 0
+        if savedsettings["autostart"] and not mining:
+            if win32api.GetLastInputInfo() != lastinputid:
+                lastinputid = win32api.GetLastInputInfo()
+                autostarttimer = int(savedsettings["autostarttimer"])
+            if autostarttimer <= 0: automining = True
+            else: 
+                if mineractive:
+                    stopminer()
+                automining = False
+                rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
+                autostarttimer -= 1
 '''
 -CUSTOM TITLEBAR MOTION
     def get_pos(e):

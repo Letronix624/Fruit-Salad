@@ -33,7 +33,7 @@ def update():
     print(f'Downloaded Fruit Salad {version}')
     display.configure(text="Version "+version)
     os.remove(f"{pydir}\\{filename}")
-    os.startfile(f"{pydir}\\Fruit Salad.exe")
+    os.startfile(f"{pydir}\\FruitSalad.exe")
     time.sleep(1)
     os._exit(0)
 window = tkinter.Tk()

@@ -1,0 +1,79 @@
+
+20220305 15:18:35 T-Rex NVIDIA GPU miner v0.25.2  -  [Windows]
+20220305 15:18:35 r.779ea9fe653f
+20220305 15:18:35 
+20220305 15:18:36 
+20220305 15:18:36 NVIDIA Driver v470.05
+20220305 15:18:36 
+20220305 15:18:36 + GPU #0: [00:2b.0|2503] Zotac GeForce RTX 3060, 12288 MB
+20220305 15:18:36 
+20220305 15:18:36 WARN: DevFee 1% (Ethash)
+20220305 15:18:36 
+20220305 15:18:36 URL : stratum+tcp://daggerhashimoto.eu-west.nicehash.com:3353
+20220305 15:18:36 USER: 33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi.2999rfdr9kp8qbi
+20220305 15:18:36 PASS: 
+20220305 15:18:36 WRK : 2999rfdr9kp8qbi
+20220305 15:18:36 
+20220305 15:18:36 Starting on: daggerhashimoto.eu-west.nicehash.com:3353
+20220305 15:18:36 ApiServer: HTTP server started on 127.0.0.1:4067
+20220305 15:18:36 ---------------------------------------------------
+20220305 15:18:36 For control navigate to: http://127.0.0.1:4067/trex
+20220305 15:18:36 ---------------------------------------------------
+20220305 15:18:36 Using protocol: stratum2.
+20220305 15:18:36 GPU #0: intensity 22, mclock 1500MHz, cclock -200MHz, pl 70%
+20220305 15:18:36 Extranonce is set to: ff9ea8
+20220305 15:18:36 Authorizing...
+20220305 15:18:36 Authorized successfully.
+20220305 15:18:36 ethash epoch: 477, diff: 1.13 G
+20220305 15:18:38 GPU #0: generating DAG 4.73 GB for epoch 477 ...
+20220305 15:18:51 GPU #0: DAG generated [crc: 96724ab8, time: 12994 ms], memory left: 6.29 GB
+20220305 15:19:07 GPU #0: using kernel #4
+20220305 15:19:15 Extranonce is set to: 03594a
+20220305 15:19:15 ethash epoch: 477, diff: 1.13 G
+20220305 15:19:18 [ OK ] 1/1 - 48.29 MH/s, 19ms ... GPU #0
+
+--------------------------------20220305 15:19:38 --------------------------------
+Mining at daggerhashimoto.eu-west.nicehash.com:3353 [172.65.226.105], diff: 1.13 G
+GPU #0: Zotac RTX 3060 - 48.86 MH/s, [T:62C, P:118W, F:63%, E:414kH/W], 1/1 R:0%
+Shares/min: 1 (Avg. 1.429)
+Uptime: 1 min 2 secs | Algo: ethash | T-Rex v0.25.2
+WD: 1 min 3 secs, shares: 1/1 
+
+
+--------------------------------20220305 15:19:43 --------------------------------
+Mining at daggerhashimoto.eu-west.nicehash.com:3353 [172.65.226.105], diff: 1.13 G
+GPU #0: Zotac RTX 3060 - 48.95 MH/s, [T:62C, P:118W, F:63%, E:415kH/W], 1/1 R:0%
+Shares/min: 1 (Avg. 1.429)
+Uptime: 1 min 7 secs | Algo: ethash | T-Rex v0.25.2
+WD: 1 min 8 secs, shares: 1/1 
+
+
+--------------------------------20220305 15:19:48 --------------------------------
+Mining at daggerhashimoto.eu-west.nicehash.com:3353 [172.65.226.105], diff: 1.13 G
+GPU #0: Zotac RTX 3060 - 49.01 MH/s, [T:62C, P:118W, F:63%, E:415kH/W], 1/1 R:0%
+Shares/min: 1 (Avg. 1.429)
+Uptime: 1 min 13 secs | Algo: ethash | T-Rex v0.25.2
+WD: 1 min 13 secs, shares: 1/1 
+
+20220305 15:19:49 [ OK ] 2/2 - 49.01 MH/s, 21ms ... GPU #0
+20220305 15:19:51 [ OK ] 3/3 - 49.00 MH/s, 20ms ... GPU #0
+
+--------------------------------20220305 15:19:54 --------------------------------
+Mining at daggerhashimoto.eu-west.nicehash.com:3353 [172.65.226.105], diff: 1.13 G
+GPU #0: Zotac RTX 3060 - 48.95 MH/s, [T:62C, P:118W, F:63%, E:415kH/W], 3/3 R:0%
+Shares/min: 3.597 (Avg. 2.4)
+Uptime: 1 min 18 secs | Algo: ethash | T-Rex v0.25.2
+WD: 1 min 18 secs, shares: 3/3 
+
+
+--------------------------------20220305 15:19:59 --------------------------------
+Mining at daggerhashimoto.eu-west.nicehash.com:3353 [172.65.226.105], diff: 1.13 G
+GPU #0: Zotac RTX 3060 - 48.89 MH/s, [T:62C, P:118W, F:63%, E:414kH/W], 3/3 R:0%
+Shares/min: 3.597 (Avg. 2.4)
+Uptime: 1 min 23 secs | Algo: ethash | T-Rex v0.25.2
+WD: 1 min 23 secs, shares: 3/3 
+
+20220305 15:20:02 WARN: shutdown t-rex, got Ctrl+C from console
+20220305 15:20:03 Main loop finished. Cleaning up resources...
+20220305 15:20:03 ApiServer: stopped listening on 127.0.0.1:4067
+20220305 15:20:04 T-Rex finished.
