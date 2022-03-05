@@ -1,5 +1,5 @@
-version = "0.1.4"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests
+version = "0.1.5pre"
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, win32com.client
 from tkinter import ttk
 from pypresence import Presence
 from PIL import ImageTk, Image
@@ -21,7 +21,7 @@ except:pass
 if sys.argv[0].endswith(".exe"):
     win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
     try:
-        if requests.get('http://seflon.ddns.net/secret/version.txt').text != version:
+        if requests.get('http://seflon.ddns.net/secret/version.txt').text != version and not version.endswith("pre"):
             with requests.get('http://seflon.ddns.net/secret/updater.exe') as updaterbytes:
                 updaterbytes.raise_for_status()
                 print(pydir)
@@ -101,7 +101,7 @@ def mainwindow():
         ]
     root.wm_attributes("-transparentcolor", '#010110')
     #Stats
-    hashratemonitor = tkinter.Label(root, text=f'{hashrate} mh/s', bg='#303136', fg="white", font=fontextremelybig)
+    hashratemonitor = tkinter.Label(root, text=f'{hashrate} MH/s', bg='#303136', fg="white", font=fontextremelybig)
     hashratemonitor.place(x=425, y=480, width=350, height=70)
     shift = 0
     for gpu in gpus:
@@ -578,6 +578,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         savedsettings['oc'] = selectedoc.get()
         savedsettings["dcpresence"] = selectedpresence.get()
         savedsettings["ministart"] = selectedminimize.get()
+        savedsettings["startup"] = selectedstartup.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -600,6 +601,20 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             savedsettings['miner'] = selectedminer.get()
             savedsettings['algo'] = selectedalgo.get()
             savedsettings["pool"] = selectedpool.get()
+        if sys.argv[0].endswith('.exe'):
+            if savedsettings["startup"]:
+                shortcut = win32com.client.Dispatch("WScript.Shell").CreateShortCut(f'{os.environ["appdata"]}\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Fruit Salad.lnk')
+                shortcut.Targetpath = f'{sys.executable}'
+                shortcut.IconLocation = f"{pydir}\\FruitSalad.ico"
+                shortcut.save()
+                open=winreg.OpenKey(winreg.HKEY_CURRENT_USER,"Software\Microsoft\Windows\CurrentVersion\Run",0,winreg.KEY_ALL_ACCESS)
+                winreg.SetValueEx(open,"any_name",0,winreg.REG_SZ,f'{sys.executable}')
+                winreg.CloseKey(open)
+            else:
+                try:
+                    os.remove(f'{os.environ["appdata"]}\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Fruit Salad.lnk')
+                except:print("no shortcut to delete")
+        
         savedsettings['region'] = selectedregion.get()
         currentlyeditingmanual = False
         editingwalleraddress = False
@@ -824,6 +839,9 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedpresence.set(savedsettings["dcpresence"])
         selectedminimize = tkinter.BooleanVar()
         selectedminimize.set(savedsettings["ministart"])
+        selectedstartup = tkinter.BooleanVar()
+        selectedstartup.set(savedsettings["startup"])
+
         
             #looks
         hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages, command=enableaccept)
@@ -834,12 +852,14 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tempcheckbutton.place(x=5, y=45)
         tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedpresence, activebackground=defaultbg, fg="black").place(x=5, y=75)
         tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedminimize, activebackground=defaultbg, fg="black").place(x=5, y=105)
+        tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedstartup, activebackground=defaultbg, fg="black").place(x=5, y=135)
 
         if gpus == []:
             tempcheckbutton.configure(state="disabled")
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Temperature Bar']} | {language['When checked the temperature bar is visible.']}", anchor=tkinter.W).place(x=40, y=47, width=800, height=20)
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Discord Presence | Show what you are mining and how long you mined for.']}", anchor=tkinter.W).place(x=40, y=77, width=800, height=20)
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Start in tray | Minimizes the program on start.']}", anchor=tkinter.W).place(x=40, y=107, width=800, height=20)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Start with OS | Starts Fruit Salad on startup.']}", anchor=tkinter.W).place(x=40, y=137, width=800, height=20)
         tkinter.Button(appsettingsframe, bg="red", text=language["RESET EVERYTHING"], command=reset).place(x=5, y=200, height=20)
 
         #Mining Settings
@@ -1051,12 +1071,12 @@ def windowclose():
 done = True
 def startminer():
     def t():
-        global mining
+        global mining, rpcstarttime
         global miningtext
         global done
         done = False
         if mining:
-            rpc.update(instance=False, details=f"Currently not mining.", small_image="salad", small_text="Salad")
+            rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
             mining = False
             miningtext.place_configure(x=680)
             startbutton.configure(image=startbuttonanimation[1])
@@ -1085,6 +1105,7 @@ def startminer():
             time.sleep(0.05)
             stopminer()
         else:
+            rpcstarttime = int(time.time())
             mining = True
             startbutton.configure(image=startbuttonanimation[8])
             time.sleep(0.05)
@@ -1127,18 +1148,20 @@ def byebye(): #quit quit quit quit
     global windowvisible
     global mining
     mining = False
-    stopminer()
     windowvisible = False
+    root.withdraw()
     quitter = True
     traymenu.visible = False
     traymenu.stop()
+    stopminer()
     os._exit(0)
 def restart():
     global mining
     mining = False
+    traymenu.visible = False
+    traymenu.stop()
     stopminer()
     os.startfile(sys.executable)
-    traymenu.visible = False
     os._exit(0)
 def savesettings():
     global tempdisplaycomponents
@@ -1237,7 +1260,7 @@ def stopminer():
         hashratemonitor.configure(text='Stopping', font=fontextremelybig)
         session.send_signal(signal.CTRL_BREAK_EVENT)
         session.wait()
-        hashratemonitor.configure(text='0 mh/s')
+        hashratemonitor.configure(text='0 MH/s')
         mineractive = False
 def miner():
     global savedsettings, hashrate, mining, hashratemonitor, mineractive, session
@@ -1292,7 +1315,6 @@ def miner():
                     fan = f"--fan t:{savedsettings['fan:t']}"
                 else:
                     fan = f"--fan {savedsettings['fan']}"
-            print(fan)
             if savedsettings['oc']:
                 pl = savedsettings["pl"]
                 cc = savedsettings["core"]
@@ -1310,7 +1332,7 @@ def miner():
                         hashratemonitor.configure(text='Waiting for hashrate')
                     if "MH/s," in output:
                         hashrate = output.split()[output.split().index('MH/s,') - 1]
-                        hashratemonitor.configure(text=f'{hashrate} mh/s', font=fontextremelybig)
+                        hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
                 print(output)
 def presence(command):
     global rpc
@@ -1425,6 +1447,7 @@ savedsettings = {
     "updatetime": 5,
     "dcpresence": False,
     "ministart":False,
+    "startup":False,
 }
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
@@ -1505,7 +1528,7 @@ if __name__ == "__main__":
                 currencylogo = f"ergo"
             elif savedsettings["algo"] == "Octopus":
                 currencylogo = f"octopus"
-            rpc.update(instance=True, details=f"Mining on a {gpus[0]}, {gputemperature}C, {hashrate[:-3]}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}")
+            rpc.update(start=rpcstarttime, instance=True, details=f"Mining on a {gpus[0]}.", state=f"{gputemperature}C, {hashrate[:-3]}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}")
             rpcupdatecount = 0
 '''
 -CUSTOM TITLEBAR MOTION
