@@ -1,4 +1,4 @@
-version = "0.1.7"
+version = "0.2.0"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog
 from tkinter import ttk
 from pypresence import Presence
