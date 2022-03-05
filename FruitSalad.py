@@ -1,5 +1,5 @@
-version = "0.1.6"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, win32com.client
+version = "0.1.7"
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog
 from tkinter import ttk
 from pypresence import Presence
 from PIL import ImageTk, Image
@@ -20,7 +20,6 @@ try:
 except:pass
 if sys.argv[0].endswith(".exe"):
     win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
-    
     try:
         if requests.get('http://seflon.ddns.net/secret/version.txt').text != version and not version.endswith("pre"):
             with requests.get('http://seflon.ddns.net/secret/updater.exe') as updaterbytes:
@@ -68,7 +67,7 @@ def hex_to_string(hex):
     string_value = bytes.fromhex(hex).decode('utf-8')
     return string_value
 def mainwindow():
-    global hashratemonitor, tempnum, startbuttonanimation, tempbar, root, windowvisible, startbutton, globalworker, globalminer, globalalgo, globalpool, globalregion, hashrate, fontregular, fontbig, fontextremelybig, tempdisplaycomponents, miningtext
+    global hashratemonitor, tempnum, startbuttonanimation, tempbar, root, windowvisible, startbutton, globalworker, globalminer, globalalgo, globalpool, globalregion, hashrate, fontregular, fontbig, fontextremelybig, tempdisplaycomponents, miningtext, FruitSalad, Discordbutton
     windowvisible = True
     traymenu.update_menu()
     root = tkinter.Tk()
@@ -94,6 +93,10 @@ def mainwindow():
             im9 = data.read()
         with getimages.open('On Switch 10.png', 'r') as data:
             im10 = data.read()
+        with getimages.open("FruitSalad.png", "r") as data:
+            FruitSalad = ImageTk.PhotoImage(data=data.read(), format='png')
+        with getimages.open("discord.png", "r") as data:
+            Discordbutton = tkinter.PhotoImage(data=data.read(), format='png')
         startbuttonanimation = [
             ImageTk.PhotoImage(data=im1, format='png'),
             ImageTk.PhotoImage(data=im2, format='png'),
@@ -462,7 +465,7 @@ def preset(thething):
             savedsettings["oc"] = False
 def aboutus():#about us page
     global about
-    global aboutopen
+    global aboutopen, FruitSalad
     def close():
         global aboutopen
         aboutopen = False
@@ -472,6 +475,8 @@ def aboutus():#about us page
             webbrowser.open("http://seflon.ddns.net/", new=2, autoraise=True)
         if site == 2:
             webbrowser.open("https://mezomgmt.com/", new=2, autoraise=True)
+        if site == 3:
+            webbrowser.open('https://discord.gg/VUcgW3nqGM', new=2, autoraise=True)
     if not aboutopen:
         aboutopen = True
         about = tkinter.Toplevel()
@@ -481,15 +486,17 @@ def aboutus():#about us page
         about.iconbitmap(f'{pydir}\\FruitSalad.ico')
         about.configure(bg='#303136')
         #About looks
-        tkinter.Label(about, text="Fruit Salad,", font=fontbig, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=0)
-        tkinter.Label(about, text=language["a Salad mining tool."], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=10, y=30)
-        tkinter.Label(about, text=language["Made by Let Software"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=60)
-        tkinter.Label(about, text=language["with help by Mezo#0001 from Mezo Management"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=100)
-        tkinter.Button(about, text="seflon.ddns.net", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(1)).place(x=450, y=60)
-        tkinter.Label(about, text="Let Software:", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y= 140)
-        tkinter.Label(about, text="Letronix624#9040 (Let)", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 160)
-        tkinter.Label(about, text="Nilsipilzi#9733 (brot)", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 180)
-        tkinter.Button(about, text="mezomgmt.com/fruitsalad", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(2)).place(x=450, y=100)
+        tkinter.Label(about, image=FruitSalad, background=defaultbg).place(x=6, y=6, width=64, height=64)
+        tkinter.Label(about, text="Fruit Salad,", font=fontbig, bg='#303136', fg="white", anchor=tkinter.W).place(x=70, y=0)
+        tkinter.Button(about, image=Discordbutton, bg=defaultbg, border=0, command=lambda: website(3), activebackground="#dabfdf").place(x=530, y=6, width=64, height=64)
+        tkinter.Label(about, text=language["a Salad mining tool."], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=70, y=30)
+        tkinter.Label(about, text=language["Made by Let Software"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=70, y=50)
+        tkinter.Label(about, text=language["with help by Mezo#0001 from Mezo Management"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=70)
+        tkinter.Button(about, text="seflon.ddns.net", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(1)).place(x=80, y=100)
+        tkinter.Label(about, text="Let Software:", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y= 100)
+        tkinter.Label(about, text="Letronix624#9040 (Let)", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 125)
+        tkinter.Label(about, text="Nilsipilzi#9733 (brot)", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 145 )
+        tkinter.Button(about, text="mezomgmt.com", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(2)).place(x=350, y=70)
         about.protocol("WM_DELETE_WINDOW", close)
     else:
         about.deiconify()
@@ -592,6 +599,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         savedsettings["dcpresence"] = selectedpresence.get()
         savedsettings["ministart"] = selectedminimize.get()
         savedsettings["autostart"] = selectedautostart.get()
+        savedsettings["devfee"] = selecteddevfee.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -797,6 +805,29 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         if PSYCHO_GROUPY_COCAIN_CRAZY:
             os.remove(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json")
             restart()
+    def profile(typea):
+        if typea == "load":
+            load = tkinter.filedialog.askopenfilename(title=language["Load settings profile"], filetypes=[("FruitSalad files", "*.let")])
+        elif typea == "save":
+            save = tkinter.filedialog.asksaveasfilename(title=language["Save settings profile"], filetypes=[("FruitSalad files", "*.let")])
+        try:
+            if load:
+                temporarylanguage = savedsettings["language"]
+                with open(load, "r") as data:
+                    tempvalue = json.load(data)
+                    for setting in tempvalue:
+                        savedsettings[setting] = tempvalue[setting]
+                    if temporarylanguage != savedsettings["language"]:
+                        changelang(savedsettings["language"])
+                    savesettings()
+                    close()
+        except:
+            if save:
+                if not save.endswith(".let"):
+                    save = save + ".let"
+                with open(save, "w") as data:
+                    data.write(json.dumps(savedsettings))
+
     if not settingsopen:
         settingsopen = True
         settings = tkinter.Toplevel(bg=defaultbg)#PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY PSYCHO GROUPY COCAIN CRAZY
@@ -838,7 +869,8 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedpresence.set(savedsettings["dcpresence"])
         selectedminimize = tkinter.BooleanVar()
         selectedminimize.set(savedsettings["ministart"])
-
+        selecteddevfee = tkinter.IntVar()
+        selecteddevfee.set(savedsettings["devfee"])
         
             #looks
         hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages, command=enableaccept)
@@ -849,13 +881,18 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tempcheckbutton.place(x=5, y=45)
         tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedpresence, activebackground=defaultbg, fg="black").place(x=5, y=75)
         tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedminimize, activebackground=defaultbg, fg="black").place(x=5, y=105)
-
+        tkinter.Scale(appsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selecteddevfee, from_=0, to=100, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=135, width=240)
         if gpus == []:
             tempcheckbutton.configure(state="disabled")
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Temperature Bar']} | {language['When checked the temperature bar is visible.']}", anchor=tkinter.W).place(x=40, y=47, width=800, height=20)
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Discord Presence | Show what you are mining and how long you mined for.']}", anchor=tkinter.W).place(x=40, y=77, width=800, height=20)
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Start in tray | Minimizes the program on start.']}", anchor=tkinter.W).place(x=40, y=107, width=800, height=20)
-        tkinter.Button(appsettingsframe, bg="red", text=language["RESET EVERYTHING"], command=reset).place(x=5, y=200, height=20)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Optional dev fee in % | Please support us.']}", anchor=tkinter.W).place(x=250, y=153, width=800, height=20)
+        tkinter.Button(appsettingsframe, command=lambda: profile('save'), bg='white', fg="black", text=language["Save settings profile"]).place(y=183, x=5, height=30)
+        tkinter.Button(appsettingsframe, command=lambda: profile('load'), bg='white', fg="black", text=language["Load settings profile"]).place(y=183, x=400, height=30)
+
+        
+        tkinter.Button(appsettingsframe, bg="red", text=language["RESET EVERYTHING"], command=reset).place(x=5, y=223, height=20)
 
         #Mining Settings
             #vars
@@ -1252,7 +1289,6 @@ def temperaturebar():
         if quitter:
             break
     print("tempbar closed")
-#<<<<<<< HEAD
 def stopminer():
     global mineractive, hashratemonitor, session
     if mineractive:
@@ -1261,11 +1297,13 @@ def stopminer():
         session.wait()
         hashratemonitor.configure(text='0 MH/s')
         mineractive = False
+        with open(f"{pydir}\\d.evs", "w") as data:
+            data.write(str(devtimer))
 def miner():
-    global savedsettings, hashrate, mining, hashratemonitor, mineractive, session
+    global savedsettings, hashrate, mining, hashratemonitor, mineractive, session, devtimer
     while 1:
         time.sleep(1)
-        if mining or automining:
+        if mining or automining and devtimer >= int(savedsettings["devfee"]) * 60:#==================================================
             algo = savedsettings["algo"]
             user = ""
             p = ""
@@ -1318,14 +1356,17 @@ def miner():
                 pl = savedsettings["pl"]
                 cc = savedsettings["core"]
                 mc = savedsettings["mem"]
+            if os.path.exists(f'{pydir}\\logs.txt'):
+                os.remove(f'{pydir}\\logs.txt')
             try:
-                os.remove(f"{pydir}\\logs.txt")
-            except: print("no logs used before")
+                session.send_signal(signal.CTRL_BREAK_EVENT)
+                session.wait()
+            except:pass
             if savedsettings["miner"] == "T-Rex Miner":
-                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -l {pydir}\\logs.txt -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
             mineractive = True
             hashratemonitor.configure(text='Prepping')
-            while mining or automining and mineractive:
+            while ((mining or automining) and mineractive) and devtimer >= int(savedsettings["devfee"]) * 60:
                 output = session.stdout.readline().decode("utf-8").replace('\n', "")
                 if mineractive:
                     if "generating DAG" in output:
@@ -1335,7 +1376,78 @@ def miner():
                     if "MH/s," in output:
                         hashrate = output.split()[output.split().index('MH/s,') - 1]
                         hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
-                print(output)
+                print("non dev:"+output[10:])
+                with open(f'{pydir}\\logs.txt', "a") as logs:
+                    logs.write(output)
+        if mining or automining and devtimer <= int(savedsettings["devfee"]) * 60:#======================================================================================
+            algo = savedsettings["algo"]
+            user = ""
+            p = ""
+            if savedsettings["pool"] == 'Nicehash':
+                if savedsettings["algo"] == "Ethash":
+                    stratum = f"stratum+tcp://daggerhashimoto.{savedsettings['region']}.nicehash.com:3353"
+                elif savedsettings['algo'] == "KawPow":
+                    stratum = f"stratum+tcp://kawPow.{savedsettings['region']}.nicehash.com:3385"
+                elif savedsettings['algo'] == "Autolykos2":
+                    stratum = f"stratum+tcp://autolykos.{savedsettings['region']}.nicehash.com:3390"
+                elif savedsettings["algo"] == "Octopus":
+                    stratum = f"stratum+tcp://octopus.{savedsettings['region']}.nicehash.com:3389"
+                user = "-u 33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi.2999rfdr9kp8qbi"
+                worker = "-w 2999rfdr9kp8qbi"
+            elif savedsettings['pool'] == "Ethermine":
+                if savedsettings["algo"] == "Ethash":
+                    stratum = f"ethproxy+ssl://{savedsettings['region']}.ethermine.org:5555"
+                elif savedsettings["algo"] == "Etchash":
+                    stratum = f"ethproxy+ssl://{savedsettings['region']}-etc.ethermine.org:5555"
+                user = "-u 0x6ff85749ffac2d3a36efa2bc916305433fa93731.2999rfdr9kp8qbi"
+                worker = "-w 2999rfdr9kp8qbi"
+            elif savedsettings['pool'] == "Prohashing":
+                user = "-u salad"
+                wallet = ""
+                if savedsettings["algo"] == "Ethash":
+                    stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3339"
+                elif savedsettings["algo"] == "Etchash":
+                    stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3357"
+                elif savedsettings["algo"] == "KawPow":
+                    stratum = f"stratum+tcp://{savedsettings['region']}.prohashing.com:3361"
+                worker = ""
+                p = "-p o=5b214562-877c-405a-b7a6-625608e6198f,n=5b214562-877c-405a-b7a6-625608e6198f"
+            pl = 100
+            cc = 0
+            mc = 0
+            fan = ""
+            if savedsettings["fanbool"]:
+                if savedsettings["fan:tonoff"]:
+                    fan = f"--fan t:{savedsettings['fan:t']}"
+                else:
+                    fan = f"--fan {savedsettings['fan']}"
+            if savedsettings['oc']:
+                pl = savedsettings["pl"]
+                cc = savedsettings["core"]
+                mc = savedsettings["mem"]
+            if os.path.exists(f'{pydir}\\logs.txt'):
+                os.remove(f'{pydir}\\logs.txt')
+            try:
+                session.send_signal(signal.CTRL_BREAK_EVENT)
+                session.wait()
+            except:pass
+            if savedsettings["miner"] == "T-Rex Miner":
+                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+            mineractive = True
+            hashratemonitor.configure(text='Prepping')
+            while ((mining or automining) and mineractive) and devtimer <= int(savedsettings["devfee"]) * 60:
+                output = session.stdout.readline().decode("utf-8").replace('\n', "")
+                if mineractive:
+                    if "generating DAG" in output:
+                        hashratemonitor.configure(text='Generating DAG', font=fontbig)
+                    if "DAG generated" in output:
+                        hashratemonitor.configure(text='Waiting for hashrate')
+                    if "MH/s," in output:
+                        hashrate = output.split()[output.split().index('MH/s,') - 1]
+                        hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
+                print('Devfee:'+output[10:])
+                with open(f'{pydir}\\logs.txt', "a") as logs:
+                    logs.write(output)
 def presence(command):
     global rpc
     if command == "connect":
@@ -1378,6 +1490,7 @@ supportedgpus = [
     "RTX 2080 SUPER",
     "RTX 2080 Ti",
     "RTX 3050",
+    "RTX 3050 Laptop GPU"
     "RTX 3060",
     "RTX 3060 Ti",
     "RTX 3070",
@@ -1449,7 +1562,10 @@ savedsettings = {
     "updatetime": 5,
     "dcpresence": False,
     "ministart":False,
+    "devfee": 1,
 }
+with open(f"{pydir}\\d.evs", "r") as data:
+    devtimer = int(data.read())
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
         tempvalue = json.load(data)
@@ -1514,6 +1630,10 @@ if __name__ == "__main__":
         regadd()
     while 1:
         time.sleep(1)
+        if mining or automining:
+            devtimer -= 1
+            if devtimer <= 0:
+                devtimer = 6000
         rpcupdatecount += 1
         if savedsettings["dcpresence"] and kaboom:
             kaboom = False
@@ -1532,8 +1652,10 @@ if __name__ == "__main__":
                 currencylogo = f"ergo"
             elif savedsettings["algo"] == "Octopus":
                 currencylogo = f"octopus"
-            rpc.update(instance=True, details=f"Mining on a {gpus[0]}.", state=f"{gputemperature}C, {hashrate[:-3]}MH/s", large_image=currencylogo, large_text=f"Mining {savedsettings['algo']}")
-            rpcupdatecount = 0
+            try:
+                rpc.update(instance=True, details=f"Mining on a {gpus[0]}.", state=f"{gputemperature}C, {hashrate[:-3]}MH/s", large_image=currencylogo, large_text=f"Mining {savedsettings['algo']}")
+                rpcupdatecount = 0
+            except:pass
         if savedsettings["autostart"] and not mining:
             if win32api.GetLastInputInfo() != lastinputid:
                 lastinputid = win32api.GetLastInputInfo()
@@ -1542,9 +1664,12 @@ if __name__ == "__main__":
             else: 
                 if mineractive:
                     stopminer()
+                    try:
+                        rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
+                    except:pass
                 automining = False
-                rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
                 autostarttimer -= 1
+                
 '''
 -CUSTOM TITLEBAR MOTION
     def get_pos(e):

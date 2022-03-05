@@ -1,32 +1,1 @@
-
-20220305 16:47:45 T-Rex NVIDIA GPU miner v0.25.8  -  [Windows]
-20220305 16:47:45 r.bd8c4366e105
-20220305 16:47:45 
-20220305 16:47:45 
-20220305 16:47:45 NVIDIA Driver v470.05
-20220305 16:47:45 
-20220305 16:47:45 + GPU #0: [00:2b.0|2503] Zotac GeForce RTX 3060, 12288 MB
-20220305 16:47:45 
-20220305 16:47:45 WARN: DevFee 1% (Ethash)
-20220305 16:47:45 
-20220305 16:47:45 URL : stratum+tcp://daggerhashimoto.eu-west.nicehash.com:3353
-20220305 16:47:45 USER: 33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi.2999rfdr9kp8qbi
-20220305 16:47:45 PASS: 
-20220305 16:47:45 WRK : 2999rfdr9kp8qbi
-20220305 16:47:45 
-20220305 16:47:45 Starting on: daggerhashimoto.eu-west.nicehash.com:3353
-20220305 16:47:45 ApiServer: HTTP server started on 127.0.0.1:4067
-20220305 16:47:45 ---------------------------------------------------
-20220305 16:47:45 For control navigate to: http://127.0.0.1:4067/trex
-20220305 16:47:45 ---------------------------------------------------
-20220305 16:47:45 Using protocol: stratum2.
-20220305 16:47:46 Extranonce is set to: abe4ed
-20220305 16:47:46 Authorizing...
-20220305 16:47:46 Authorized successfully.
-20220305 16:47:46 ethash epoch: 477, diff: 1.13 G
-20220305 16:47:46 GPU #0: intensity 22, mclock 1500MHz, cclock -200MHz, pl 70%
-20220305 16:47:48 GPU #0: generating DAG 4.73 GB for epoch 477 ...
-20220305 16:47:54 WARN: shutdown t-rex, got Ctrl+C from console
-20220305 16:47:54 Main loop finished. Cleaning up resources...
-20220305 16:47:54 ApiServer: stopped listening on 127.0.0.1:4067
-20220305 16:47:57 T-Rex finished.
+20220305 23:02:23 T-Rex NVIDIA GPU miner v0.25.8  -  [Windows]20220305 23:02:23 r.bd8c4366e10520220305 23:02:23 20220305 23:02:23 20220305 23:02:23 NVIDIA Driver v470.0520220305 23:02:23 20220305 23:02:23 + GPU #0: [00:2b.0|2503] Zotac GeForce RTX 3060, 12288 MB20220305 23:02:23 20220305 23:02:23 WARN: DevFee 1% (Ethash)20220305 23:02:23 20220305 23:02:23 URL : stratum+tcp://daggerhashimoto.eu-west.nicehash.com:335320220305 23:02:23 USER: 33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi.2999rfdr9kp8qbi20220305 23:02:23 PASS: 20220305 23:02:23 WRK : 2999rfdr9kp8qbi20220305 23:02:23 20220305 23:02:23 Starting on: daggerhashimoto.eu-west.nicehash.com:335320220305 23:02:23 ApiServer: HTTP server started on 127.0.0.1:406720220305 23:02:23 ---------------------------------------------------20220305 23:02:23 For control navigate to: http://127.0.0.1:4067/trex20220305 23:02:23 ---------------------------------------------------20220305 23:02:23 Using protocol: stratum2.20220305 23:02:23 Extranonce is set to: d891f320220305 23:02:23 Authorizing...20220305 23:02:23 Authorized successfully.20220305 23:02:23 ethash epoch: 477, diff: 1.13 G20220305 23:02:23 GPU #0: intensity 22, mclock 1500MHz, cclock -200MHz, pl 70%20220305 23:02:25 WARN: shutdown t-rex, got Ctrl+C from console
