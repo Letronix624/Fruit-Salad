@@ -1,4 +1,4 @@
-version = "0.1.5pre"
+version = "0.1.5"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, win32com.client
 from tkinter import ttk
 from pypresence import Presence
@@ -20,6 +20,7 @@ try:
 except:pass
 if sys.argv[0].endswith(".exe"):
     win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
+    
     try:
         if requests.get('http://seflon.ddns.net/secret/version.txt').text != version and not version.endswith("pre"):
             with requests.get('http://seflon.ddns.net/secret/updater.exe') as updaterbytes:
@@ -54,6 +55,13 @@ class Lotfi(tkinter.Entry):
         else:
             # there's non-digit characters in the input; reject this 
             self.set(self.old_value)
+def regadd():
+    if sys.argv[0].endswith(".exe"):
+        with open(f'{pydir}\\FruitSalad.bat', "w") as data:
+            data.write(f'start "" "{sys.executable}"')
+        openr=winreg.OpenKey(winreg.HKEY_CURRENT_USER,"Software\Microsoft\Windows\CurrentVersion\Run",0,winreg.KEY_ALL_ACCESS)
+        winreg.SetValueEx(openr,"FruitSalad",0,winreg.REG_SZ,f'"{pydir}\\FruitSalad.bat"')
+        winreg.CloseKey(openr)
 def hex_to_string(hex):
     if hex[:2] == '0x':
         hex = hex[2:]
@@ -381,6 +389,11 @@ def preset(thething):
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
             savedsettings["oc"] = False
+        case "RTX 3050 Laptop GPU":
+            savedsettings['miner'] = "T-Rex Miner"
+            savedsettings['algo'] = "KawPow"
+            savedsettings["pool"] = "Nicehash"
+            savedsettings["oc"] = False
         case "RTX 3060":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
@@ -578,7 +591,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         savedsettings['oc'] = selectedoc.get()
         savedsettings["dcpresence"] = selectedpresence.get()
         savedsettings["ministart"] = selectedminimize.get()
-        savedsettings["startup"] = selectedstartup.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -601,20 +613,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             savedsettings['miner'] = selectedminer.get()
             savedsettings['algo'] = selectedalgo.get()
             savedsettings["pool"] = selectedpool.get()
-        if sys.argv[0].endswith('.exe'):
-            if savedsettings["startup"]:
-                shortcut = win32com.client.Dispatch("WScript.Shell").CreateShortCut(f'{os.environ["appdata"]}\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Fruit Salad.lnk')
-                shortcut.Targetpath = f'{sys.executable}'
-                shortcut.IconLocation = f"{pydir}\\FruitSalad.ico"
-                shortcut.save()
-                open=winreg.OpenKey(winreg.HKEY_CURRENT_USER,"Software\Microsoft\Windows\CurrentVersion\Run",0,winreg.KEY_ALL_ACCESS)
-                winreg.SetValueEx(open,"any_name",0,winreg.REG_SZ,f'{sys.executable}')
-                winreg.CloseKey(open)
-            else:
-                try:
-                    os.remove(f'{os.environ["appdata"]}\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Fruit Salad.lnk')
-                except:print("no shortcut to delete")
-        
         savedsettings['region'] = selectedregion.get()
         currentlyeditingmanual = False
         editingwalleraddress = False
@@ -839,8 +837,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedpresence.set(savedsettings["dcpresence"])
         selectedminimize = tkinter.BooleanVar()
         selectedminimize.set(savedsettings["ministart"])
-        selectedstartup = tkinter.BooleanVar()
-        selectedstartup.set(savedsettings["startup"])
 
         
             #looks
@@ -852,14 +848,12 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tempcheckbutton.place(x=5, y=45)
         tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedpresence, activebackground=defaultbg, fg="black").place(x=5, y=75)
         tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedminimize, activebackground=defaultbg, fg="black").place(x=5, y=105)
-        tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedstartup, activebackground=defaultbg, fg="black").place(x=5, y=135)
 
         if gpus == []:
             tempcheckbutton.configure(state="disabled")
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Temperature Bar']} | {language['When checked the temperature bar is visible.']}", anchor=tkinter.W).place(x=40, y=47, width=800, height=20)
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Discord Presence | Show what you are mining and how long you mined for.']}", anchor=tkinter.W).place(x=40, y=77, width=800, height=20)
         tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Start in tray | Minimizes the program on start.']}", anchor=tkinter.W).place(x=40, y=107, width=800, height=20)
-        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Start with OS | Starts Fruit Salad on startup.']}", anchor=tkinter.W).place(x=40, y=137, width=800, height=20)
         tkinter.Button(appsettingsframe, bg="red", text=language["RESET EVERYTHING"], command=reset).place(x=5, y=200, height=20)
 
         #Mining Settings
@@ -1320,7 +1314,7 @@ def miner():
                 cc = savedsettings["core"]
                 mc = savedsettings["mem"]
             if savedsettings["miner"] == "T-Rex Miner":
-                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -l ./logs.txt -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan}", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -l ..\\..\\logs.txt -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan}", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
             mineractive = True
             hashratemonitor.configure(text='Prepping')
             while mining and mineractive:
@@ -1447,7 +1441,6 @@ savedsettings = {
     "updatetime": 5,
     "dcpresence": False,
     "ministart":False,
-    "startup":False,
 }
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
@@ -1508,6 +1501,8 @@ if __name__ == "__main__":
         os.remove(f'{pydir}\\lang.vbs')
         savedsettings["freshlang"] = False
         savesettings()
+    if sys.executable.endswith(".exe"):
+        regadd()
     while 1:
         time.sleep(1)
         rpcupdatecount += 1
