@@ -1,0 +1,1 @@
+C:\Users\Timbu\Documents\GitHub\Fruit-Salad\miners\phoenixminer\PhoenixMiner.exe -hstats 2 -powlim -30 -cclock -200 -mclock +1500 -pool stratum+tcp://daggerhashimoto.eu-west.nicehash.com:3353 -proto 4 -stales 0 -wal 33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi -worker 2999rfdr9kp8qbi -log 0 -rmode 0

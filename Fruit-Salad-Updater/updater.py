@@ -8,14 +8,6 @@ def update():
         window.quit()
         os._exit(0)
     global display
-    display.configure(text="Deleting old")
-    for item in os.listdir():
-        if not "updater" in item:
-            print(f"removing {item}")
-            try:
-                os.remove(f"{pydir}\\{item}")
-            except:
-                shutil.rmtree(f"{pydir}\\{item}")
     display.configure(text="Downloading")
     #download
     filename = "hello.howareyou"

@@ -1,5 +1,5 @@
-version = "0.2.0"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog
+version = "0.2.1"
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil
 from tkinter import ttk
 from pypresence import Presence
 from PIL import ImageTk, Image
@@ -18,7 +18,10 @@ except:#error message
 try:
     os.remove(f'{pydir}\\updater.exe')
 except:pass
-if sys.argv[0].endswith(".exe"):
+try:
+    arg1 = sys.argv[1]
+except:arg1 = ""
+if sys.argv[0].endswith(".exe") and not "-console" in arg1:
     win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
     try:
         if requests.get('http://seflon.ddns.net/secret/version.txt').text != version and not version.endswith("pre"):
@@ -32,6 +35,18 @@ if sys.argv[0].endswith(".exe"):
                 os.startfile(f'{pydir}\\updater.exe')
                 os._exit(0)
     except:pass
+if "-forceupdate" in arg1:
+    try:
+        with requests.get('http://seflon.ddns.net/secret/updater.exe') as updaterbytes:
+            updaterbytes.raise_for_status()
+            print(pydir)
+            with open(f"{pydir}\\updater.exe", 'wb') as f:
+                for chunk in updaterbytes.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            time.sleep(0.1)
+            os.startfile(f'{pydir}\\updater.exe')
+            os._exit(0)
+    except:print("website offline")
 try: #to get the name of the gpu
     gpunamerslkefjeslafjlska = subprocess.Popen(f"{os.environ['WINDIR']}\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
     gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[6:].replace("\r", "").replace(" GeForce ", "").split("\n")[:-1]
@@ -583,6 +598,9 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         pllot.configure(state="normal")
         cclot.configure(state="normal")
         mclot.configure(state="normal")
+        savedsettings["pl"] = int(pllot.get())
+        savedsettings["core"] = int(cclot.get())
+        savedsettings["mem"] = int(mclot.get())
         pllot.delete(0, "end")
         cclot.delete(0, "end")
         mclot.delete(0, "end")
@@ -1105,12 +1123,13 @@ def windowclose():
 done = True
 def startminer():
     def t():
-        global mining, rpcstarttime
+        global mining
         global miningtext
         global done
         done = False
         if mining:
-            rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
+            if savedsettings["dcpresence"]:
+                rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
             mining = False
             miningtext.place_configure(x=680)
             startbutton.configure(image=startbuttonanimation[1])
@@ -1303,7 +1322,7 @@ def miner():
     global savedsettings, hashrate, mining, hashratemonitor, mineractive, session, devtimer
     while 1:
         time.sleep(1)
-        if mining or automining and devtimer >= int(savedsettings["devfee"]) * 60:#==================================================
+        if mining or automining and devtimer > int(savedsettings["devfee"]) * 60:#==================================================
             algo = savedsettings["algo"]
             user = ""
             p = ""
@@ -1363,23 +1382,66 @@ def miner():
                 session.wait()
             except:pass
             if savedsettings["miner"] == "T-Rex Miner":
+                if not os.path.exists(f'{pydir}\\miners\\trex\\t-rex.exe'):
+                    try:
+                        os.makedirs(f'{pydir}\\miners\\trex')
+                    except:print("path exists")
+                    hashratemonitor.configure(text=f'Downloading T-rex Miner', font=fontbig)
+                    with requests.get('https://github.com/trexminer/T-Rex/releases/download/0.25.8/t-rex-0.25.8-win.zip') as minerinstaller:
+                        minerinstaller.raise_for_status()
+                        with open(f"{pydir}\\miners\\trex\\extracting.zip", 'wb') as f:
+                            for chunk in minerinstaller.iter_content(chunk_size=8192):
+                                f.write(chunk)
+                    hashratemonitor.configure(text=f'Extracting T-rex Miner', font=fontbig)
+                    with zipfile.ZipFile(f"{pydir}\\miners\\trex\\extracting.zip", "r") as data:
+                        data.extract("t-rex.exe", path=f'{pydir}\\miners\\trex')
+                    hashratemonitor.configure(text=f'Done', font=fontextremelybig)
+                    os.remove(f"{pydir}\\miners\\trex\\extracting.zip")
+                    time.sleep(1)
                 session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+            elif savedsettings["miner"] == "Phoenix Miner":
+                if not os.path.exists(f'{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe'):
+                    try:
+                        os.makedirs(f'{pydir}\\miners\\phoenixminer')
+                    except:print("path exists")
+                    hashratemonitor.configure(text=f'Downloading Phoenix Miner', font=fontbig)
+                    with requests.get("https://github.com/spark-pool/PhoenixMiner/releases/download/6.0b/PhoenixMiner_6.0b_Windows.zip") as phoenix:
+                        phoenix.raise_for_status()
+                        with open(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "wb") as f:
+                            for chunk in phoenix.iter_content(chunk_size=8192):
+                                f.write(chunk)
+                    hashratemonitor.configure(text=f'Extracting Phoenix Miner', font=fontbig)
+                    with zipfile.ZipFile(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "r") as f:
+                        f.extractall(f"{pydir}\\miners\\phoenixminer")
+                    os.remove(f"{pydir}\\miners\\phoenixminer\\extracting.zip")
+                    hi = os.listdir(f"{pydir}\\miners\\phoenixminer")[0]
+                    shutil.copyfile(f"{pydir}\\miners\\phoenixminer\\{hi}\\PhoenixMiner.exe", f"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe")
+                    shutil.rmtree(f"{pydir}\\miners\\phoenixminer\\{hi}")
+                    time.sleep(1)
+                if savedsettings["pool"] == "Nicehash":
+                    stratum = stratum + " -proto 4 -stales 0"
+                session = subprocess.Popen(f"\"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe\" -pool {stratum} {user.replace('-u ', '-wal ')} {p.replace('-p ', '-pass ')} {worker.replace('-w ', '-worker ')} -log 0 -rmode 0", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+            
+            
+            
             mineractive = True
             hashratemonitor.configure(text='Prepping')
-            while ((mining or automining) and mineractive) and devtimer >= int(savedsettings["devfee"]) * 60:
+            while ((mining or automining) and mineractive) and devtimer > int(savedsettings["devfee"]) * 60:
                 output = session.stdout.readline().decode("utf-8").replace('\n', "")
+                if output == "":stopminer()
                 if mineractive:
                     if "generating DAG" in output:
                         hashratemonitor.configure(text='Generating DAG', font=fontbig)
                     if "DAG generated" in output:
                         hashratemonitor.configure(text='Waiting for hashrate')
                     if "MH/s," in output:
-                        hashrate = output.split()[output.split().index('MH/s,') - 1]
+                        if savedsettings["miner"] == "Phoenix Miner":hashrate = output.split()[output.split().index('MH/s,') - 1][:-1]
+                        else:hashrate = output.split()[output.split().index('MH/s,') - 1]
                         hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
-                print("non dev:"+output[10:])
+                print("non dev:"+output)
                 with open(f'{pydir}\\logs.txt', "a") as logs:
                     logs.write(output)
-        if mining or automining and devtimer <= int(savedsettings["devfee"]) * 60:#======================================================================================
+        if mining or automining and devtimer < int(savedsettings["devfee"]) * 60:#======================================================================================
             algo = savedsettings["algo"]
             user = ""
             p = ""
@@ -1432,18 +1494,61 @@ def miner():
                 session.wait()
             except:pass
             if savedsettings["miner"] == "T-Rex Miner":
+                
+                if not os.path.exists(f'{pydir}\\miners\\trex\\t-rex.exe'):
+                    try:
+                        os.makedirs(f'{pydir}\\miners\\trex')
+                    except:print("path exists")
+                    hashratemonitor.configure(text=f'Downloading T-rex Miner', font=fontbig)
+                    with requests.get('https://github.com/trexminer/T-Rex/releases/download/0.25.8/t-rex-0.25.8-win.zip') as minerinstaller:
+                        minerinstaller.raise_for_status()
+                        with open(f"{pydir}\\miners\\trex\\extracting.zip", 'wb') as f:
+                            for chunk in minerinstaller.iter_content(chunk_size=8192):
+                                f.write(chunk)
+                    hashratemonitor.configure(text=f'Extracting T-rex Miner', font=fontbig)
+                    with zipfile.ZipFile(f"{pydir}\\miners\\trex\\extracting.zip", "r") as data:
+                        data.extract("t-rex.exe", path=f'{pydir}\\miners\\trex')
+                    hashratemonitor.configure(text=f'Done', font=fontextremelybig)
+                    os.remove(f"{pydir}\\miners\\trex\\extracting.zip")
+                    time.sleep(1)
                 session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+            elif savedsettings["miner"] == "Phoenix Miner":
+                if not os.path.exists(f'{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe'):
+                    try:
+                        os.makedirs(f'{pydir}\\miners\\phoenixminer')
+                    except:print("path exists")
+                    hashratemonitor.configure(text=f'Downloading Phoenix Miner', font=fontbig)
+                    with requests.get(r"https://github.com/spark-pool/PhoenixMiner/releases/download/6.0b/PhoenixMiner_6.0b_Windows.zip") as phoenix:
+                        phoenix.raise_for_status()
+                        with open(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "wb") as f:
+                            for chunk in phoenix.iter_content(chunk_size=8192):
+                                f.write(chunk)
+                    hashratemonitor.configure(text=f'Extracting Phoenix Miner', font=fontbig)
+                    with zipfile.ZipFile(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "r") as f:
+                        f.extractall(f"{pydir}\\miners\\phoenixminer")
+                    os.remove(f"{pydir}\\miners\\phoenixminer\\extracting.zip")
+                    hi = os.listdir(f"{pydir}\\miners\\phoenixminer")[0]
+                    shutil.copyfile(f"{pydir}\\miners\\phoenixminer\\{hi}\\PhoenixMiner.exe", f"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe")
+                    shutil.rmtree(f"{pydir}\\miners\\phoenixminer\\{hi}")
+                    time.sleep(1)
+                if savedsettings["pool"] == "Nicehash":
+                    stratum = stratum + " -proto 4 -stales 0"
+                session = subprocess.Popen(f"\"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe\" -pool {stratum} {user.replace('-u ', '-wal ')} {p.replace('-p ', '-pass ')} {worker.replace('-w ', '-worker ')} -log 0 -rmode 0", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+            
+            
             mineractive = True
             hashratemonitor.configure(text='Prepping')
-            while ((mining or automining) and mineractive) and devtimer <= int(savedsettings["devfee"]) * 60:
+            while ((mining or automining) and mineractive) and devtimer < int(savedsettings["devfee"]) * 60:
                 output = session.stdout.readline().decode("utf-8").replace('\n', "")
+                if output == "":stopminer()
                 if mineractive:
                     if "generating DAG" in output:
                         hashratemonitor.configure(text='Generating DAG', font=fontbig)
                     if "DAG generated" in output:
                         hashratemonitor.configure(text='Waiting for hashrate')
                     if "MH/s," in output:
-                        hashrate = output.split()[output.split().index('MH/s,') - 1]
+                        if savedsettings["miner"] == "Phoenix Miner":hashrate = output.split()[output.split().index('MH/s,') - 1][:-1]
+                        else:hashrate = output.split()[output.split().index('MH/s,') - 1]
                         hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
                 print('Devfee:'+output[10:])
                 with open(f'{pydir}\\logs.txt', "a") as logs:
@@ -1490,7 +1595,7 @@ supportedgpus = [
     "RTX 2080 SUPER",
     "RTX 2080 Ti",
     "RTX 3050",
-    "RTX 3050 Laptop GPU"
+    "RTX 3050 Laptop GPU",
     "RTX 3060",
     "RTX 3060 Ti",
     "RTX 3070",
@@ -1509,9 +1614,11 @@ supportedlanguages = [
 ]
 supportedminers = [
     "T-Rex Miner",
+    "Phoenix Miner",
 ]
 mineralgos = {
     "T-Rex Miner": ["Ethash", "Etchash", "KawPow", "Autolykos2", "Octopus"],
+    "Phoenix Miner": ["Ethash", "Etchash"],
 }
 minerpools = {
     "Ethash": ["Nicehash", "Ethermine", "Prohashing"],
@@ -1564,8 +1671,12 @@ savedsettings = {
     "ministart":False,
     "devfee": 1,
 }
-with open(f"{pydir}\\d.evs", "r") as data:
-    devtimer = int(data.read())
+try:
+    with open(f"{pydir}\\d.evs", "r") as data:
+       devtimer = int(data.read())
+except:
+    with open(f"{pydir}\\d.evs", "w") as data:
+       devtimer = int(data.write("3"))
 try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "r") as data:
         tempvalue = json.load(data)
@@ -1626,6 +1737,7 @@ if __name__ == "__main__":
         time.sleep(0.1)
         os.remove(f'{pydir}\\lang.vbs')
         savedsettings["freshlang"] = False
+        savesettings()
     if sys.executable.endswith(".exe"):
         regadd()
     while 1:
@@ -1641,7 +1753,7 @@ if __name__ == "__main__":
         elif not savedsettings["dcpresence"] and not kaboom:
             kaboom = True
             presence("disconnect")
-        if mining or automining and rpcupdatecount > 15:
+        if (mining or automining) and (rpcupdatecount > 15):
             if savedsettings["algo"] == "Ethash":
                 currencylogo = f"eth"
             elif savedsettings["algo"] == "Etchash":
@@ -1652,10 +1764,10 @@ if __name__ == "__main__":
                 currencylogo = f"ergo"
             elif savedsettings["algo"] == "Octopus":
                 currencylogo = f"octopus"
-            try:
-                rpc.update(instance=True, details=f"Mining on a {gpus[0]}.", state=f"{gputemperature}C, {hashrate[:-3]}MH/s", large_image=currencylogo, large_text=f"Mining {savedsettings['algo']}")
+            if not windowvisible:gputemperature = gputemp()
+            if savedsettings["dcpresence"]:
+                rpc.update(instance=True, details=f"Mining on a {gpus[0]}.", state=f"{gputemperature}C, {str(int(round(float(hashrate.replace(',', '.')))))}MH/s", large_image=currencylogo, large_text=f"Mining {savedsettings['algo']}")
                 rpcupdatecount = 0
-            except:pass
         if savedsettings["autostart"] and not mining:
             if win32api.GetLastInputInfo() != lastinputid:
                 lastinputid = win32api.GetLastInputInfo()
@@ -1664,9 +1776,8 @@ if __name__ == "__main__":
             else: 
                 if mineractive:
                     stopminer()
-                    try:
+                    if savedsettings["dcpresence"]:
                         rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
-                    except:pass
                 automining = False
                 autostarttimer -= 1
                 
