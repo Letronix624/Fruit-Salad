@@ -1,4 +1,4 @@
-version = "0.2.1"
+version = "0.2.2"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil
 from tkinter import ttk
 from pypresence import Presence
@@ -82,48 +82,34 @@ def hex_to_string(hex):
     string_value = bytes.fromhex(hex).decode('utf-8')
     return string_value
 def mainwindow():
-    global hashratemonitor, tempnum, startbuttonanimation, tempbar, root, windowvisible, startbutton, globalworker, globalminer, globalalgo, globalpool, globalregion, hashrate, fontregular, fontbig, fontextremelybig, tempdisplaycomponents, miningtext, FruitSalad, Discordbutton
+    global hashratemonitor, tempnum, startbuttonanimation, tempbar, root, windowvisible, startbutton, globalworker, globalminer, globalalgo, globalpool, globalregion, hashrate, fontregular, fontbig, fontextremelybig, tempdisplaycomponents, miningtext, FruitSalad, Discordbutton, starter
+    global startbuttonstart, startbuttonstartani, startbuttonstop, startbuttonstopani, startbuttonload1, startbuttonload2
     windowvisible = True
     traymenu.update_menu()
     root = tkinter.Tk()
     root.configure(bg='#303136')
-    with zipfile.ZipFile(f'{pydir}\\data\\.gui') as getimages:
+    with zipfile.ZipFile(f'{pydir}\\resources\\.gui') as getimages:
         with getimages.open('On Switch 1.png', 'r') as data:
             im1 = data.read()
-        with getimages.open('On Switch 2.png', 'r') as data:
-            im2 = data.read()
-        with getimages.open('On Switch 3.png', 'r') as data:
-            im3 = data.read()
-        with getimages.open('On Switch 4.png', 'r') as data:
-            im4 = data.read()
-        with getimages.open('On Switch 5.png', 'r') as data:
-            im5 = data.read()
-        with getimages.open('On Switch 6.png', 'r') as data:
-            im6 = data.read()
-        with getimages.open('On Switch 7.png', 'r') as data:
-            im7 = data.read()
-        with getimages.open('On Switch 8.png', 'r') as data:
-            im8 = data.read()
-        with getimages.open('On Switch 9.png', 'r') as data:
-            im9 = data.read()
-        with getimages.open('On Switch 10.png', 'r') as data:
-            im10 = data.read()
+        with getimages.open("Start Button.png", "r") as data:
+            startbuttonstart = tkinter.PhotoImage(data=data.read(), format='png')
+        with getimages.open("Start Button Animation.png", "r") as data:
+            startbuttonstartani = tkinter.PhotoImage(data=data.read(), format='png')
+        with getimages.open("Stop Button.png", "r") as data:
+            startbuttonstop = tkinter.PhotoImage(data=data.read(), format='png')
+        with getimages.open("Stop Button Animation.png", "r") as data:
+            startbuttonstopani = tkinter.PhotoImage(data=data.read(), format='png')
+        with getimages.open("Loading Button Animation1.png", "r") as data:
+            startbuttonload1 = tkinter.PhotoImage(data=data.read(), format='png')
+        with getimages.open("Loading Button Animation2.png", "r") as data:
+            startbuttonload2 = tkinter.PhotoImage(data=data.read(), format='png')
+            
         with getimages.open("FruitSalad.png", "r") as data:
             FruitSalad = ImageTk.PhotoImage(data=data.read(), format='png')
         with getimages.open("discord.png", "r") as data:
             Discordbutton = tkinter.PhotoImage(data=data.read(), format='png')
         startbuttonanimation = [
             ImageTk.PhotoImage(data=im1, format='png'),
-            ImageTk.PhotoImage(data=im2, format='png'),
-            ImageTk.PhotoImage(data=im3, format='png'),
-            ImageTk.PhotoImage(data=im4, format='png'),
-            ImageTk.PhotoImage(data=im5, format='png'),
-            ImageTk.PhotoImage(data=im6, format='png'),
-            ImageTk.PhotoImage(data=im7, format='png'),
-            ImageTk.PhotoImage(data=im8, format='png'),
-            ImageTk.PhotoImage(data=im9, format='png'),
-            ImageTk.PhotoImage(data=im10, format='png'),
-            
         ]
     root.wm_attributes("-transparentcolor", '#010110')
     #Stats
@@ -192,9 +178,9 @@ def mainwindow():
     tempbar = tkinter.Canvas(root, bg="red", highlightthickness=0)
     tempnum = tkinter.Label(root, bg="red", fg="white", font=fontregular)
     #bottom
-    tkinter.Canvas(root, bg="#0A2133", highlightthickness=0).place(x=0, y=550 ,width=375, height=50)
-    startbutton = tkinter.Label(root,fg="white",bg="#0A2133", font=fontregular, image=startbuttonanimation[9])
-    startbutton.place(x=375,y=550,width=425,height=50)
+    tkinter.Canvas(root, bg="#0A2133", highlightthickness=0).place(x=0, y=550 ,width=800, height=50)
+    startbutton = tkinter.Label(root,fg="white",bg="#0A2133", font=fontregular, image=startbuttonanimation[0])
+    startbutton.place(x=635,y=550,width=425,height=50)
     #top
     tkinter.Canvas(root, bg="#222129", highlightthickness=0).place(x=0,y=0,width=800,height=30)
     tkinter.Button(root, text=language['Settings'], bg='#222129', fg="white", border=1, font=fontregular, command=opensettings).place(x=0, y=0, width=188, height=30)
@@ -203,7 +189,8 @@ def mainwindow():
         tempdisplaycomponents[20].place(x=200, y=0, width=400, height=30)
     tkinter.Button(root, text=language['About us'], bg='#222129', fg="white", border=1, font=fontregular, command=aboutus).place(x=612, y=0, width=188, height=30)
     #miningarea
-    tkinter.Button(root, text="cool round button with start\n on it and nice animation", font=fontregular, command=startminer).place(y=280, height=40, width=200, x=512)
+    starter = tkinter.Button(root, image=startbuttonstart, bg=defaultbg, font=fontregular, command=startminer, border=0, activebackground=defaultbg)
+    starter.place(y=150, height=265, width=265, x=480)
     miningtext = tkinter.Label(root, text='Mining', font=fontbig, anchor=tkinter.W, background="black", foreground="yellow")
     miningtext.place(y=550, x=800, width=400, height=50)
 
@@ -1131,59 +1118,25 @@ def startminer():
             if savedsettings["dcpresence"]:
                 rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
             mining = False
-            miningtext.place_configure(x=680)
-            startbutton.configure(image=startbuttonanimation[1])
-            time.sleep(0.05)
-            miningtext.place_configure(x=700)
-            startbutton.configure(image=startbuttonanimation[2])
-            time.sleep(0.05)
-            miningtext.place_configure(x=720)
-            startbutton.configure(image=startbuttonanimation[3])
-            time.sleep(0.05)
-            miningtext.place_configure(x=740)
-            startbutton.configure(image=startbuttonanimation[4])
-            time.sleep(0.05)
-            miningtext.place_configure(x=760)
-            startbutton.configure(image=startbuttonanimation[5])
-            time.sleep(0.05)
-            miningtext.place_configure(x=780)
-            startbutton.configure(image=startbuttonanimation[6])
-            time.sleep(0.05)
-            miningtext.place_configure(x=800)
-            startbutton.configure(image=startbuttonanimation[7])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[8])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[9])
-            time.sleep(0.05)
+            starter.configure(image=startbuttonstopani)
+            for i in range(25):
+                miningtext.place_configure(x=700+i*10)
+                startbutton.place_configure(x=410+i*10)
+                if i == 6:starter.configure(image=startbuttonload1)
+                elif i == 12:starter.configure(image=startbuttonload2)
+                time.sleep(0.01)
+            starter.configure(image=startbuttonstart)
             stopminer()
         else:
             mining = True
-            startbutton.configure(image=startbuttonanimation[8])
-            time.sleep(0.05)
-            startbutton.configure(image=startbuttonanimation[7])
-            time.sleep(0.05)
-            miningtext.place_configure(x=800)
-            startbutton.configure(image=startbuttonanimation[6])
-            time.sleep(0.05)
-            miningtext.place_configure(x=780)
-            startbutton.configure(image=startbuttonanimation[5])
-            time.sleep(0.05)
-            miningtext.place_configure(x=760)
-            startbutton.configure(image=startbuttonanimation[4])
-            time.sleep(0.05)
-            miningtext.place_configure(x=720)
-            startbutton.configure(image=startbuttonanimation[3])
-            time.sleep(0.05)
-            miningtext.place_configure(x=700)
-            startbutton.configure(image=startbuttonanimation[2])
-            time.sleep(0.05)
-            miningtext.place_configure(x=680)
-            startbutton.configure(image=startbuttonanimation[1])
-            time.sleep(0.05)
-            miningtext.place_configure(x=660)
-            startbutton.configure(image=startbuttonanimation[0])
-            time.sleep(0.05)
+            starter.configure(image=startbuttonstartani)
+            for i in range(25):
+                miningtext.place_configure(x=925+i*-10)
+                startbutton.place_configure(x=635+i*-10)
+                if i == 6:starter.configure(image=startbuttonload1)
+                elif i == 12:starter.configure(image=startbuttonload2)
+                time.sleep(0.01)
+            starter.configure(image=startbuttonstop)
         done=True
     if done:
         threading.Thread(target=t).start()
@@ -1258,7 +1211,7 @@ def gputemp():
 def changelang(lang):
     global language
     savedsettings["language"] = lang
-    with zipfile.ZipFile(f'{pydir}\\data\\.lang') as langpack:
+    with zipfile.ZipFile(f'{pydir}\\resources\\.lang') as langpack:
         with langpack.open(f"{savedsettings['language']}.json") as data:
             language = json.load(data)
         for word in language:
@@ -1684,7 +1637,7 @@ try:
             savedsettings[setting] = tempvalue[setting]
         tempbar = savedsettings['tempbar']
 
-    with zipfile.ZipFile(f'{pydir}\\data\\.lang') as langpack:
+    with zipfile.ZipFile(f'{pydir}\\resources\\.lang') as langpack:
         with langpack.open(f"{savedsettings['language']}.json") as data:
             language = json.load(data)
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "w") as settings:
@@ -1704,7 +1657,7 @@ except Exception as e:
             preset(savedsettings['preset'])
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
         settings.write(json.dumps(savedsettings))
-    with zipfile.ZipFile(f'{pydir}\\data\\.lang') as langpack:
+    with zipfile.ZipFile(f'{pydir}\\resources\\.lang') as langpack:
         with langpack.open(f"{savedsettings['language']}.json") as data:
             language = json.load(data)
 traymenucontent = (
