@@ -1,6 +1,6 @@
-version = "0.2.2"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil
-from tkinter import ttk
+version = "0.3.0"
+import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil, random
+from tkinter import E, W, Y, ttk
 from pypresence import Presence
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
@@ -34,7 +34,7 @@ if sys.argv[0].endswith(".exe") and not "-console" in arg1:
                 time.sleep(0.1)
                 os.startfile(f'{pydir}\\updater.exe')
                 os._exit(0)
-    except:pass
+    except:print("website offline")
 if "-forceupdate" in arg1:
     try:
         with requests.get('http://seflon.ddns.net/secret/updater.exe') as updaterbytes:
@@ -54,6 +54,46 @@ except: #no gpu
     gpus = []
 del gpunamerslkefjeslafjlska
 mining = False
+class installminer():
+    def __init__(self, miner):
+        if miner == "trex":
+            if not os.path.exists(f'{pydir}\\miners\\trex\\t-rex.exe'):
+                try:
+                    os.makedirs(f'{pydir}\\miners\\trex')
+                except:print("path exists")
+                hashratemonitor.configure(text=f'Downloading T-rex Miner', font=fontbig)
+                with requests.get('https://github.com/trexminer/T-Rex/releases/download/0.25.8/t-rex-0.25.8-win.zip') as minerinstaller:
+                    minerinstaller.raise_for_status()
+                    with open(f"{pydir}\\miners\\trex\\extracting.zip", 'wb') as f:
+                        for chunk in minerinstaller.iter_content(chunk_size=8192):
+                            f.write(chunk)
+                hashratemonitor.configure(text=f'Extracting T-rex Miner', font=fontbig)
+                with zipfile.ZipFile(f"{pydir}\\miners\\trex\\extracting.zip", "r") as data:
+                    data.extract("t-rex.exe", path=f'{pydir}\\miners\\trex')
+                hashratemonitor.configure(text=f'Done', font=fontextremelybig)
+                os.remove(f"{pydir}\\miners\\trex\\extracting.zip")
+                time.sleep(1)
+        elif miner == "phoenix":
+            if not os.path.exists(f'{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe'):
+                try:
+                    os.makedirs(f'{pydir}\\miners\\phoenixminer')
+                except:print("path exists")
+                hashratemonitor.configure(text=f'Downloading Phoenix Miner', font=fontbig)
+                with requests.get("https://github.com/spark-pool/PhoenixMiner/releases/download/6.0b/PhoenixMiner_6.0b_Windows.zip") as phoenix:
+                    phoenix.raise_for_status()
+                    with open(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "wb") as f:
+                        for chunk in phoenix.iter_content(chunk_size=8192):
+                            f.write(chunk)
+                hashratemonitor.configure(text=f'Extracting Phoenix Miner', font=fontbig)
+                with zipfile.ZipFile(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "r") as f:
+                    f.extractall(f"{pydir}\\miners\\phoenixminer")
+                os.remove(f"{pydir}\\miners\\phoenixminer\\extracting.zip")
+                hi = os.listdir(f"{pydir}\\miners\\phoenixminer")[0]
+                shutil.copyfile(f"{pydir}\\miners\\phoenixminer\\{hi}\\PhoenixMiner.exe", f"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe")
+                shutil.rmtree(f"{pydir}\\miners\\phoenixminer\\{hi}")
+                time.sleep(1)
+
+
 class Lotfi(tkinter.Entry):
     def __init__(self, master=None, **kwargs):
         self.var = tkinter.StringVar()
@@ -198,8 +238,6 @@ def mainwindow():
     root.iconbitmap(f'{pydir}\\FruitSalad.ico')
     root.geometry("800x600")
     root.resizable(False, False)
-    
-
     if savedsettings["ministart"]:
         root.withdraw()
         windowvisible = False
@@ -216,7 +254,6 @@ def preset(thething):
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "KawPow"
             savedsettings["pool"] = "Nicehash"
-#>>>>>>> 74247baf046dbf523759d5b526d9b613f7ffce60
             savedsettings["oc"] = False
         case "GTX 1050":
             savedsettings['miner'] = "T-Rex Miner"
@@ -226,11 +263,10 @@ def preset(thething):
             savedsettings["core"] = -400
             savedsettings["mem"] = 550
             savedsettings["pl"] = 70
-        case "GTX 1050 TI":
+        case "GTX 1050 Ti":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "KawPow"
             savedsettings["pool"] = "Nicehash"
-#>>>>>>> 74247baf046dbf523759d5b526d9b613f7ffce60
             savedsettings["oc"] = True
             savedsettings["core"] = -400
             savedsettings["mem"] = 700
@@ -259,7 +295,7 @@ def preset(thething):
             savedsettings["core"] = 170
             savedsettings["mem"] = 350
             savedsettings["pl"] = 97
-        case "GTX 1070 TI":
+        case "GTX 1070 Ti":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
@@ -275,14 +311,14 @@ def preset(thething):
             savedsettings["core"] = 200
             savedsettings["mem"] = 800
             savedsettings["pl"] = 81
-        case "GTX 1080 TI":
+        case "GTX 1080 Ti":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
             savedsettings["oc"] = True
-            savedsettings["core"] = 60
+            savedsettings["core"] = 50
             savedsettings["mem"] = 500
-            savedsettings["pl"] = 90
+            savedsettings["pl"] = 65
         case "GTX 1650":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "kawPow"
@@ -439,7 +475,7 @@ def preset(thething):
             savedsettings["core"] = -222
             savedsettings["mem"] = 1500
             savedsettings["pl"] = 69
-        case "RTX 3080 TI":
+        case "RTX 3080 Ti":
             savedsettings['miner'] = "T-Rex Miner"
             savedsettings['algo'] = "Ethash"
             savedsettings["pool"] = "Nicehash"
@@ -503,6 +539,10 @@ def aboutus():#about us page
     else:
         about.deiconify()
         about.focus()
+def settingsclose():
+    global settingsopen
+    settingsopen = False
+    settings.destroy()
 def opensettings():#settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings - settings
     global settings
     global settingsopen
@@ -517,10 +557,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         presetshift = 0
     else:
         presetshift = 90
-    def close():
-        global settingsopen
-        settingsopen = False
-        settings.destroy()
     def openappsettings():
         miningsettingsframe.place_forget()
         advancedsettingsframe.place_forget()
@@ -573,8 +609,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         a.place_configure(height=30)
         b.place_configure(height=30)
         c.place_configure(height=30)
-    def kickjesusfromchat():
-        changelang("Furry")
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////Big Thing Here//////////////////////////////////////////////////accept button happenings//////////////
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -631,7 +665,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         currentlyeditingmanual = False
         editingwalleraddress = False
         editingtime = False
-        stopminer()
         acceptbutton.place_forget()
         givenworker.place_forget()
         givenwallet.place_forget()
@@ -825,7 +858,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
                     if temporarylanguage != savedsettings["language"]:
                         changelang(savedsettings["language"])
                     savesettings()
-                    close()
+                    settingsclose()
         except:
             if save:
                 if not save.endswith(".let"):
@@ -840,7 +873,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         settings.geometry("800x600")
         settings.resizable(False, False)
         settings.iconbitmap(f'{pydir}\\FruitSalad.ico')
-        settings.protocol("WM_DELETE_WINDOW", close)
+        settings.protocol("WM_DELETE_WINDOW", settingsclose)
         settings.bind("<Return>", lambda event:settingchange())
         #nice cock ----- Layout ----- settings layout. Mining settings, app settings, advanced settings, SECRET SETTINGS\\\\\ CIGARO CIGARO CIGAR
         appsettingsframe = tkinter.Frame(settings, bg=defaultbg)
@@ -971,7 +1004,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             tkinter.Checkbutton(miningsettingsframe, text=language["Auto start"], onvalue=True, offvalue=False, variable=selectedautostart, command=lambda:enableaccept("p"), bg="#46464A", activebackground=defaultbg, fg="black"),
             tkinter.Label(miningsettingsframe, text=str(savedsettings['autostarttimer']), anchor=tkinter.W),
             tkinter.Button(miningsettingsframe, text=language['Edit'], command=changeautostarttime),
-            tkinter.Button(miningsettingsframe, text=language['Scheduled mining settings'],font=fontregular),
+            tkinter.Button(miningsettingsframe, text=language['Scheduled mining settings'],font=fontregular, command=openshedulemenu),
             tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Autostart and how many seconds for it to start.'], anchor=tkinter.W),
             tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Opens the settings to a schedule menu.'], anchor=tkinter.W),
             tkinter.OptionMenu(miningsettingsframe, selectedregion, command=lambda x:enableaccept("minersettings"), *minerregions[selectedpool.get()]),
@@ -1066,7 +1099,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Button(megaguidesettingsframe, text="Megaguide", bg="Red", fg="White", command=megaguide, font=fontregular, padx=10, pady=5).pack(anchor=tkinter.NW)
         if savedsettings['language'] != "Furry":
             tkinter.Label(megaguidesettingsframe, text=language["Button below restarts the program."], font=fontregular).pack(anchor=tkinter.NW)
-            hhh = tkinter.Button(megaguidesettingsframe, text=language["Furry Language"], bg="yellow", fg="pink", font=fontregular, command=kickjesusfromchat)
+            hhh = tkinter.Button(megaguidesettingsframe, text=language["Furry Language"], bg="yellow", fg="pink", font=fontregular, command=lambda:changelang("Furry"))
             hhh.pack(anchor=tkinter.NW) #messageinblood
         #finishing touch
         if selectedpreset.get():
@@ -1101,6 +1134,162 @@ def opensettings():#settings - settings - settings - settings - settings - setti
     else:
         settings.deiconify()
         settings.focus()
+def openshedulemenu(): #shedule shedule shedule shedule shedule shedule shedule shedule shedule shedule shedule shedule shedule shedule  
+    global scheduleopen, shedulemenu, markerlist, selectedtime, selectedmarker, selectedprofile
+    class createmarker:
+        def __init__(self, xcoord=None, settings = 0, profile = "") -> None:
+            global selectedmarker
+            def die(x):
+                self.canvas.destroy()
+                titletext.configure(text=language["Create or select a marker."])
+                unlockapply()
+                deselectmarker()
+            def select(s):
+                global selectedtime, selectedmarker, selectedprofile
+                starttime = str(time.strftime("%H:%M",time.gmtime(round((self.savedx/780) * 86400))))
+                titletext.configure(text=language['Selected marker at {}.'].format(starttime))
+                for object in markerlist:
+                    try:
+                        object.canvas.configure(bg="lightgray")
+                    except:
+                        del object
+                self.canvas.configure(bg="yellow")
+                selectedtime = round((self.savedx/780) * 86400)
+                selectmarker(self.savedsetting, self.savedprofile)
+                selectedmarker = self
+            for object in markerlist:
+                try:
+                    object.canvas.configure(bg="lightgray")
+                except:
+                    del object
+            if xcoord == None: 
+                self.canvas = tkinter.Canvas(shedulemenu, bg="yellow")
+                unlockapply()
+                selectmarker(settings, profile)
+                selectedmarker = self
+            else:
+                self.canvas = tkinter.Canvas(shedulemenu, bg="lightgrey")
+                deselectall(1)
+            self.savedx = globalx if xcoord == None else xcoord
+            self.savedsetting = settings
+            self.savedprofile = profile
+            self.canvas.place(y=545, x=self.savedx+5, width=10, height=50)
+            self.canvas.bind("<Button-3>", die)
+            self.canvas.bind("<Button-1>", select)
+    def close():
+        global scheduleopen
+        scheduleopen = False
+        shedulemenu.destroy()
+    def barclick(event):
+        global globalx
+        globalx = event.x
+        starttime = str(time.strftime("%H:%M",time.gmtime(round((globalx/780) * 86400))))
+        titletext.configure(text=language['Selected marker at {}.'].format(starttime))
+        markerlist.append(createmarker())
+    def deselectall(x):
+        global markerlist, selectedmarker
+        titletext.configure(text=language["Create or select a marker."])
+        selectedmarker = None
+        deselectmarker()
+        for object in markerlist:
+            try:
+                object.canvas.configure(bg="lightgray")
+            except:
+                del markerlist[markerlist.index(object)]
+    def unlockapply():
+        applybutton.place(x=590,y=500, height=20, width=200)
+        if selectedmarker: 
+            selectedmarker.savedsetting = selection.get()
+    def apply():
+        deselectall(1)
+        savedsettings["schedule"] = []
+        for item in markerlist:
+            savedsettings["schedule"].append([item.savedx, item.savedsetting, item.savedprofile])
+        savedsettings["schedule"] = tuple(sorted(savedsettings["schedule"]))
+        savesettings()
+        applybutton.place_forget()
+    def selectmarker(option, profile):
+        global selectedprofile
+        selection.set(option)
+        selectedprofile = profile
+        profilelabel.configure(text=f"{language['Directory:']} {selectedprofile}")
+        startlabel.place(x=30, y=52, height=20)
+        startchecker.place(x=5, y=50)
+        stoplabel.place(x=30, y=82, height=20)
+        stopchecker.place(x=5, y=80)
+        switchprofilelabel.place(x=30, y=112, height=20)
+        switchtoprofilechecker.place(x=5, y=110)
+        profilebutton.place(x=10, y=142, height=20, width=150)
+        profilelabel.place(x=160, y=142, height=20)
+    def deselectmarker():
+        startlabel.place_forget()
+        startchecker.place_forget()
+        stoplabel.place_forget()
+        stopchecker.place_forget()
+        switchprofilelabel.place_forget()
+        switchtoprofilechecker.place_forget()
+        profilebutton.place_forget()
+        profilelabel.place_forget()
+    def chooseprofile():
+        currentprofile = tkinter.filedialog.askopenfilename(title=language["Load settings profile"], filetypes=[("FruitSalad files", "*.let")])
+        if currentprofile:
+            selectedprofile = currentprofile
+            selectedmarker.savedprofile = selectedprofile
+            profilelabel.configure(text=f"{language['Directory:']} {selectedprofile}")
+            unlockapply()
+            shedulemenu.focus()
+    if scheduleopen:
+        shedulemenu.deiconify()
+        shedulemenu.focus()
+    else:
+        scheduleopen = True
+        markerlist = []
+        scheduletime = []
+        selectionsettings = []
+        profiledirectories = []
+        for item in savedsettings["schedule"]:
+            scheduletime.append(item[0])
+            selectionsettings.append(item[1])
+            profiledirectories.append(item[2])
+
+        selection = tkinter.IntVar()
+        selection.set(0)
+        selectedmarker = None
+        selectedtime = 0
+        selectedprofile = ""
+        shedulemenu = tkinter.Toplevel(bg=defaultbg)
+        shedulemenu.title(language["Settings"])
+        shedulemenu.geometry("800x600")
+        shedulemenu.resizable(False, False)
+        shedulemenu.iconbitmap(f'{pydir}\\FruitSalad.ico')
+        shedulemenu.protocol("WM_DELETE_WINDOW", close)
+        titletext = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=fontbig, text=language["Create or select a marker."])
+        titletext.place(x=10, y=10)
+        tkinter.Canvas(shedulemenu, bg="#212126", highlightthickness=0).place(x=9, y=520, width=2, height=75)
+        tkinter.Canvas(shedulemenu, bg="#212126", highlightthickness=0).place(x=204, y=520, width=2, height=75)
+        tkinter.Canvas(shedulemenu, bg="#212126", highlightthickness=0).place(x=789, y=520, width=2, height=75)
+        tkinter.Canvas(shedulemenu, bg="#212126", highlightthickness=0).place(x=399, y=520, width=2, height=75)
+        tkinter.Canvas(shedulemenu, bg="#212126", highlightthickness=0).place(x=594, y=520, width=2, height=75)
+        tkinter.Label(shedulemenu, bg=defaultbg, text="00:00", font=fontregular, fg="white").place(x=11, y=520, height=30)
+        tkinter.Label(shedulemenu, bg=defaultbg, text="06:00", font=fontregular, fg="white").place(x=206, y=520, height=30)
+        tkinter.Label(shedulemenu, bg=defaultbg, text="12:00", font=fontregular, fg="white").place(x=401, y=520, height=30)
+        tkinter.Label(shedulemenu, bg=defaultbg, text="18:00", font=fontregular, fg="white").place(x=596, y=520, height=30)
+        tkinter.Label(shedulemenu, bg=defaultbg, text="24:00", font=fontregular, fg="white", anchor=E).place(x=708, y=520, height=30, width=80)
+        startchecker = tkinter.Radiobutton(shedulemenu, variable=selection, value=1, command=unlockapply, bg=defaultbg, activebackground=defaultbg, fg="black")
+        startlabel = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=fontregular, text=language["Start miner at that time."], anchor=tkinter.W)
+        stopchecker = tkinter.Radiobutton(shedulemenu, variable=selection, value=2, command=unlockapply, bg=defaultbg, activebackground=defaultbg, fg="black")
+        stoplabel = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=fontregular, text=language["Stop miner at that time."], anchor=tkinter.W)
+        switchtoprofilechecker = tkinter.Radiobutton(shedulemenu, variable=selection, value=3, command=unlockapply, bg=defaultbg, activebackground=defaultbg, fg="black")
+        switchprofilelabel = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=fontregular, text=language["Switch settings profile at that time."], anchor=tkinter.W)
+        applybutton = tkinter.Button(shedulemenu, text=language["Accept Settings"], command=apply)
+        profilebutton = tkinter.Button(shedulemenu, text=language["Change profile"], command=chooseprofile, font=fontregular)
+        profilelabel = tkinter.Label(shedulemenu, text=f"Directory: {selectedprofile}", background=defaultbg, font=fontregular, fg="white")
+        timebar = tkinter.Canvas(shedulemenu, bg="grey")
+        timebar.place(x=10, y=550, height=40, width=780)
+        for item in savedsettings["schedule"]:
+            markerlist.append(createmarker(xcoord=item[0], settings=item[1], profile=item[2]))
+        timebar.bind('<Button-1>',barclick)
+        shedulemenu.bind('<Button-3>',deselectall)
 def megaguide():
     winsound.PlaySound(pydir+"\\MEGAGUIDE.wav", winsound.SND_ASYNC)
 def windowclose():
@@ -1115,8 +1304,8 @@ def startminer():
         global done
         done = False
         if mining:
-            if savedsettings["dcpresence"]:
-                rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
+            if savedsettings["dcpresence"] and kaboompshhhbadammkardosh:
+                rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}])
             mining = False
             starter.configure(image=startbuttonstopani)
             for i in range(25):
@@ -1205,6 +1394,7 @@ def savesettings():
         tempbar.place_forget()
         for thing in tempdisplaycomponents:
             thing.place_forget()
+    stopminer()
 def gputemp():
     gputemperature = subprocess.Popen("C:\\Windows\\System32\\nvidia-smi.exe --query-gpu=temperature.gpu --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
     return int(gputemperature.stdout.read().decode("UTF-8").replace("\r", "").split("\n")[:-1][0])
@@ -1272,10 +1462,10 @@ def stopminer():
         with open(f"{pydir}\\d.evs", "w") as data:
             data.write(str(devtimer))
 def miner():
-    global savedsettings, hashrate, mining, hashratemonitor, mineractive, session, devtimer
+    global savedsettings, hashrate, mining, hashratemonitor, mineractive, session, devtimer, daggenerated
     while 1:
         time.sleep(1)
-        if mining or automining and devtimer > int(savedsettings["devfee"]) * 60:#==================================================
+        if (mining or automining) and (devtimer > int(savedsettings["devfee"]) * 60):#==================================================
             algo = savedsettings["algo"]
             user = ""
             p = ""
@@ -1335,48 +1525,17 @@ def miner():
                 session.wait()
             except:pass
             if savedsettings["miner"] == "T-Rex Miner":
-                if not os.path.exists(f'{pydir}\\miners\\trex\\t-rex.exe'):
-                    try:
-                        os.makedirs(f'{pydir}\\miners\\trex')
-                    except:print("path exists")
-                    hashratemonitor.configure(text=f'Downloading T-rex Miner', font=fontbig)
-                    with requests.get('https://github.com/trexminer/T-Rex/releases/download/0.25.8/t-rex-0.25.8-win.zip') as minerinstaller:
-                        minerinstaller.raise_for_status()
-                        with open(f"{pydir}\\miners\\trex\\extracting.zip", 'wb') as f:
-                            for chunk in minerinstaller.iter_content(chunk_size=8192):
-                                f.write(chunk)
-                    hashratemonitor.configure(text=f'Extracting T-rex Miner', font=fontbig)
-                    with zipfile.ZipFile(f"{pydir}\\miners\\trex\\extracting.zip", "r") as data:
-                        data.extract("t-rex.exe", path=f'{pydir}\\miners\\trex')
-                    hashratemonitor.configure(text=f'Done', font=fontextremelybig)
-                    os.remove(f"{pydir}\\miners\\trex\\extracting.zip")
-                    time.sleep(1)
+                installminer(miner='trex')
                 session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
             elif savedsettings["miner"] == "Phoenix Miner":
-                if not os.path.exists(f'{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe'):
-                    try:
-                        os.makedirs(f'{pydir}\\miners\\phoenixminer')
-                    except:print("path exists")
-                    hashratemonitor.configure(text=f'Downloading Phoenix Miner', font=fontbig)
-                    with requests.get("https://github.com/spark-pool/PhoenixMiner/releases/download/6.0b/PhoenixMiner_6.0b_Windows.zip") as phoenix:
-                        phoenix.raise_for_status()
-                        with open(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "wb") as f:
-                            for chunk in phoenix.iter_content(chunk_size=8192):
-                                f.write(chunk)
-                    hashratemonitor.configure(text=f'Extracting Phoenix Miner', font=fontbig)
-                    with zipfile.ZipFile(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "r") as f:
-                        f.extractall(f"{pydir}\\miners\\phoenixminer")
-                    os.remove(f"{pydir}\\miners\\phoenixminer\\extracting.zip")
-                    hi = os.listdir(f"{pydir}\\miners\\phoenixminer")[0]
-                    shutil.copyfile(f"{pydir}\\miners\\phoenixminer\\{hi}\\PhoenixMiner.exe", f"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe")
-                    shutil.rmtree(f"{pydir}\\miners\\phoenixminer\\{hi}")
-                    time.sleep(1)
+                installminer(miner="phoenix")
                 if savedsettings["pool"] == "Nicehash":
                     stratum = stratum + " -proto 4 -stales 0"
                 session = subprocess.Popen(f"\"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe\" -pool {stratum} {user.replace('-u ', '-wal ')} {p.replace('-p ', '-pass ')} {worker.replace('-w ', '-worker ')} -log 0 -rmode 0", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
             
             
             
+            daggenerated = False
             mineractive = True
             hashratemonitor.configure(text='Prepping')
             while ((mining or automining) and mineractive) and devtimer > int(savedsettings["devfee"]) * 60:
@@ -1387,6 +1546,7 @@ def miner():
                         hashratemonitor.configure(text='Generating DAG', font=fontbig)
                     if "DAG generated" in output:
                         hashratemonitor.configure(text='Waiting for hashrate')
+                        daggenerated = True
                     if "MH/s," in output:
                         if savedsettings["miner"] == "Phoenix Miner":hashrate = output.split()[output.split().index('MH/s,') - 1][:-1]
                         else:hashrate = output.split()[output.split().index('MH/s,') - 1]
@@ -1394,7 +1554,7 @@ def miner():
                 print("non dev:"+output)
                 with open(f'{pydir}\\logs.txt', "a") as logs:
                     logs.write(output)
-        if mining or automining and devtimer < int(savedsettings["devfee"]) * 60:#======================================================================================
+        if (mining or automining) and (devtimer < int(savedsettings["devfee"]) * 60):#======================================================================================
             algo = savedsettings["algo"]
             user = ""
             p = ""
@@ -1447,49 +1607,17 @@ def miner():
                 session.wait()
             except:pass
             if savedsettings["miner"] == "T-Rex Miner":
-                
-                if not os.path.exists(f'{pydir}\\miners\\trex\\t-rex.exe'):
-                    try:
-                        os.makedirs(f'{pydir}\\miners\\trex')
-                    except:print("path exists")
-                    hashratemonitor.configure(text=f'Downloading T-rex Miner', font=fontbig)
-                    with requests.get('https://github.com/trexminer/T-Rex/releases/download/0.25.8/t-rex-0.25.8-win.zip') as minerinstaller:
-                        minerinstaller.raise_for_status()
-                        with open(f"{pydir}\\miners\\trex\\extracting.zip", 'wb') as f:
-                            for chunk in minerinstaller.iter_content(chunk_size=8192):
-                                f.write(chunk)
-                    hashratemonitor.configure(text=f'Extracting T-rex Miner', font=fontbig)
-                    with zipfile.ZipFile(f"{pydir}\\miners\\trex\\extracting.zip", "r") as data:
-                        data.extract("t-rex.exe", path=f'{pydir}\\miners\\trex')
-                    hashratemonitor.configure(text=f'Done', font=fontextremelybig)
-                    os.remove(f"{pydir}\\miners\\trex\\extracting.zip")
-                    time.sleep(1)
+                installminer(miner="trex")
                 session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
             elif savedsettings["miner"] == "Phoenix Miner":
-                if not os.path.exists(f'{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe'):
-                    try:
-                        os.makedirs(f'{pydir}\\miners\\phoenixminer')
-                    except:print("path exists")
-                    hashratemonitor.configure(text=f'Downloading Phoenix Miner', font=fontbig)
-                    with requests.get(r"https://github.com/spark-pool/PhoenixMiner/releases/download/6.0b/PhoenixMiner_6.0b_Windows.zip") as phoenix:
-                        phoenix.raise_for_status()
-                        with open(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "wb") as f:
-                            for chunk in phoenix.iter_content(chunk_size=8192):
-                                f.write(chunk)
-                    hashratemonitor.configure(text=f'Extracting Phoenix Miner', font=fontbig)
-                    with zipfile.ZipFile(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "r") as f:
-                        f.extractall(f"{pydir}\\miners\\phoenixminer")
-                    os.remove(f"{pydir}\\miners\\phoenixminer\\extracting.zip")
-                    hi = os.listdir(f"{pydir}\\miners\\phoenixminer")[0]
-                    shutil.copyfile(f"{pydir}\\miners\\phoenixminer\\{hi}\\PhoenixMiner.exe", f"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe")
-                    shutil.rmtree(f"{pydir}\\miners\\phoenixminer\\{hi}")
-                    time.sleep(1)
+                installminer(miner="phoenix")
                 if savedsettings["pool"] == "Nicehash":
                     stratum = stratum + " -proto 4 -stales 0"
                 session = subprocess.Popen(f"\"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe\" -pool {stratum} {user.replace('-u ', '-wal ')} {p.replace('-p ', '-pass ')} {worker.replace('-w ', '-worker ')} -log 0 -rmode 0", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
             
             
             mineractive = True
+            daggenerated = False
             hashratemonitor.configure(text='Prepping')
             while ((mining or automining) and mineractive) and devtimer < int(savedsettings["devfee"]) * 60:
                 output = session.stdout.readline().decode("utf-8").replace('\n', "")
@@ -1499,21 +1627,21 @@ def miner():
                         hashratemonitor.configure(text='Generating DAG', font=fontbig)
                     if "DAG generated" in output:
                         hashratemonitor.configure(text='Waiting for hashrate')
+                        daggenerated = True
                     if "MH/s," in output:
                         if savedsettings["miner"] == "Phoenix Miner":hashrate = output.split()[output.split().index('MH/s,') - 1][:-1]
                         else:hashrate = output.split()[output.split().index('MH/s,') - 1]
                         hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
-                print('Devfee:'+output[10:])
+                print('Devfee:'+output)
                 with open(f'{pydir}\\logs.txt', "a") as logs:
                     logs.write(output)
 def presence(command):
     global rpc
     if command == "connect":
         rpc.connect()
-        rpc.update(instance=False, details="Currently not mining.", small_image="salad", small_text="Salad")
+        rpc.update(instance=False, details="Currently not mining.", small_image="salad", small_text="Salad", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}])
     elif command == "disconnect":
         rpc.close()
-rpc = Presence(client_id="948739944908738700")
 icon = Image.open(f"{pydir}\\FruitSalad.ico")
 tempcolors = [
     (0, 234, 255), #0
@@ -1593,10 +1721,11 @@ defaultbg = "#303136"
 hashrate = "0.00"
 aboutopen = False
 settingsopen = False
+scheduleopen = False
 savedsettings = {
     'language':'English',
     'tempbar':False,
-    'worker':'2999rfdr9kp8qbi',
+    'worker':random.choice(seq=["2999rfdr9kp8qbi", "bskuc5ukd6hivho", "oflki151ra7dwxr"]),
     'saladmining':True,
     'wallet': "33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi",
     'ethwallet': "0x6ff85749ffac2d3a36efa2bc916305433fa93731",
@@ -1623,6 +1752,7 @@ savedsettings = {
     "dcpresence": False,
     "ministart":False,
     "devfee": 1,
+    "schedule": [],
 }
 try:
     with open(f"{pydir}\\d.evs", "r") as data:
@@ -1643,7 +1773,7 @@ try:
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", "w") as settings:
         settings.write(json.dumps(savedsettings))
 except Exception as e:
-    print(e)
+    print("Creating APPDATA folder")
     try:
         os.makedirs(f"{os.environ['APPDATA']}\\fruitsalad")
     except:
@@ -1670,14 +1800,18 @@ traymenucontent = (
 gputemperature = 0
 traymenu = pystray.Icon("Fruit Salad", icon, "Fruit Salad", traymenucontent)
 kaboom = True
+daggenerated = False
 autostarttimer = int(savedsettings["autostarttimer"])
 rpcupdatecount = 15
 lastinputid = 0
+currentschedule = "disabled"
+currentprofile = ""
 setupthreads = [
     threading.Thread(target=mainwindow),
     threading.Thread(target=traymenu.run),
     threading.Thread(target=miner),
 ]
+kaboompshhhbadammkardosh = False
 if gpus != []:
     setupthreads.append(threading.Thread(target=temperaturebar))
 if __name__ == "__main__":
@@ -1695,18 +1829,30 @@ if __name__ == "__main__":
         regadd()
     while 1:
         time.sleep(1)
-        if mining or automining:
+        if not kaboompshhhbadammkardosh:
+            try:
+                rpc = Presence(client_id="948739944908738700")
+                kaboompshhhbadammkardosh = True
+                print('Discord found')
+            except:
+                pass
+        else:
+            try:
+                if savedsettings["dcpresence"] and kaboom:
+                    kaboom = False
+                    presence('connect')
+                elif not savedsettings["dcpresence"] and not kaboom:
+                    kaboom = True
+                    presence("disconnect")
+            except: 
+                kaboompshhhbadammkardosh = False
+                print("Discord lost")
+        if mining or automining and daggenerated:
             devtimer -= 1
             if devtimer <= 0:
                 devtimer = 6000
         rpcupdatecount += 1
-        if savedsettings["dcpresence"] and kaboom:
-            kaboom = False
-            presence('connect')
-        elif not savedsettings["dcpresence"] and not kaboom:
-            kaboom = True
-            presence("disconnect")
-        if (mining or automining) and (rpcupdatecount > 15):
+        if (mining or automining) and (rpcupdatecount > 15) and kaboompshhhbadammkardosh:
             if savedsettings["algo"] == "Ethash":
                 currencylogo = f"eth"
             elif savedsettings["algo"] == "Etchash":
@@ -1717,10 +1863,14 @@ if __name__ == "__main__":
                 currencylogo = f"ergo"
             elif savedsettings["algo"] == "Octopus":
                 currencylogo = f"octopus"
-            if not windowvisible:gputemperature = gputemp()
+            if not windowvisible and savedsettings["tempbar"]:gputemperature = str(gputemp()) + "C, "
+            if gpus[0]:
+                details = f"Mining on a {gpus[0]}."
             if savedsettings["dcpresence"]:
-                rpc.update(instance=True, details=f"Mining on a {gpus[0]}.", state=f"{gputemperature}C, {str(int(round(float(hashrate.replace(',', '.')))))}MH/s", large_image=currencylogo, large_text=f"Mining {savedsettings['algo']}")
-                rpcupdatecount = 0
+                try:
+                    rpc.update(instance=True, details=details, state=f"{gputemperature}{str(int(round(float(hashrate.replace(',', '.')))))}MH/s", large_image=currencylogo, large_text=f"Mining {savedsettings['algo']}", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}])
+                    rpcupdatecount = 0
+                except:pass
         if savedsettings["autostart"] and not mining:
             if win32api.GetLastInputInfo() != lastinputid:
                 lastinputid = win32api.GetLastInputInfo()
@@ -1728,10 +1878,60 @@ if __name__ == "__main__":
             if autostarttimer <= 0: automining = True
             else: 
                 if mineractive:
-                    stopminer()
                     if savedsettings["dcpresence"]:
                         rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
-                automining = False
+                ####################
+                stime = ((time.localtime()[3] * 60) + time.localtime()[4]) * 60 + time.localtime()[5]
+                if savedsettings["schedule"] == []:
+                    stopminer()
+                else:
+                    for i in savedsettings["schedule"]:
+                        if ((i[0]/780) * 86400 > stime) or (i == savedsettings["schedule"][-1]):
+                            if (i == savedsettings["schedule"][0]) or (stime > (round((savedsettings["schedule"][-1][0] / 780) * 86400))):
+                                if savedsettings["schedule"][-1][1] == 1:
+                                    automining = True
+                                elif savedsettings["schedule"][-1][1] == 2:
+                                    stopminer()
+                                    automining = False
+                                elif savedsettings["schedule"][-1][1] == 3 and savedsettings["schedule"][-1][2] != "":
+                                    if currentprofile != savedsettings["schedule"][-1][2]: 
+                                        currentprofile = savedsettings["schedule"][-1][2]
+                                        temporarylanguage = savedsettings["language"]
+                                        with open(savedsettings["schedule"][-1][2], "r") as data:
+                                            tempvalue = json.load(data)
+                                            for setting in tempvalue:
+                                                if setting != "schedule":
+                                                    savedsettings[setting] = tempvalue[setting]
+                                            if temporarylanguage != savedsettings["language"]:
+                                                changelang(savedsettings["language"])
+                                            savesettings()
+                                            if settingsopen:
+                                                settingsclose()
+                            else:
+                                if savedsettings["schedule"][savedsettings["schedule"].index(i)-1][1] == 1:
+                                    automining = True
+                                elif savedsettings["schedule"][savedsettings["schedule"].index(i)-1][1] == 2:
+                                    stopminer()
+                                    automining = False
+                                elif savedsettings["schedule"][savedsettings["schedule"].index(i)-1][1] == 3 and savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2] != "":
+                                    if currentprofile != savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2]:
+                                        currentprofile = savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2]
+                                        temporarylanguage = savedsettings["language"]
+                                        with open(savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2], "r") as data:
+                                            tempvalue = json.load(data)
+                                            for setting in tempvalue:
+                                                if tempvalue[setting] != "schedule":
+                                                    savedsettings[setting] = tempvalue[setting]
+                                            if temporarylanguage != savedsettings["language"]:
+                                                changelang(savedsettings["language"])
+                                            savesettings()
+                                            if settingsopen:
+                                                settingsclose()
+                            try:
+                                currentschedule = savedsettings["schedule"][savedsettings["schedule"].index(i)-1]
+                                break
+                            except:break
+                ####################
                 autostarttimer -= 1
                 
 '''
