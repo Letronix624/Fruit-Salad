@@ -1,6 +1,6 @@
-version = "0.3.0"
+version = "0.3.1"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil, random
-from tkinter import E, W, Y, ttk
+from tkinter import E, W, Y
 from pypresence import Presence
 from PIL import ImageTk, Image
 from pystray import MenuItem as item
@@ -650,7 +650,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             savedsettings['autostarttimer'] = int(givenstarttime.get())
             presetshitfters[1].configure(text=str(savedsettings['autostarttimer']))
         if savedsettings['presetonoff']:
-            preset(savedsettings["preset"])
             if savedsettings['oc']:
                 selectedoc.set(True)
                 usecustomargscheck.select()
@@ -672,10 +671,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         manualworkergetterb.configure(state="normal")
         editwalletadress.configure(state="normal")
         presetshitfters[2].configure(state="normal")
-        globalalgo.configure(text=f"{language['Algo:']} {savedsettings['algo']}")
-        globalminer.configure(text=f"{language['Miner:']} {savedsettings['miner']}")
-        globalpool.configure(text=f"{language['Pool:']} {savedsettings['pool']}")
-        globalregion.configure(text=f"{language['Region:']} {savedsettings['region']}")
         prelabel.place(x=10, y=45, height=20, width=100)
         prolabel.place(x=5, y=45, width=250, height=20)
         presetshitfters[1].place(x=210, y=130 + presetshift, width=35, height=24)
@@ -1362,6 +1357,12 @@ def restart():
     os._exit(0)
 def savesettings():
     global tempdisplaycomponents
+    if savedsettings['presetonoff']:
+        preset(savedsettings["preset"])
+    globalalgo.configure(text=f"{language['Algo:']} {savedsettings['algo']}")
+    globalminer.configure(text=f"{language['Miner:']} {savedsettings['miner']}")
+    globalpool.configure(text=f"{language['Pool:']} {savedsettings['pool']}")
+    globalregion.configure(text=f"{language['Region:']} {savedsettings['region']}")
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
         settings.write(json.dumps(savedsettings))
     if savedsettings["tempbar"]:
@@ -1457,7 +1458,7 @@ def stopminer():
         hashratemonitor.configure(text='Stopping', font=fontextremelybig)
         session.send_signal(signal.CTRL_BREAK_EVENT)
         session.wait()
-        hashratemonitor.configure(text='0 MH/s')
+        hashratemonitor.configure(text='0.00 MH/s', font=fontextremelybig)
         mineractive = False
         with open(f"{pydir}\\d.evs", "w") as data:
             data.write(str(devtimer))
@@ -1806,6 +1807,7 @@ rpcupdatecount = 15
 lastinputid = 0
 currentschedule = "disabled"
 currentprofile = ""
+possibleschedule = False
 setupthreads = [
     threading.Thread(target=mainwindow),
     threading.Thread(target=traymenu.run),
@@ -1863,12 +1865,12 @@ if __name__ == "__main__":
                 currencylogo = f"ergo"
             elif savedsettings["algo"] == "Octopus":
                 currencylogo = f"octopus"
-            if not windowvisible and savedsettings["tempbar"]:gputemperature = str(gputemp()) + "C, "
+            if not windowvisible and savedsettings["tempbar"]:gputemperature = str(gputemp())
             if gpus[0]:
                 details = f"Mining on a {gpus[0]}."
             if savedsettings["dcpresence"]:
                 try:
-                    rpc.update(instance=True, details=details, state=f"{gputemperature}{str(int(round(float(hashrate.replace(',', '.')))))}MH/s", large_image=currencylogo, large_text=f"Mining {savedsettings['algo']}", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}])
+                    rpc.update(instance=True, details=details, state=f"{gputemperature}C {str(int(round(float(hashrate.replace(',', '.')))))}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}], large_image="fruitsaladdark", large_text=f"Using {savedsettings['miner']}")
                     rpcupdatecount = 0
                 except:pass
         if savedsettings["autostart"] and not mining:
@@ -1882,55 +1884,63 @@ if __name__ == "__main__":
                         rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
                 ####################
                 stime = ((time.localtime()[3] * 60) + time.localtime()[4]) * 60 + time.localtime()[5]
-                if savedsettings["schedule"] == []:
+                if savedsettings["schedule"] == () or savedsettings["schedule"] == []:
                     stopminer()
+                    automining = False
                 else:
                     for i in savedsettings["schedule"]:
-                        if ((i[0]/780) * 86400 > stime) or (i == savedsettings["schedule"][-1]):
-                            if (i == savedsettings["schedule"][0]) or (stime > (round((savedsettings["schedule"][-1][0] / 780) * 86400))):
-                                if savedsettings["schedule"][-1][1] == 1:
-                                    automining = True
-                                elif savedsettings["schedule"][-1][1] == 2:
-                                    stopminer()
-                                    automining = False
-                                elif savedsettings["schedule"][-1][1] == 3 and savedsettings["schedule"][-1][2] != "":
-                                    if currentprofile != savedsettings["schedule"][-1][2]: 
-                                        currentprofile = savedsettings["schedule"][-1][2]
-                                        temporarylanguage = savedsettings["language"]
-                                        with open(savedsettings["schedule"][-1][2], "r") as data:
-                                            tempvalue = json.load(data)
-                                            for setting in tempvalue:
-                                                if setting != "schedule":
-                                                    savedsettings[setting] = tempvalue[setting]
-                                            if temporarylanguage != savedsettings["language"]:
-                                                changelang(savedsettings["language"])
-                                            savesettings()
-                                            if settingsopen:
-                                                settingsclose()
-                            else:
-                                if savedsettings["schedule"][savedsettings["schedule"].index(i)-1][1] == 1:
-                                    automining = True
-                                elif savedsettings["schedule"][savedsettings["schedule"].index(i)-1][1] == 2:
-                                    stopminer()
-                                    automining = False
-                                elif savedsettings["schedule"][savedsettings["schedule"].index(i)-1][1] == 3 and savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2] != "":
-                                    if currentprofile != savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2]:
-                                        currentprofile = savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2]
-                                        temporarylanguage = savedsettings["language"]
-                                        with open(savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2], "r") as data:
-                                            tempvalue = json.load(data)
-                                            for setting in tempvalue:
-                                                if tempvalue[setting] != "schedule":
-                                                    savedsettings[setting] = tempvalue[setting]
-                                            if temporarylanguage != savedsettings["language"]:
-                                                changelang(savedsettings["language"])
-                                            savesettings()
-                                            if settingsopen:
-                                                settingsclose()
-                            try:
-                                currentschedule = savedsettings["schedule"][savedsettings["schedule"].index(i)-1]
-                                break
-                            except:break
+                        if i[1]==1 or i[1]==2:possibleschedule=True
+                        else:possibleschedule=False
+                    if possibleschedule:
+                        for i in savedsettings["schedule"]:
+                            if ((i[0]/780) * 86400 > stime) or (i == savedsettings["schedule"][-1]):
+                                if (i == savedsettings["schedule"][0]) or (stime > (round((savedsettings["schedule"][-1][0] / 780) * 86400))):
+                                    if savedsettings["schedule"][-1][1] == 1:
+                                        automining = True
+                                    elif savedsettings["schedule"][-1][1] == 2:
+                                        stopminer()
+                                        automining = False
+                                    elif savedsettings["schedule"][-1][1] == 3 and savedsettings["schedule"][-1][2] != "":
+                                        if currentprofile != savedsettings["schedule"][-1][2]: 
+                                            currentprofile = savedsettings["schedule"][-1][2]
+                                            temporarylanguage = savedsettings["language"]
+                                            with open(savedsettings["schedule"][-1][2], "r") as data:
+                                                tempvalue = json.load(data)
+                                                for setting in tempvalue:
+                                                    if setting != "schedule":
+                                                        savedsettings[setting] = tempvalue[setting]
+                                                if temporarylanguage != savedsettings["language"]:
+                                                    changelang(savedsettings["language"])
+                                                savesettings()
+                                                if settingsopen:
+                                                    settingsclose()
+                                else:
+                                    if savedsettings["schedule"][savedsettings["schedule"].index(i)-1][1] == 1:
+                                        automining = True
+                                    elif savedsettings["schedule"][savedsettings["schedule"].index(i)-1][1] == 2:
+                                        stopminer()
+                                        automining = False
+                                    elif savedsettings["schedule"][savedsettings["schedule"].index(i)-1][1] == 3 and savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2] != "":
+                                        if currentprofile != savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2]:
+                                            currentprofile = savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2]
+                                            temporarylanguage = savedsettings["language"]
+                                            with open(savedsettings["schedule"][savedsettings["schedule"].index(i)-1][2], "r") as data:
+                                                tempvalue = json.load(data)
+                                                for setting in tempvalue:
+                                                    if tempvalue[setting] != "schedule":
+                                                        savedsettings[setting] = tempvalue[setting]
+                                                if temporarylanguage != savedsettings["language"]:
+                                                    changelang(savedsettings["language"])
+                                                savesettings()
+                                                if settingsopen:
+                                                    settingsclose()
+                                try:
+                                    currentschedule = savedsettings["schedule"][savedsettings["schedule"].index(i)-1]
+                                    break
+                                except:break
+                    else:
+                        automining = False
+                        stopminer()
                 ####################
                 autostarttimer -= 1
                 
