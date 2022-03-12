@@ -1,0 +1,230 @@
+[16:37:12] INFO - ----------------------------------------------
+[16:37:12] INFO - |                                            |
+[16:37:12] INFO - |                                            |
+[16:37:12] INFO - |                                            |
+[16:37:12] INFO - |                                            |
+[16:37:12] INFO - |                                            |
+[16:37:12] INFO - |                                            |
+[16:37:12] INFO - |                                            |
+[16:37:12] INFO - |         NBMiner - Crypto GPU Miner         |
+[16:37:12] INFO - |                    40.1                    |
+[16:37:12] INFO - |                                            |
+[16:37:12] INFO - ----------------------------------------------
+[16:37:12] INFO - ------------------- System -------------------
+[16:37:12] INFO - OS:     Windows 10 Version 2009, 10.0.19044
+[16:37:12] INFO - CPU:    AMD Ryzen 5 3600 6-Core Processor              
+[16:37:12] INFO - RAM:    8854 MB / 16310 MB
+[16:37:12] INFO - VMEM:   9686 MB / 20022 MB
+[16:37:12] INFO - CU_DRV: 11.3, 470.05
+[16:37:12] INFO - ------------------- Config -------------------
+[16:37:12] INFO - ALGO:   ethash
+[16:37:12] INFO - URL:    stratum+tcp://daggerhashimoto.eu-west.nicehash.com:3353
+[16:37:12] INFO - USER:   33kJvAUL3Na2ifFDGmUPsZLTyDUBGZLhAi.2999rfdr9kp8qbi
+[16:37:12] INFO - TEMP:   limit 90C, start 85C
+[16:37:12] INFO - ------------------- Device -------------------
+[16:37:12] INFO -  |ID|PCI|  CC|Memory|CU|
+[16:37:12] INFO - *| 0| 43|  86|12288M|28| NVIDIA GeForce RTX 3060 LHR v1
+[16:37:12] INFO - ------------------ OverClock -----------------
+[16:37:12] INFO - |ID|PCI|Device|PwrLmt|CVolt|CClock|MClock|Fan|
+[16:37:12] INFO - | 0| 43|  3060|   119|     |  -200| +1500|   |
+[16:37:12] INFO - ----------------------------------------------
+[16:37:12] INFO - ethash - Logging in to daggerhashimoto.eu-west.nicehash.com(2606:4700:90:0:c108:fb79:735d:9a55):3353 ...
+[16:37:12] INFO - Set extranonce: e7698c
+[16:37:12] INFO - ethash - Login succeeded.
+[16:37:12] INFO - API:  0.0.0.0:22333
+[16:37:12] INFO - API server started.
+[16:37:12] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59650, DIFF: 1.128G
+[16:37:13] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59651, DIFF: 1.128G
+[16:37:14] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59652, DIFF: 1.128G
+[16:37:14] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59653, DIFF: 1.128G
+[16:37:15] INFO - Device 0 started, Free mem = 11282 MB.
+[16:37:15] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59654, DIFF: 1.128G
+[16:37:15] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59655, DIFF: 1.128G
+[16:37:15] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59656, DIFF: 1.128G
+[16:37:15] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59657, DIFF: 1.128G
+[16:37:16] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59658, DIFF: 1.128G
+[16:37:16] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59659, DIFF: 1.128G
+[16:37:17] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5965a, DIFF: 1.128G
+[16:37:17] INFO - Light cache built, 2.45 s.
+[16:37:17] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5965b, DIFF: 1.128G
+[16:37:17] INFO - Device 0: DAG - Building, EPOCH 479
+[16:37:18] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5965c, DIFF: 1.128G
+[16:37:18] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5965d, DIFF: 1.128G
+[16:37:18] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5965e, DIFF: 1.128G
+[16:37:19] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5965f, DIFF: 1.128G
+[16:37:20] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59660, DIFF: 1.128G
+[16:37:21] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59661, DIFF: 1.128G
+[16:37:22] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59662, DIFF: 1.128G
+[16:37:23] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59663, DIFF: 1.128G
+[16:37:24] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59664, DIFF: 1.128G
+[16:37:25] INFO - Device 0: DAG - Built, 7.21 s.
+[16:37:25] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59665, DIFF: 1.128G
+[16:37:25] INFO - Device 0: DAG - Verification ok.
+[16:37:26] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59666, DIFF: 1.128G
+[16:37:26] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59667, DIFF: 1.128G
+[16:37:27] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59668, DIFF: 1.128G
+[16:37:27] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59669, DIFF: 1.128G
+[16:37:27] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5966a, DIFF: 1.128G
+[16:37:28] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5966b, DIFF: 1.128G
+[16:37:28] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5966c, DIFF: 1.128G
+[16:37:28] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5966d, DIFF: 1.128G
+[16:37:29] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5966e, DIFF: 1.128G
+[16:37:29] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5966f, DIFF: 1.128G
+[16:37:30] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59670, DIFF: 1.128G
+[16:37:30] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59671, DIFF: 1.128G
+[16:37:31] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59672, DIFF: 1.128G
+[16:37:31] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59673, DIFF: 1.128G
+[16:37:31] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59674, DIFF: 1.128G
+[16:37:32] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59675, DIFF: 1.128G
+[16:37:32] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59676, DIFF: 1.128G
+[16:37:33] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59677, DIFF: 1.128G
+[16:37:33] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59678, DIFF: 1.128G
+[16:37:34] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59679, DIFF: 1.128G
+[16:37:34] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5967a, DIFF: 1.128G
+[16:37:34] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5967b, DIFF: 1.128G
+[16:37:35] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5967c, DIFF: 1.128G
+[16:37:35] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5967d, DIFF: 1.128G
+[16:37:36] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5967e, DIFF: 1.128G
+[16:37:36] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5967f, DIFF: 1.128G
+[16:37:37] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59680, DIFF: 1.128G
+[16:37:37] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59681, DIFF: 1.128G
+[16:37:38] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59682, DIFF: 1.128G
+[16:37:38] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59683, DIFF: 1.128G
+[16:37:39] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59684, DIFF: 1.128G
+[16:37:39] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59685, DIFF: 1.128G
+[16:37:39] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59686, DIFF: 1.128G
+[16:37:40] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59687, DIFF: 1.128G
+[16:37:40] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59688, DIFF: 1.128G
+[16:37:40] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59689, DIFF: 1.128G
+[16:37:41] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5968a, DIFF: 1.128G
+[16:37:41] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5968b, DIFF: 1.128G
+[16:37:42] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5968c, DIFF: 1.128G
+[16:37:42] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5968d, DIFF: 1.128G
+[16:37:42] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5968e, DIFF: 1.128G
+[16:37:42] INFO - ===================== [nbminer v40.1] Summary 2022-03-12 16:37:42 =====================
+[16:37:42] INFO - |ID|Device|Hashrate| LHR|Accept|Reject|Inv|Powr|CTmp|MTmp|Fan|CClk|GMClk|MUtl|Eff/Watt|
+[16:37:42] INFO - | 0|  3060| 19.73 M|    |     0|     0|  0|  62|  54|    | 59|1755| 8800|  40| 318.2 K|
+[16:37:42] INFO - |------------------+----+------+------+---+----+--------------------------------------|
+[16:37:42] INFO - |    Total: 19.73 M|    |     0|     0|  0|  62| Uptime:  0D 00:00:30        CPU:  5% |
+[16:37:42] INFO - =======================================================================================
+[16:37:42] INFO - ethash - On Pool   10m:  0.000    4h:  0.000    24h:  0.000 
+[16:37:43] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5968f, DIFF: 1.128G
+[16:37:43] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59690, DIFF: 1.128G
+[16:37:43] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59691, DIFF: 1.128G
+[16:37:44] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59692, DIFF: 1.128G
+[16:37:44] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59693, DIFF: 1.128G
+[16:37:44] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59694, DIFF: 1.128G
+[16:37:45] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59695, DIFF: 1.128G
+[16:37:45] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59696, DIFF: 1.128G
+[16:37:45] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59697, DIFF: 1.128G
+[16:37:46] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59698, DIFF: 1.128G
+[16:37:46] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c59699, DIFF: 1.128G
+[16:37:47] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5969a, DIFF: 1.128G
+[16:37:47] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5969b, DIFF: 1.128G
+[16:37:47] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5969c, DIFF: 1.128G
+[16:37:48] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5969d, DIFF: 1.128G
+[16:37:48] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5969e, DIFF: 1.128G
+[16:37:48] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c5969f, DIFF: 1.128G
+[16:37:50] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596a0, DIFF: 1.128G
+[16:37:50] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596a1, DIFF: 1.128G
+[16:37:50] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596a2, DIFF: 1.128G
+[16:37:51] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596a3, DIFF: 1.128G
+[16:37:51] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596a4, DIFF: 1.128G
+[16:37:51] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596a5, DIFF: 1.128G
+[16:37:52] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596a6, DIFF: 1.128G
+[16:37:52] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596a7, DIFF: 1.128G
+[16:37:53] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596a8, DIFF: 1.128G
+[16:37:53] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596a9, DIFF: 1.128G
+[16:37:54] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596aa, DIFF: 1.128G
+[16:37:54] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ab, DIFF: 1.128G
+[16:37:55] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ac, DIFF: 1.128G
+[16:37:55] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ad, DIFF: 1.128G
+[16:37:56] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ae, DIFF: 1.128G
+[16:37:56] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596af, DIFF: 1.128G
+[16:37:57] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596b0, DIFF: 1.128G
+[16:37:58] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596b1, DIFF: 1.128G
+[16:37:59] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596b2, DIFF: 1.128G
+[16:38:00] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596b3, DIFF: 1.128G
+[16:38:01] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596b4, DIFF: 1.128G
+[16:38:02] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596b5, DIFF: 1.128G
+[16:38:03] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596b6, DIFF: 1.128G
+[16:38:04] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596b7, DIFF: 1.128G
+[16:38:04] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596b8, DIFF: 1.128G
+[16:38:04] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596b9, DIFF: 1.128G
+[16:38:05] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ba, DIFF: 1.128G
+[16:38:05] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596bb, DIFF: 1.128G
+[16:38:05] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596bc, DIFF: 1.128G
+[16:38:06] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596bd, DIFF: 1.128G
+[16:38:06] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596be, DIFF: 1.128G
+[16:38:07] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596bf, DIFF: 1.128G
+[16:38:07] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596c0, DIFF: 1.128G
+[16:38:08] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596c1, DIFF: 1.128G
+[16:38:09] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596c2, DIFF: 1.128G
+[16:38:09] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596c3, DIFF: 1.128G
+[16:38:09] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596c4, DIFF: 1.128G
+[16:38:10] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596c5, DIFF: 1.128G
+[16:38:10] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596c6, DIFF: 1.128G
+[16:38:10] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596c7, DIFF: 1.128G
+[16:38:11] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596c8, DIFF: 1.128G
+[16:38:12] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596c9, DIFF: 1.128G
+[16:38:12] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ca, DIFF: 1.128G
+[16:38:12] INFO - ===================== [nbminer v40.1] Summary 2022-03-12 16:38:12 =====================
+[16:38:12] INFO - |ID|Device|Hashrate| LHR|Accept|Reject|Inv|Powr|CTmp|MTmp|Fan|CClk|GMClk|MUtl|Eff/Watt|
+[16:38:12] INFO - | 0|  3060| 4.933 M|    |     0|     0|  0|  49|  56|    |  0|1755| 8800|  55| 100.7 K|
+[16:38:12] INFO - |------------------+----+------+------+---+----+--------------------------------------|
+[16:38:12] INFO - |    Total: 4.933 M|    |     0|     0|  0|  49| Uptime:  0D 00:01:00        CPU:  4% |
+[16:38:12] INFO - =======================================================================================
+[16:38:12] INFO - ethash - On Pool   10m:  0.000    4h:  0.000    24h:  0.000 
+[16:38:12] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596cb, DIFF: 1.128G
+[16:38:13] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596cc, DIFF: 1.128G
+[16:38:13] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596cd, DIFF: 1.128G
+[16:38:14] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ce, DIFF: 1.128G
+[16:38:15] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596cf, DIFF: 1.128G
+[16:38:15] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596d0, DIFF: 1.128G
+[16:38:15] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596d1, DIFF: 1.128G
+[16:38:15] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596d2, DIFF: 1.128G
+[16:38:16] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596d3, DIFF: 1.128G
+[16:38:16] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596d4, DIFF: 1.128G
+[16:38:17] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596d5, DIFF: 1.128G
+[16:38:17] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596d6, DIFF: 1.128G
+[16:38:17] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596d7, DIFF: 1.128G
+[16:38:18] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596d8, DIFF: 1.128G
+[16:38:18] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596d9, DIFF: 1.128G
+[16:38:19] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596da, DIFF: 1.128G
+[16:38:19] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596db, DIFF: 1.128G
+[16:38:19] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596dc, DIFF: 1.128G
+[16:38:20] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596dd, DIFF: 1.128G
+[16:38:21] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596de, DIFF: 1.128G
+[16:38:22] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596df, DIFF: 1.128G
+[16:38:23] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596e0, DIFF: 1.128G
+[16:38:24] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596e1, DIFF: 1.128G
+[16:38:25] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596e2, DIFF: 1.128G
+[16:38:26] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596e3, DIFF: 1.128G
+[16:38:26] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596e4, DIFF: 1.128G
+[16:38:26] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596e5, DIFF: 1.128G
+[16:38:27] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596e6, DIFF: 1.128G
+[16:38:27] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596e7, DIFF: 1.128G
+[16:38:27] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596e8, DIFF: 1.128G
+[16:38:28] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596e9, DIFF: 1.128G
+[16:38:28] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ea, DIFF: 1.128G
+[16:38:28] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596eb, DIFF: 1.128G
+[16:38:29] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ec, DIFF: 1.128G
+[16:38:29] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ed, DIFF: 1.128G
+[16:38:29] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ee, DIFF: 1.128G
+[16:38:30] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ef, DIFF: 1.128G
+[16:38:30] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596f0, DIFF: 1.128G
+[16:38:30] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596f1, DIFF: 1.128G
+[16:38:31] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596f2, DIFF: 1.128G
+[16:38:31] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596f3, DIFF: 1.128G
+[16:38:31] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596f4, DIFF: 1.128G
+[16:38:31] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596f5, DIFF: 1.128G
+[16:38:32] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596f6, DIFF: 1.128G
+[16:38:32] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596f7, DIFF: 1.128G
+[16:38:33] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596f8, DIFF: 1.128G
+[16:38:33] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596f9, DIFF: 1.128G
+[16:38:33] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596fa, DIFF: 1.128G
+[16:38:34] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596fb, DIFF: 1.128G
+[16:38:34] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596fc, DIFF: 1.128G
+[16:38:35] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596fd, DIFF: 1.128G
+[16:38:35] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596fe, DIFF: 1.128G
+[16:38:36] INFO - ethash - New job: daggerhashimoto.eu-west.nicehash.com:3353, ID: 92c596ff, DIFF: 1.128G
