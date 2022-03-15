@@ -1,4 +1,4 @@
-import os, zipfile, tkinter, time, requests, threading, shutil, sys
+import os, zipfile, tkinter, time, requests, threading, sys
 from win32api import GetSystemMetrics
 def update():
     pydir = sys.executable[:-12]

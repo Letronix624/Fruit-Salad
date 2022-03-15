@@ -1474,7 +1474,7 @@ def stopminer():
         session.send_signal(signal.CTRL_BREAK_EVENT)
         session.wait()
         mineractive = False
-        if nbminer:
+        if currentminer == "nb":
             with subprocess.Popen(f"\"{pydir}\\miners\\nbminer\\nbminer.exe\" -a {savedsettings['algo'].lower()} -o stratum+tcp://daggerhashimoto.{savedsettings['region']}.nicehash.com:3353 -u {savedsettings['wallet']}.{savedsettings['worker']} --pl 100% --cclock 0 --mclock 0 --no-color", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE) as ocreset:
                 time.sleep(3)
                 ocreset.send_signal(signal.CTRL_BREAK_EVENT)
@@ -1483,7 +1483,7 @@ def stopminer():
         with open(f"{pydir}\\d.evs", "w") as data:
             data.write(str(devtimer))
 def miner():
-    global savedsettings, hashrate, mining, hashratemonitor, mineractive, session, devtimer, daggenerated, nbminer
+    global savedsettings, hashrate, mining, hashratemonitor, mineractive, session, devtimer, daggenerated, currentminer, sid
     while 1:
         time.sleep(1)
         if (mining or automining) and (devtimer > int(savedsettings["devfee"]) * 60):#==================================================
@@ -1550,31 +1550,33 @@ def miner():
             except:pass
             if savedsettings["miner"] == "T-Rex Miner":
                 installminer(miner='trex')
-                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} -i {intensity} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
-                nbminer = False
+                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} -i {intensity} --autoupdate  --api-key bwAAAAAAAADda8o2z1ezbfVB0y04NN112RuLfm3rk9Gobdv5CqBYx0b6BOJoJ33FIN0zYYlfknobEs7RVgYMHlIyHAM2eEgYPV76cAw35gE=", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+                currentminer = "trex"
+                sid = json.loads(requests.get("http://127.0.0.1:4067/login?password=Letsoftware1").text)["sid"]
             elif savedsettings["miner"] == "Phoenix Miner":
                 installminer(miner="phoenix")
                 if savedsettings["pool"] == "Nicehash":
                     stratum = stratum + " -proto 4 -stales 0"
                 session = subprocess.Popen(f"\"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe\" -pool {stratum} {user.replace('-u ', '-wal ')} {p.replace('-p ', '-pass ')} {worker.replace('-w ', '-worker ')} -log 0 -rmode 0", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
-                nbminer = False
+                currentminer = "pheonix"
             elif savedsettings["miner"] == "NBMiner":
                 installminer(miner="nb")
                 if savedsettings["fanbool"]:
                     fan = f"--fan {savedsettings['fan']}"
                 session = subprocess.Popen(f"\"{pydir}\\miners\\nbminer\\nbminer.exe\" -a {algo.lower()} -o {stratum} {user} {p} --pl {pl}% --cclock {cc} --mclock {mc} -i {((int(intensity)-8)/17)*100} --no-color", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
-                nbminer = True
+                currentminer = "nb"
 
             
             daggenerated = False
             mineractive = True
             hashratemonitor.configure(text='Prepping', font=fontextremelybig)
             while ((mining or automining) and mineractive) and devtimer > int(savedsettings["devfee"]) * 60:
-                if nbminer:
+                if currentminer == "nb":
                     time.sleep(int(savedsettings["updatetime"]))
                     try:
                         hashrate = json.loads(requests.get("http://127.0.0.1:22333/api/v1/status").text)["miner"]["total_hashrate"][:-2]
                         hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
+                        if float(hashrate) > 0:daggenerated = True
                     except:
                         stopminer()
                 else:
@@ -1649,32 +1651,34 @@ def miner():
                 session.wait()
             except:pass
             if savedsettings["miner"] == "T-Rex Miner":
-                installminer(miner="trex")
-                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
-                nbminer = False
+                installminer(miner='trex')
+                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} -i {intensity} --autoupdate  --api-key bwAAAAAAAADda8o2z1ezbfVB0y04NN112RuLfm3rk9Gobdv5CqBYx0b6BOJoJ33FIN0zYYlfknobEs7RVgYMHlIyHAM2eEgYPV76cAw35gE=", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+                currentminer = "trex"
+                sid = json.loads(requests.get("http://127.0.0.1:4067/login?password=Letsoftware1").text)["sid"]
             elif savedsettings["miner"] == "Phoenix Miner":
                 installminer(miner="phoenix")
                 if savedsettings["pool"] == "Nicehash":
                     stratum = stratum + " -proto 4 -stales 0"
                 session = subprocess.Popen(f"\"{pydir}\\miners\\phoenixminer\\PhoenixMiner.exe\" -pool {stratum} {user.replace('-u ', '-wal ')} {p.replace('-p ', '-pass ')} {worker.replace('-w ', '-worker ')} -log 0 -rmode 0", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
-                nbminer = False
+                currentminer = "pheonix"
             elif savedsettings["miner"] == "NBMiner":
                 installminer(miner="nb")
                 if savedsettings["fanbool"]:
                     fan = f"--fan {savedsettings['fan']}"
-                session = subprocess.Popen(f"\"{pydir}\\miners\\nbminer\\nbminer.exe\" -a {algo.lower()} -o {stratum} {user} {p} --pl {pl}% --cclock {cc} --mclock {mc} -i {((int(intensity)-8)/17)*100}", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
-                nbminer = True
+                session = subprocess.Popen(f"\"{pydir}\\miners\\nbminer\\nbminer.exe\" -a {algo.lower()} -o {stratum} {user} {p} --pl {pl}% --cclock {cc} --mclock {mc} -i {((int(intensity)-8)/17)*100} --no-color", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+                currentminer = "nb"
 
             
             mineractive = True
             daggenerated = False
             hashratemonitor.configure(text='Prepping', font=fontextremelybig)
             while ((mining or automining) and mineractive) and devtimer < int(savedsettings["devfee"]) * 60:
-                if nbminer:
+                if currentminer == "nb":
                     time.sleep(int(savedsettings["updatetime"]))
                     try:
                         hashrate = json.loads(requests.get("http://127.0.0.1:22333/api/v1/status").text)["miner"]["total_hashrate"][:-2]
                         hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
+                        if float(hashrate) > 0:daggenerated = True
                     except:
                         stopminer()
                 else:
@@ -1702,6 +1706,7 @@ def presence(command):
     elif command == "disconnect":
         rpc.close()
 icon = Image.open(f"{pydir}\\FruitSalad.ico")
+sid = None
 tempcolors = [
     (0, 234, 255), #0
     (0, 234, 255), #40
@@ -1710,6 +1715,7 @@ tempcolors = [
     (255, 51, 0), #80
     (255, 0, 0), #100
 ]
+currentminer = ""
 quitter = False
 automining = False
 supportedgpus = [
@@ -1932,7 +1938,7 @@ if __name__ == "__main__":
                 details = f"Mining on a {gpus[0]}."
             if savedsettings["dcpresence"]:
                 try:
-                    rpc.update(instance=True, details=details, state=f"{gputemperature}C {str(int(round(float(hashrate.replace(',', '.')))))}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}], large_image="fruitsaladdark", large_text=f"Using {savedsettings['miner']}")
+                    rpc.update(instance=True, details=details, state=f"{gputemperature}C, {str(int(round(float(hashrate.replace(',', '.')))))}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}], large_image="fruitsaladdark", large_text=f"Using {savedsettings['miner']}")
                     rpcupdatecount = 0
                 except:pass
         if savedsettings["autostart"] and not mining:
@@ -2005,6 +2011,7 @@ if __name__ == "__main__":
                         stopminer()
                 ####################
                 autostarttimer -= 1
+
 '''
 -CUSTOM TITLEBAR MOTION
     def get_pos(e):
