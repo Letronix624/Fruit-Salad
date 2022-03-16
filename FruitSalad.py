@@ -1,5 +1,6 @@
-version = "0.3.2"
+version = "0.3.2.3"
 import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil, random
+from numpy import var
 from tkinter import E, W, Y
 from pypresence import Presence
 from PIL import ImageTk, Image
@@ -339,7 +340,7 @@ def preset(thething):
             savedsettings["pl"] = 65
         case "GTX 1650":
             savedsettings['miner'] = "T-Rex Miner"
-            savedsettings['algo'] = "kawPow"
+            savedsettings['algo'] = "KawPow"
             savedsettings["pool"] = "Nicehash"
             savedsettings["oc"] = True
             savedsettings["core"] = 150
@@ -347,7 +348,7 @@ def preset(thething):
             savedsettings["pl"] = 100
         case "GTX 1650 SUPER":
             savedsettings['miner'] = "T-Rex Miner"
-            savedsettings['algo'] = "kawPow"
+            savedsettings['algo'] = "KawPow"
             savedsettings["pool"] = "Nicehash"
             savedsettings["oc"] = True
             savedsettings["core"] = 200
@@ -567,7 +568,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
     global currentlyeditingmanual
     global editingwalleraddress
     global presetshift
-    global editingtime
+    global editingtime, consolebgimage
     currentlyeditingmanual = False
     editingwalleraddress = False
     editingtime = False
@@ -657,10 +658,14 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         savedsettings["ministart"] = selectedminimize.get()
         savedsettings["autostart"] = selectedautostart.get()
         savedsettings["devfee"] = selecteddevfee.get()
+        savedsettings["consolebg"] = selectedconsolebg.get()
+        savedsettings["consolefg"] = selectedconsolefg.get()
+        savedsettings["consolebgimagepath"] = consolebgimage
+        savedsettings["consolefontsize"] = selectedconsolefontsize.get()
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
-            globalworker.configure(text=f"{language['Worker:']} {savedsettings['worker']}")
+            globalworker.configure(text=f"{language['Worker:']} {savedsettings['worker']}")#PUPPER 666
         if editingwalleraddress:
             savedsettings['wallet'] = givenwallet.get()
             prolabel.configure(text=savedsettings["ethwallet"])
@@ -706,7 +711,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////Big Thing Here//////////////////////////////////////////////////accept button happenings//////////////
 #/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    def enableaccept(aseggsaegsdg): #$$$$$$$$$$$$$
+    def enableaccept(aseggsaegsdg = None): #$$$$$$$$$$$$$
         global presetshift
         acceptbutton.place(x=595, y=565, width=200, height=30)
         if aseggsaegsdg == "saladmining":
@@ -1048,6 +1053,13 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedhashrateupdatetime.set(savedsettings["updatetime"])
         selectedfixedfan = tkinter.IntVar()
         selectedfixedfan.set(savedsettings["fan"])
+        selectedconsolebg = tkinter.StringVar()
+        selectedconsolebg.set(savedsettings["consolebg"])
+        selectedconsolefg = tkinter.StringVar()
+        selectedconsolefg.set(savedsettings["consolefg"])
+        consolebgimage = savedsettings["consolebgimagepath"]
+        selectedconsolefontsize = tkinter.IntVar()
+        selectedconsolefontsize.set(savedsettings["consolefontsize"])
         """
         Contents:
         Overclock [V] Unlocks OC settings. (Know what you are doing...)
@@ -1094,6 +1106,23 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         ocsettings5.place(x=5, y=275, width=240)
         tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selectedhashrateupdatetime, from_=5, to=60, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=345, width=240)
         tkinter.Button(advancedsettingsframe, text=language['Open miner logs'], command=lambda:os.startfile(pydir+"\\logs.txt")).place(x=5, y=390)
+        consolebg = tkinter.Entry(advancedsettingsframe)
+        consolebg.place(x=5, y=425, width=100, height=20)
+        consolefg = tkinter.Entry(advancedsettingsframe)
+        consolefg.place(x=5, y=455, width=100, height=20)
+        consolebg.insert(tkinter.END, savedsettings['consolebg'])
+        consolefg.insert(tkinter.END, savedsettings['consolefg'])
+        def choosepathofdeath():
+            global consolebgimage
+            consolebgimage = tkinter.filedialog.askopenfilename(title="Select PNG", filetypes=[("png files", "*.png")])
+            consolepathtext.configure(text=consolebgimage)
+            enableaccept()
+        tkinter.Button(advancedsettingsframe, text=language["Edit"], command=choosepathofdeath).place(x=5, y=485, width=50, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text="Logs window background image" + " (800x600)", anchor=tkinter.E).place(x=500, y=485, height=20, width=300)
+        consolepathtext = tkinter.Label(advancedsettingsframe, text=consolebgimage, bg=defaultbg, anchor=W, fg="white")
+        consolepathtext.place(x=60, y=485, height=20)
+        tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, variable=selectedconsolefontsize, highlightthickness=0, font=fontregular, from_=1, to=50, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=510, width=240)
+
 
 
 
@@ -1107,6 +1136,10 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Temp bound fan speed"], anchor=tkinter.W).place(x=40, y=260, width=800, height=20)
         tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Target temperature in C"], anchor=tkinter.W).place(x=250, y=292, width=800, height=20)
         tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Hashrate update frequency in seconds"], anchor=tkinter.W).place(x=250, y=362, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text="Logs window background hex color", anchor=tkinter.W).place(x=110, y=425, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text="Logs window foreground hex color", anchor=tkinter.W).place(x=110, y=455, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text="Logs window font size", anchor=tkinter.W).place(x=250, y=527, height=20)
+        # preset tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text="", anchor=tkinter.W).place(x=250, y=0, height=20)
         #Megaguide Settings
         tkinter.Label(megaguidesettingsframe, text=language["Secret Settings"], bg="pink", fg="white", font=fontextremelybig).pack()
         tkinter.Button(megaguidesettingsframe, text="Megaguide", bg="Red", fg="White", command=megaguide, font=fontregular, padx=10, pady=5).pack(anchor=tkinter.NW)
@@ -1303,6 +1336,9 @@ def openshedulemenu(): #shedule shedule shedule shedule shedule shedule shedule 
             markerlist.append(createmarker(xcoord=item[0], settings=item[1], profile=item[2]))
         timebar.bind('<Button-1>',barclick)
         shedulemenu.bind('<Button-3>',deselectall)
+def openconsole():
+    console = tkinter.Toplevel()
+
 def megaguide():
     winsound.PlaySound(pydir+"\\MEGAGUIDE.wav", winsound.SND_ASYNC)
 def windowclose():
@@ -1380,6 +1416,7 @@ def savesettings():
     globalpool.configure(text=f"{language['Pool:']} {savedsettings['pool']}")
     globalregion.configure(text=f"{language['Region:']} {savedsettings['region']}")
     with open(f"{os.environ['APPDATA']}\\fruitsalad\\settings.json", ("w")) as settings:
+        print(savedsettings)
         settings.write(json.dumps(savedsettings))
     if savedsettings["tempbar"]:
         gputemperature = gputemp()
@@ -1550,9 +1587,8 @@ def miner():
             except:pass
             if savedsettings["miner"] == "T-Rex Miner":
                 installminer(miner='trex')
-                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} -i {intensity} --autoupdate  --api-key bwAAAAAAAADda8o2z1ezbfVB0y04NN112RuLfm3rk9Gobdv5CqBYx0b6BOJoJ33FIN0zYYlfknobEs7RVgYMHlIyHAM2eEgYPV76cAw35gE=", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} -i {savedsettings['intensity']} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
                 currentminer = "trex"
-                sid = json.loads(requests.get("http://127.0.0.1:4067/login?password=Letsoftware1").text)["sid"]
             elif savedsettings["miner"] == "Phoenix Miner":
                 installminer(miner="phoenix")
                 if savedsettings["pool"] == "Nicehash":
@@ -1600,6 +1636,7 @@ def miner():
             algo = savedsettings["algo"]
             user = ""
             p = ""
+            intensity = savedsettings["intensity"]
             if savedsettings["pool"] == 'Nicehash':
                 if savedsettings["algo"] == "Ethash":
                     stratum = f"stratum+tcp://daggerhashimoto.{savedsettings['region']}.nicehash.com:3353"
@@ -1652,9 +1689,8 @@ def miner():
             except:pass
             if savedsettings["miner"] == "T-Rex Miner":
                 installminer(miner='trex')
-                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} -i {intensity} --autoupdate  --api-key bwAAAAAAAADda8o2z1ezbfVB0y04NN112RuLfm3rk9Gobdv5CqBYx0b6BOJoJ33FIN0zYYlfknobEs7RVgYMHlIyHAM2eEgYPV76cAw35gE=", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+                session = subprocess.Popen(f"\"{pydir}\\miners\\trex\\t-rex.exe\" -a {algo} -o {stratum} {user} {worker} {p} --gpu-report-interval {savedsettings['updatetime']} --pl {pl} --cclock {cc} --mclock {mc} {fan} -i {savedsettings['intensity']} --autoupdate", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
                 currentminer = "trex"
-                sid = json.loads(requests.get("http://127.0.0.1:4067/login?password=Letsoftware1").text)["sid"]
             elif savedsettings["miner"] == "Phoenix Miner":
                 installminer(miner="phoenix")
                 if savedsettings["pool"] == "Nicehash":
@@ -1781,9 +1817,11 @@ minerregions = {
     "Ethermine": ["eu1", "us1", "asia1"],
     "Prohashing": ["eu", "us"],
 }
-fontregular = ("Calibri", 10)
-fontbig = ("Calibri", 17)#                                                 fonts
-fontextremelybig = ("Calibri", 50, "bold")
+
+allfont = "Calibri"
+fontregular = (allfont, 10)
+fontbig = (allfont, 17)#                                                 fonts
+fontextremelybig = (allfont, 50, "bold")
 mineractive = False
 defaultbg = "#303136"
 hashrate = "0.00"
@@ -1821,6 +1859,10 @@ savedsettings = {
     "ministart":False,
     "devfee": 1,
     "schedule": [],
+    "consolebg": "black",
+    "consolefg": "white",
+    "consolebgimagepath": "",
+    "consolefontsize": 10,
 }
 try:
     with open(f"{pydir}\\d.evs", "r") as data:
