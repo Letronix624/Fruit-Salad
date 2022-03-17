@@ -1,0 +1,7 @@
+# This '>= XXX' mean that it have to be THIS minimum version #
+
+pywin32 	>= 303
+pystray 	>= 0.19.2
+requests 	>= 2.27.1
+numpy 		>= 1.22.3
+pypresence	>= 4.2.0

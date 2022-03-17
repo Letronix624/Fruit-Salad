@@ -1,10 +1,31 @@
 version = "0.3.2.3"
-import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, sys, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil, random
-from numpy import var
-from tkinter import E, W, Y
-from pypresence import Presence
-from PIL import ImageTk, Image
-from pystray import MenuItem as item
+import sys
+try:
+    import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil, random
+    from tkinter import E, W, Y, N
+    from pypresence import Presence
+    from PIL import ImageTk, Image
+    from pystray import MenuItem as item
+except ImportError:
+    print('''
+    ❌ | Dependencies not found!
+    🤖 | To fix this critical error, run 'pip3 install -r requirements.txt' or 'python3 -m pip install -r requirements.txt'
+    ''')
+    sys.exit()
+if sys.version_info[0] < 3:
+    print('''
+    ❌ | Python 2 are not supported
+    🤖 | To fix this critical error, download Python 3 (3.8 minimum)
+    ''')
+    sys.exit()
+elif sys.version_info[1] < 10:
+    print('''
+    ❌ | Python 3.9 and under are not supported
+    🤖 | Reason: You have farted in your life before.
+    🤖 | To fix this error, download at least Python 3.10
+    ''')
+    sys.exit()
+
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
 try: #only one instance
@@ -62,8 +83,9 @@ class installminer():
                 try:
                     os.makedirs(f'{pydir}\\miners\\trex')
                 except:print("path exists")
+                minerGitAPI = json.loads(requests.get('https://api.github.com/repos/trexminer/T-Rex/releases').text)[0]['tag_name']#by HaveFUNRICH#0884
                 hashratemonitor.configure(text=f'Downloading T-rex Miner', font=fontbig)
-                with requests.get('https://github.com/trexminer/T-Rex/releases/download/0.25.8/t-rex-0.25.8-win.zip') as minerinstaller:
+                with requests.get(f"https://github.com/trexminer/T-Rex/releases/download/{minerGitAPI}/t-rex-{minerGitAPI}-win.zip") as minerinstaller:
                     minerinstaller.raise_for_status()
                     with open(f"{pydir}\\miners\\trex\\extracting.zip", 'wb') as f:
                         for chunk in minerinstaller.iter_content(chunk_size=8192):
@@ -79,8 +101,9 @@ class installminer():
                 try:
                     os.makedirs(f'{pydir}\\miners\\phoenixminer')
                 except:print("path exists")
+                minerGitAPI = json.loads(requests.get('https://api.github.com/repos/spark-pool/PhoenixMiner/releases').text)[0]['tag_name']#by HaveFUNRICH#0884
                 hashratemonitor.configure(text=f'Downloading Phoenix Miner', font=fontbig)
-                with requests.get("https://github.com/spark-pool/PhoenixMiner/releases/download/6.0b/PhoenixMiner_6.0b_Windows.zip") as phoenix:
+                with requests.get(f"https://github.com/spark-pool/PhoenixMiner/releases/download/{minerGitAPI}/PhoenixMiner_{minerGitAPI}_Windows.zip") as phoenix:
                     phoenix.raise_for_status()
                     with open(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "wb") as f:
                         for chunk in phoenix.iter_content(chunk_size=8192):
@@ -98,8 +121,9 @@ class installminer():
                 try:
                     os.makedirs(f'{pydir}\\miners\\nbminer')
                 except:print("path exists")
+                minerGitAPI = json.loads(requests.get('https://api.github.com/repos/NebuTech/NBMiner/releases').text)[0]['tag_name']#by HaveFUNRICH#0884
                 hashratemonitor.configure(text=f'Downloading NBMiner', font=fontbig)
-                with requests.get("https://github.com/NebuTech/NBMiner/releases/download/v40.1/NBMiner_40.1_Win.zip") as minerinstaller:
+                with requests.get(f"https://github.com/NebuTech/NBMiner/releases/download/{minerGitAPI}/NBMiner_{minerGitAPI[1:]}_Win.zip") as minerinstaller:
                     minerinstaller.raise_for_status()
                     with open(f"{pydir}\\miners\\nbminer\\extracting.zip", "wb") as f:
                         for chunk in minerinstaller.iter_content(chunk_size=8192):
