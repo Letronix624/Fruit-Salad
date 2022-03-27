@@ -1,4 +1,4 @@
-version = "0.3.3"
+version = "0.3.4"
 import sys
 try:
     import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil, random
@@ -297,7 +297,7 @@ def mainwindow():
     console.geometry("800x600")
     console.wm_minsize(400, 220)
     console.title(language["Console"])
-    console.protocol("WM_DELETE_WINDOW", lambda:console.withdraw())
+    console.protocol("WM_DELETE_WINDOW", closeconsole)
     console.iconbitmap(f'{pydir}\\FruitSalad.ico')
     try:
         console.configure(bg=savedsettings["consolebg"])
@@ -1385,21 +1385,31 @@ def openshedulemenu(): #shedule shedule shedule shedule shedule shedule shedule 
         timebar.bind('<Button-1>',barclick)
         shedulemenu.bind('<Button-3>',deselectall)
 def openconsole():
+    global consoleopen
     console.wm_deiconify()
+    consoleopen = True
+def closeconsole():
+    global consoleopen
+    console.withdraw()
+    consoleopen = False
+consolelength = 0
 def consoleadd(text):
-    try:
+    global consolelength
+    if consoleopen:
+        if consolelength > 1200:
+            for item in range(int(round(len(loglist)/2)+10)):
+                loglist[0].destroy()
+                loglist.pop(0)
+            consolelength = len(loglist)
+        else:
+            consolelength += 1
         try:
             loglist.append(tkinter.Label(frame2, text=text, bg=savedsettings["consolebg"], fg=savedsettings["consolefg"], font=(fontfamily, savedsettings["consolefontsize"])))
         except:
             loglist.append(tkinter.Label(frame2, text=text, bg="black", fg="white"), font=(fontfamily, savedsettings["consolefontsize"]))
         loglist[-1].pack(side=tkinter.TOP, anchor=tkinter.NW)
-        if len(loglist) > 999:
-            loglist[0].destroy()
-            loglist.pop(0)
         textcanvas.configure(scrollregion=textcanvas.bbox("all"))
         textcanvas.yview_moveto('1.0')
-        textcanvas.configure(scrollregion=textcanvas.bbox("all"))
-    except:pass
 def megaguide():
     winsound.PlaySound(pydir+"\\MEGAGUIDE.wav", winsound.SND_ASYNC)
 def windowclose():
@@ -1814,6 +1824,7 @@ tempcolors = [
 currentminer = ""
 quitter = False
 automining = False
+consoleopen = False
 supportedgpus = [
     "Tesla K80",
     "GTX 1050",
