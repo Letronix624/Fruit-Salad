@@ -1,1 +1,19 @@
-import os, subprocess, sys
+import tkinter.colorchooser, tkinter.simpledialog, tkinter, tkinter.font, tkinter.ttk, time, winsound
+#print(tkinter.colorchooser.askcolor()[1])
+root = tkinter.Tk()
+root.wm_attributes("-topmost", True)
+#print(tkinter.simpledialog.askstring("hi", "death"))
+texte = tkinter.Canvas(root)
+texte.pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=1)
+sc = tkinter.ttk.Scrollbar(root, orient=tkinter.VERTICAL, command=texte.yview)
+sc.pack(fill=tkinter.Y, side=tkinter.RIGHT)
+texte.bind("<Configure>", lambda e: texte.configure(scrollregion=texte.bbox("all")))
+texte.config(yscrollcommand=sc.set)
+coolth = tkinter.Frame(texte)
+texte.create_window((0,0), window=coolth, anchor=tkinter.NW)
+texte.config(yscrollcommand=sc.set)
+input()
+for i in range(50):
+    tkinter.Label(coolth, text="hi steve").pack()
+root.geometry(f"{root.winfo_width()}x{root.winfo_height()+1}")
+root.mainloop()

@@ -1,22 +1,24 @@
-version = "0.3.2.3"
+version = "0.3.3"
 import sys
 try:
     import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil, random
-    from tkinter import E, W, Y, N
+    from tkinter import E, W, S, N, ttk
     from pypresence import Presence
     from PIL import ImageTk, Image
     from pystray import MenuItem as item
-except ImportError:
+except ImportError: #import by HaveFUNRICH#0884
     print('''
     ❌ | Dependencies not found!
-    🤖 | To fix this critical error, run 'pip3 install -r requirements.txt' or 'python3 -m pip install -r requirements.txt'
+    🤖 | To fix this critical error, run 'pip install -r requirements.txt' or 'python -m pip install -r requirements.txt'
     ''')
+    input()
     sys.exit()
 if sys.version_info[0] < 3:
     print('''
     ❌ | Python 2 are not supported
     🤖 | To fix this critical error, download Python 3 (3.8 minimum)
     ''')
+    input()
     sys.exit()
 elif sys.version_info[1] < 10:
     print('''
@@ -24,10 +26,11 @@ elif sys.version_info[1] < 10:
     🤖 | Reason: You have farted in your life before.
     🤖 | To fix this error, download at least Python 3.10
     ''')
+    input()
     sys.exit()
-
 pydir = os.path.dirname(os.path.realpath(__file__))
 exedir = sys.executable
+
 try: #only one instance
     FruitSaladSession = singleton.SingleInstance()
 except:#error message
@@ -75,6 +78,7 @@ try: #to get the name of the gpu
 except: #no gpu
     gpus = []
 del gpunamerslkefjeslafjlska
+loglist = []
 mining = False
 class installminer():
     def __init__(self, miner):
@@ -84,16 +88,16 @@ class installminer():
                     os.makedirs(f'{pydir}\\miners\\trex')
                 except:print("path exists")
                 minerGitAPI = json.loads(requests.get('https://api.github.com/repos/trexminer/T-Rex/releases').text)[0]['tag_name']#by HaveFUNRICH#0884
-                hashratemonitor.configure(text=f'Downloading T-rex Miner', font=fontbig)
+                hashratemonitor.configure(text=f'Downloading T-rex Miner', font=calibrimedium)
                 with requests.get(f"https://github.com/trexminer/T-Rex/releases/download/{minerGitAPI}/t-rex-{minerGitAPI}-win.zip") as minerinstaller:
                     minerinstaller.raise_for_status()
                     with open(f"{pydir}\\miners\\trex\\extracting.zip", 'wb') as f:
                         for chunk in minerinstaller.iter_content(chunk_size=8192):
                             f.write(chunk)
-                hashratemonitor.configure(text=f'Extracting T-rex Miner', font=fontbig)
+                hashratemonitor.configure(text=f'Extracting T-rex Miner', font=calibrimedium)
                 with zipfile.ZipFile(f"{pydir}\\miners\\trex\\extracting.zip", "r") as data:
                     data.extract("t-rex.exe", path=f'{pydir}\\miners\\trex')
-                hashratemonitor.configure(text=f'Done', font=fontextremelybig)
+                hashratemonitor.configure(text=f'Done', font=calibribold)
                 os.remove(f"{pydir}\\miners\\trex\\extracting.zip")
                 time.sleep(1)
         elif miner == "phoenix":
@@ -102,13 +106,13 @@ class installminer():
                     os.makedirs(f'{pydir}\\miners\\phoenixminer')
                 except:print("path exists")
                 minerGitAPI = json.loads(requests.get('https://api.github.com/repos/spark-pool/PhoenixMiner/releases').text)[0]['tag_name']#by HaveFUNRICH#0884
-                hashratemonitor.configure(text=f'Downloading Phoenix Miner', font=fontbig)
+                hashratemonitor.configure(text=f'Downloading Phoenix Miner', font=calibrimedium)
                 with requests.get(f"https://github.com/spark-pool/PhoenixMiner/releases/download/{minerGitAPI}/PhoenixMiner_{minerGitAPI}_Windows.zip") as phoenix:
                     phoenix.raise_for_status()
                     with open(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "wb") as f:
                         for chunk in phoenix.iter_content(chunk_size=8192):
                             f.write(chunk)
-                hashratemonitor.configure(text=f'Extracting Phoenix Miner', font=fontbig)
+                hashratemonitor.configure(text=f'Extracting Phoenix Miner', font=calibrimedium)
                 with zipfile.ZipFile(f"{pydir}\\miners\\phoenixminer\\extracting.zip", "r") as f:
                     f.extractall(f"{pydir}\\miners\\phoenixminer")
                 os.remove(f"{pydir}\\miners\\phoenixminer\\extracting.zip")
@@ -122,13 +126,13 @@ class installminer():
                     os.makedirs(f'{pydir}\\miners\\nbminer')
                 except:print("path exists")
                 minerGitAPI = json.loads(requests.get('https://api.github.com/repos/NebuTech/NBMiner/releases').text)[0]['tag_name']#by HaveFUNRICH#0884
-                hashratemonitor.configure(text=f'Downloading NBMiner', font=fontbig)
+                hashratemonitor.configure(text=f'Downloading NBMiner', font=calibrimedium)
                 with requests.get(f"https://github.com/NebuTech/NBMiner/releases/download/{minerGitAPI}/NBMiner_{minerGitAPI[1:]}_Win.zip") as minerinstaller:
                     minerinstaller.raise_for_status()
                     with open(f"{pydir}\\miners\\nbminer\\extracting.zip", "wb") as f:
                         for chunk in minerinstaller.iter_content(chunk_size=8192):
                             f.write(chunk)
-                hashratemonitor.configure(text=f'Extracting NBMiner', font=fontbig)
+                hashratemonitor.configure(text=f'Extracting NBMiner', font=calibrimedium)
                 with zipfile.ZipFile(f"{pydir}\\miners\\nbminer\\extracting.zip", "r") as f:
                     f.extractall(f"{pydir}\\miners\\nbminer")
                 os.remove(f"{pydir}\\miners\\nbminer\\extracting.zip")
@@ -165,8 +169,8 @@ def hex_to_string(hex):
     string_value = bytes.fromhex(hex).decode('utf-8')
     return string_value
 def mainwindow():
-    global hashratemonitor, tempnum, startbuttonanimation, tempbar, root, windowvisible, startbutton, globalworker, globalminer, globalalgo, globalpool, globalregion, hashrate, fontregular, fontbig, fontextremelybig, tempdisplaycomponents, miningtext, FruitSalad, Discordbutton, starter
-    global startbuttonstart, startbuttonstartani, startbuttonstop, startbuttonstopani, startbuttonload1, startbuttonload2
+    global hashratemonitor, tempnum, startbuttonanimation, tempbar, root, windowvisible, startbutton, globalworker, globalminer, globalalgo, globalpool, globalregion, hashrate, calibriregular, calibrimedium, calibribold, tempdisplaycomponents, miningtext, FruitSalad, Discordbutton, starter
+    global startbuttonstart, startbuttonstartani, startbuttonstop, startbuttonstopani, startbuttonload1, startbuttonload2, textcanvas, console, textframe, frame2
     windowvisible = True
     traymenu.update_menu()
     root = tkinter.Tk()
@@ -196,36 +200,36 @@ def mainwindow():
         ]
     root.wm_attributes("-transparentcolor", '#010110')
     #Stats
-    hashratemonitor = tkinter.Label(root, text=f'{hashrate} MH/s', bg='#303136', fg="white", font=fontextremelybig)
+    hashratemonitor = tkinter.Label(root, text=f'{hashrate} MH/s', bg='#303136', fg="white", font=calibribold)
     hashratemonitor.place(x=425, y=480, width=350, height=70)
     shift = 0
     for gpu in gpus:
-        tkinter.Label(root, text=f"{language['GPU:'][:-1]+str(gpus.index(gpu))}: {gpu}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W).place(x=0, y=30+shift, width=400, height=50)
+        tkinter.Label(root, text=f"{language['GPU:'][:-1]+str(gpus.index(gpu))}: {gpu}", bg='#303136', fg="white", font=calibrimedium, anchor=tkinter.W).place(x=0, y=30+shift, width=400, height=50)
         shift = shift + 50
-    globalminer = tkinter.Label(root, text=f"{language['Miner:']} {savedsettings['miner']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
+    globalminer = tkinter.Label(root, text=f"{language['Miner:']} {savedsettings['miner']}", bg='#303136', fg="white", font=calibrimedium, anchor=tkinter.W)
     globalminer.place(x=0, y=30+shift, width=400, height=50)
-    globalalgo = tkinter.Label(root, text=f"{language['Algo:']} {savedsettings['algo']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
+    globalalgo = tkinter.Label(root, text=f"{language['Algo:']} {savedsettings['algo']}", bg='#303136', fg="white", font=calibrimedium, anchor=tkinter.W)
     globalalgo.place(x=0, y=80+shift, width=400, height=50)
-    globalpool = tkinter.Label(root, text=f"{language['Pool:']} {savedsettings['pool']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
+    globalpool = tkinter.Label(root, text=f"{language['Pool:']} {savedsettings['pool']}", bg='#303136', fg="white", font=calibrimedium, anchor=tkinter.W)
     globalpool.place(x=0, y=130+shift, width=400, height=50)
-    globalworker = tkinter.Label(root, text=f"{language['Worker:']} {savedsettings['worker']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
+    globalworker = tkinter.Label(root, text=f"{language['Worker:']} {savedsettings['worker']}", bg='#303136', fg="white", font=calibrimedium, anchor=tkinter.W)
     globalworker.place(x=0, y=180+shift, width=400, height=50)
-    globalregion = tkinter.Label(root, text=f"{language['Region:']} {savedsettings['region']}", bg='#303136', fg="white", font=fontbig, anchor=tkinter.W)
+    globalregion = tkinter.Label(root, text=f"{language['Region:']} {savedsettings['region']}", bg='#303136', fg="white", font=calibrimedium, anchor=tkinter.W)
     globalregion.place(x=0, y=230+shift, width=400, height=50)
     #middle
     tkinter.Canvas(root, bg="#2D2C36", highlightthickness=0).place(x=375,y=30,width=50,height=520)#temptemptemptemp
     tempdisplaycomponents = [
-        tkinter.Label(root, text='100°C', bg='#303136', fg="white", font=fontregular),
-        tkinter.Label(root, text='90°C', bg='#303136', fg="white", font=fontregular),
-        tkinter.Label(root, text='80°C', bg='#303136', fg="white", font=fontregular),
-        tkinter.Label(root, text='70°C', bg='#303136', fg="white", font=fontregular),
-        tkinter.Label(root, text='60°C', bg='#303136', fg="white", font=fontregular),
-        tkinter.Label(root, text='50°C', bg='#303136', fg="white", font=fontregular),
-        tkinter.Label(root, text='40°C', bg='#303136', fg="white", font=fontregular),
-        tkinter.Label(root, text='30°C', bg='#303136', fg="white", font=fontregular),
-        tkinter.Label(root, text='20°C', bg='#303136', fg="white", font=fontregular),
-        tkinter.Label(root, text='10°C', bg='#303136', fg="white", font=fontregular),
-        tkinter.Label(root, text='0°C', bg='#303136', fg="white", font=fontregular),
+        tkinter.Label(root, text='100°C', bg='#303136', fg="white", font=calibriregular),
+        tkinter.Label(root, text='90°C', bg='#303136', fg="white", font=calibriregular),
+        tkinter.Label(root, text='80°C', bg='#303136', fg="white", font=calibriregular),
+        tkinter.Label(root, text='70°C', bg='#303136', fg="white", font=calibriregular),
+        tkinter.Label(root, text='60°C', bg='#303136', fg="white", font=calibriregular),
+        tkinter.Label(root, text='50°C', bg='#303136', fg="white", font=calibriregular),
+        tkinter.Label(root, text='40°C', bg='#303136', fg="white", font=calibriregular),
+        tkinter.Label(root, text='30°C', bg='#303136', fg="white", font=calibriregular),
+        tkinter.Label(root, text='20°C', bg='#303136', fg="white", font=calibriregular),
+        tkinter.Label(root, text='10°C', bg='#303136', fg="white", font=calibriregular),
+        tkinter.Label(root, text='0°C', bg='#303136', fg="white", font=calibriregular),
         tkinter.Canvas(root, bg='#212126', highlightthickness=0),
         tkinter.Canvas(root, bg='#212126', highlightthickness=0),
         tkinter.Canvas(root, bg='#212126', highlightthickness=0),
@@ -259,22 +263,22 @@ def mainwindow():
         tempdisplaycomponents[19].place(x=370, y=550-10.25*5.2, width=60, height=2)
         
     tempbar = tkinter.Canvas(root, bg="red", highlightthickness=0)
-    tempnum = tkinter.Label(root, bg="red", fg="white", font=fontregular)
+    tempnum = tkinter.Label(root, bg="red", fg="white", font=calibriregular)
     #bottom
     tkinter.Canvas(root, bg="#0A2133", highlightthickness=0).place(x=0, y=550 ,width=800, height=50)
-    startbutton = tkinter.Label(root,fg="white",bg="#0A2133", font=fontregular, image=startbuttonanimation[0])
+    startbutton = tkinter.Label(root,fg="white",bg="#0A2133", font=calibriregular, image=startbuttonanimation[0])
     startbutton.place(x=635,y=550,width=425,height=50)
     #top
     tkinter.Canvas(root, bg="#222129", highlightthickness=0).place(x=0,y=0,width=800,height=30)
-    tkinter.Button(root, text=language['Settings'], bg='#222129', fg="white", border=1, font=fontregular, command=opensettings).place(x=0, y=0, width=188, height=30)
-    tempdisplaycomponents.append(tkinter.Label(root, text=language['GPU Temperature'], bg='#222129', fg="white", font=fontregular))
+    tkinter.Button(root, text=language['Settings'], bg='#222129', fg="white", border=1, font=calibriregular, command=opensettings).place(x=0, y=0, width=188, height=30)
+    tempdisplaycomponents.append(tkinter.Label(root, text=language['GPU Temperature'], bg='#222129', fg="white", font=calibriregular))
     if savedsettings['tempbar']:
         tempdisplaycomponents[20].place(x=200, y=0, width=400, height=30)
-    tkinter.Button(root, text=language['About us'], bg='#222129', fg="white", border=1, font=fontregular, command=aboutus).place(x=612, y=0, width=188, height=30)
+    tkinter.Button(root, text=language['About us'], bg='#222129', fg="white", border=1, font=calibriregular, command=aboutus).place(x=612, y=0, width=188, height=30)
     #miningarea
-    starter = tkinter.Button(root, image=startbuttonstart, bg=defaultbg, font=fontregular, command=startminer, border=0, activebackground=defaultbg)
+    starter = tkinter.Button(root, image=startbuttonstart, bg=defaultbg, font=calibriregular, command=startminer, border=0, activebackground=defaultbg)
     starter.place(y=150, height=265, width=265, x=480)
-    miningtext = tkinter.Label(root, text='Mining', font=fontbig, anchor=tkinter.W, background="black", foreground="yellow")
+    miningtext = tkinter.Label(root, text='Mining', font=calibrimedium, anchor=tkinter.W, background="black", foreground="yellow")
     miningtext.place(y=550, x=800, width=400, height=50)
 
     root.title("Fruit Salad "+ version)
@@ -288,6 +292,29 @@ def mainwindow():
         root.lift()
         root.focus()
     root.protocol("WM_DELETE_WINDOW", windowclose)
+    console = tkinter.Toplevel()
+    console.withdraw()
+    console.geometry("800x600")
+    console.wm_minsize(400, 220)
+    console.title(language["Console"])
+    console.protocol("WM_DELETE_WINDOW", lambda:console.withdraw())
+    console.iconbitmap(f'{pydir}\\FruitSalad.ico')
+    try:
+        console.configure(bg=savedsettings["consolebg"])
+        textframe = tkinter.Frame(console, background=savedsettings["consolebg"])
+    except:
+        console.configure(bg="black")
+        textframe = tkinter.Frame(console, background="black")
+        savedsettings["consolebg"] = "black"
+    textframe.pack(fill=tkinter.BOTH, expand=1)
+    textcanvas = tkinter.Canvas(textframe, bg=savedsettings["consolebg"], highlightthickness=0)
+    textcanvas.pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=1)
+    scrollbar = ttk.Scrollbar(textframe, orient=tkinter.VERTICAL, command=textcanvas.yview)
+    scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+    textcanvas.configure(yscrollcommand=scrollbar.set)
+    textcanvas.bind("<Configure>", lambda e: textcanvas.configure(scrollregion=textcanvas.bbox("all")))
+    frame2 = tkinter.Frame(textcanvas, bg=savedsettings["consolebg"])
+    textcanvas.create_window((0,0), window=frame2, anchor=tkinter.NW)
     root.mainloop()
     print('root stopped')
 def rgb_to_hex(rgb): return '#%02x%02x%02x' % rgb
@@ -554,8 +581,6 @@ def aboutus():#about us page
     def website(site):
         if site == 1:
             webbrowser.open("http://seflon.ddns.net/", new=2, autoraise=True)
-        if site == 2:
-            webbrowser.open("https://mezomgmt.com/", new=2, autoraise=True)
         if site == 3:
             webbrowser.open('https://discord.gg/VUcgW3nqGM', new=2, autoraise=True)
     if not aboutopen:
@@ -568,16 +593,14 @@ def aboutus():#about us page
         about.configure(bg='#303136')
         #About looks
         tkinter.Label(about, image=FruitSalad, background=defaultbg).place(x=6, y=6, width=64, height=64)
-        tkinter.Label(about, text="Fruit Salad,", font=fontbig, bg='#303136', fg="white", anchor=tkinter.W).place(x=70, y=0)
+        tkinter.Label(about, text="Fruit Salad,", font=calibrimedium, bg='#303136', fg="white", anchor=tkinter.W).place(x=70, y=0)
         tkinter.Button(about, image=Discordbutton, bg=defaultbg, border=0, command=lambda: website(3), activebackground="#dabfdf").place(x=530, y=6, width=64, height=64)
-        tkinter.Label(about, text=language["a Salad mining tool."], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=70, y=30)
-        tkinter.Label(about, text=language["Made by Let Software"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=70, y=50)
-        tkinter.Label(about, text=language["with help by Mezo#0001 from Mezo Management"], font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y=70)
-        tkinter.Button(about, text="seflon.ddns.net", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(1)).place(x=80, y=100)
-        tkinter.Label(about, text="Let Software:", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y= 100)
-        tkinter.Label(about, text="Letronix624#9040 (Let)", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 125)
-        tkinter.Label(about, text="Nilsipilzi#9733 (brot)", font=fontregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 145 )
-        tkinter.Button(about, text="mezomgmt.com", font=fontregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(2)).place(x=350, y=70)
+        tkinter.Label(about, text=language["a Salad mining tool."], font=calibriregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=70, y=30)
+        tkinter.Label(about, text=language["Made by Let Software"], font=calibriregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=70, y=50)
+        tkinter.Button(about, text="seflon.ddns.net", font=calibriregular, bg='#4B4C54', fg="orange", anchor=tkinter.W, border=0, command= lambda: website(1)).place(x=80, y=100)
+        tkinter.Label(about, text="Let Software:", font=calibriregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=5, y= 100)
+        tkinter.Label(about, text="Letronix624#9040 (Let)", font=calibriregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 125)
+        tkinter.Label(about, text="Nilsipilzi#9733 (brot)", font=calibriregular, bg='#303136', fg="white", anchor=tkinter.W).place(x=15, y= 145 )
         about.protocol("WM_DELETE_WINDOW", close)
     else:
         about.deiconify()
@@ -592,7 +615,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
     global currentlyeditingmanual
     global editingwalleraddress
     global presetshift
-    global editingtime, consolebgimage
+    global editingtime
     currentlyeditingmanual = False
     editingwalleraddress = False
     editingtime = False
@@ -682,10 +705,25 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         savedsettings["ministart"] = selectedminimize.get()
         savedsettings["autostart"] = selectedautostart.get()
         savedsettings["devfee"] = selecteddevfee.get()
-        savedsettings["consolebg"] = selectedconsolebg.get()
-        savedsettings["consolefg"] = selectedconsolefg.get()
-        savedsettings["consolebgimagepath"] = consolebgimage
+        savedsettings["consolebg"] = consolebg.get()
+        savedsettings["consolefg"] = consolefg.get()
         savedsettings["consolefontsize"] = selectedconsolefontsize.get()
+        try:
+            console.configure(bg=savedsettings["consolebg"])
+            textframe.configure(background=savedsettings["consolebg"])
+            textcanvas.configure(background=savedsettings["consolebg"])
+            frame2.configure(background=savedsettings["consolebg"])
+            for item in loglist:
+                item.configure(background=savedsettings["consolebg"], fg=savedsettings["consolefg"], font=(fontfamily, savedsettings["consolefontsize"]))
+        except:
+            console.configure(bg="black")
+            textframe.configure(background="black")
+            textcanvas.configure(background="black")
+            frame2.configure(background="black")
+            savedsettings["consolebg"] = "black"
+            savedsettings["consolefg"] = "white"
+            for item in loglist:
+                item.configure(background=savedsettings["consolebg"], fg=savedsettings["consolefg"])
         if currentlyeditingmanual:
             savedsettings['worker'] = givenworker.get()
             prelabel.configure(text=savedsettings['worker'])
@@ -923,11 +961,11 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         advancedsettingsframe = tkinter.Frame(settings, bg=defaultbg)
         megaguidesettingsframe = tkinter.Frame(settings, bg="pink")
         appsettingsframe.place(x=0, y=30, width=800, height=570)
-        a = tkinter.Button(settings, text=language["App Settings"], font=fontregular, bg='#46464A', fg="white", command=openappsettings, anchor=tkinter.S)
+        a = tkinter.Button(settings, text=language["App Settings"], font=calibriregular, bg='#46464A', fg="white", command=openappsettings, anchor=tkinter.S)
         a.place(x=0, y=0, width=300, height=40)
-        b = tkinter.Button(settings, text=language["Mining Settings"], font=fontregular, bg='#222129', fg="white", command=openminingsettings, anchor=tkinter.S)
+        b = tkinter.Button(settings, text=language["Mining Settings"], font=calibriregular, bg='#222129', fg="white", command=openminingsettings, anchor=tkinter.S)
         b.place(x=300, y=0, width=300, height=30)
-        c = tkinter.Button(settings, text=language["Advanced Settings"], font=fontregular, bg='#222129', fg="white", command=openadvancedsettings, anchor=tkinter.S)
+        c = tkinter.Button(settings, text=language["Advanced Settings"], font=calibriregular, bg='#222129', fg="white", command=openadvancedsettings, anchor=tkinter.S)
         c.place(x=600, y=0, width=200, height=30)
         d = tkinter.Button(settings, border=0, bg=defaultbg, command=openmegaguide)
         d.place(x=790, y=590, width=10, height=10)
@@ -956,18 +994,18 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         hhhh = tkinter.OptionMenu(appsettingsframe, selectedlang, *supportedlanguages, command=enableaccept)
         hhhh.place(x=5, y=13, width=100, height=24)
         hhhh.configure(highlightthickness=0)
-        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Language. When applying program will restart."], anchor=tkinter.W).place(x=110, y=15, width=800, height=20)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Language. When applying program will restart."], anchor=tkinter.W).place(x=110, y=15, width=800, height=20)
         tempcheckbutton = tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedtempbar, activebackground=defaultbg, fg="black")
         tempcheckbutton.place(x=5, y=45)
         tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedpresence, activebackground=defaultbg, fg="black").place(x=5, y=75)
         tkinter.Checkbutton(appsettingsframe, onvalue=True, offvalue=False, command=lambda:enableaccept(1), bg=defaultbg, variable=selectedminimize, activebackground=defaultbg, fg="black").place(x=5, y=105)
-        tkinter.Scale(appsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selecteddevfee, from_=0, to=100, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=135, width=240)
+        tkinter.Scale(appsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=calibriregular, variable=selecteddevfee, from_=0, to=100, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=135, width=240)
         if gpus == []:
             tempcheckbutton.configure(state="disabled")
-        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Temperature Bar']} | {language['When checked the temperature bar is visible.']}", anchor=tkinter.W).place(x=40, y=47, width=800, height=20)
-        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Discord Presence | Show what you are mining and how long you mined for.']}", anchor=tkinter.W).place(x=40, y=77, width=800, height=20)
-        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Start in tray | Minimizes the program on start.']}", anchor=tkinter.W).place(x=40, y=107, width=800, height=20)
-        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=f"{language['Optional dev fee in % | Please support us.']}", anchor=tkinter.W).place(x=250, y=153, width=800, height=20)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=f"{language['Temperature Bar']} | {language['When checked the temperature bar is visible.']}", anchor=tkinter.W).place(x=40, y=47, width=800, height=20)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=f"{language['Discord Presence | Show what you are mining and how long you mined for.']}", anchor=tkinter.W).place(x=40, y=77, width=800, height=20)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=f"{language['Start in tray | Minimizes the program on start.']}", anchor=tkinter.W).place(x=40, y=107, width=800, height=20)
+        tkinter.Label(appsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=f"{language['Optional dev fee in % | Please support us.']}", anchor=tkinter.W).place(x=250, y=153, width=800, height=20)
         tkinter.Button(appsettingsframe, command=lambda: profile('save'), bg='white', fg="black", text=language["Save settings profile"]).place(y=183, x=5, height=30)
         tkinter.Button(appsettingsframe, command=lambda: profile('load'), bg='white', fg="black", text=language["Load settings profile"]).place(y=183, x=400, height=30)
 
@@ -997,28 +1035,28 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         nonsaladsettings = tkinter.Frame(miningsettingsframe, bg=defaultbg)
         presetoffsettings = tkinter.Frame(miningsettingsframe, bg=defaultbg)
         tkinter.Checkbutton(miningsettingsframe, text=language["Salad Mining?"], onvalue=True, offvalue=False, command=lambda:enableaccept("saladmining"), bg="#46464A", variable=selectedsaladmining, activebackground=defaultbg, fg="black").place(x=5, y=15, width=240)
-        tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Should the miner mine to your Salad balance or an external wallet?"], anchor=tkinter.W).place(x=250, y=15, width=800, height=20)
+        tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Should the miner mine to your Salad balance or an external wallet?"], anchor=tkinter.W).place(x=250, y=15, width=800, height=20)
         
             #salad
         prelabel = tkinter.Label(saladsettings, text=savedsettings['worker'], anchor=tkinter.W)
-        manualworkergetterb = tkinter.Button(saladsettings, text=language['Manually set worker'],font=fontregular, command=manualworkergetter)
+        manualworkergetterb = tkinter.Button(saladsettings, text=language['Manually set worker'],font=calibriregular, command=manualworkergetter)
         givenworker = tkinter.Entry(saladsettings)
         prelabel.place(x=10, y=45, height=20, width=100)
-        tkinter.Button(saladsettings, text=language['Auto get worker'],font=fontregular, command=autoworkergetter).place(x=120, y=45, height=20, width=180)
+        tkinter.Button(saladsettings, text=language['Auto get worker'],font=calibriregular, command=autoworkergetter).place(x=120, y=45, height=20, width=180)
         manualworkergetterb.place(x=310, y=45, height=20, width=180)
-        tkinter.Label(saladsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Worker to send the balance to.'], anchor=tkinter.W).place(x=500, y=45, width=800, height=20)
+        tkinter.Label(saladsettings, bg=defaultbg, fg="white", font=calibriregular, text=language['Worker to send the balance to.'], anchor=tkinter.W).place(x=500, y=45, width=800, height=20)
             #miner
         if savedsettings['saladmining']: saladsettings.place(x=0, y=0, width=800, height=570)
         else: nonsaladsettings.place(x=0, y=0, width=800, height=570)
 
         prolabel = tkinter.Label(nonsaladsettings, text=savedsettings['ethwallet'], anchor=tkinter.W)
-        editwalletadress = tkinter.Button(nonsaladsettings, text=language['Edit'],font=fontregular, command=changewalletaddress)
+        editwalletadress = tkinter.Button(nonsaladsettings, text=language['Edit'],font=calibriregular, command=changewalletaddress)
         givenwallet = tkinter.Entry(nonsaladsettings)
         prolabel.place(x=5, y=45, width=250, height=20)
         editwalletadress.place(x=260, y=45, width=60, height=20)
-        tkinter.Label(nonsaladsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Wallet address'], anchor=tkinter.W).place(x=330, y=45, width=800, height=20)
+        tkinter.Label(nonsaladsettings, bg=defaultbg, fg="white", font=calibriregular, text=language['Wallet address'], anchor=tkinter.W).place(x=330, y=45, width=800, height=20)
 
-        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Miner:'][0:-1], anchor=tkinter.W).place(x=250, y=25, width=800, height=20)
+        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=calibriregular, text=language['Miner:'][0:-1], anchor=tkinter.W).place(x=250, y=25, width=800, height=20)
         hhh = tkinter.OptionMenu(presetoffsettings, selectedminer, command=lambda x:enableaccept("minersettings"), *supportedminers) ##########################
         
         hhh.configure(highlightthickness=0)
@@ -1026,14 +1064,14 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         hhhha = tkinter.OptionMenu(presetoffsettings, selectedalgo, command=lambda x:enableaccept("minersettings"), *mineralgos[selectedminer.get()]) ###############################
         hhhha.configure(highlightthickness=0)
         hhhha.place(x=5, y=53, width=240, height=24)
-        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Algo:'][0:-1], anchor=tkinter.W).place(x=250, y=55, width=800, height=20)
+        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=calibriregular, text=language['Algo:'][0:-1], anchor=tkinter.W).place(x=250, y=55, width=800, height=20)
         hhhaa = tkinter.OptionMenu(presetoffsettings, selectedpool, command=lambda x:enableaccept("minersettings"), *minerpools[selectedalgo.get()]) ###############################
         hhhaa.configure(highlightthickness=0)
         hhhaa.place(x=5, y=83, width=240, height=24)
-        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=fontregular, text=language['Pool:'][0:-1], anchor=tkinter.W).place(x=250, y=85, width=800, height=20)
+        tkinter.Label(presetoffsettings, bg=defaultbg, fg="white", font=calibriregular, text=language['Pool:'][0:-1], anchor=tkinter.W).place(x=250, y=85, width=800, height=20)
         tkinter.Checkbutton(miningsettingsframe, text=language["Use preset"], onvalue=True, offvalue=False, command=lambda:enableaccept("preset"), bg="#46464A", variable=selectedpreset, activebackground=defaultbg, fg="black").place(x=5, y=70, width=240)
         #Use best settings premade for specified GPU.
-        abcdefg = tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Use best settings premade for specified GPU.'], anchor=tkinter.W)
+        abcdefg = tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language['Use best settings premade for specified GPU.'], anchor=tkinter.W)
         if savedsettings['presetonoff']:
             abcdefg.place(y=70, x=410)
         else:
@@ -1046,11 +1084,11 @@ def opensettings():#settings - settings - settings - settings - settings - setti
             tkinter.Checkbutton(miningsettingsframe, text=language["Auto start"], onvalue=True, offvalue=False, variable=selectedautostart, command=lambda:enableaccept("p"), bg="#46464A", activebackground=defaultbg, fg="black"),
             tkinter.Label(miningsettingsframe, text=str(savedsettings['autostarttimer']), anchor=tkinter.W),
             tkinter.Button(miningsettingsframe, text=language['Edit'], command=changeautostarttime),
-            tkinter.Button(miningsettingsframe, text=language['Scheduled mining settings'],font=fontregular, command=openshedulemenu),
-            tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Autostart and how many seconds for it to start.'], anchor=tkinter.W),
-            tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Opens the settings to a schedule menu.'], anchor=tkinter.W),
+            tkinter.Button(miningsettingsframe, text=language['Scheduled mining settings'],font=calibriregular, command=openshedulemenu),
+            tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language['Autostart and how many seconds for it to start.'], anchor=tkinter.W),
+            tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language['Opens the settings to a schedule menu.'], anchor=tkinter.W),
             tkinter.OptionMenu(miningsettingsframe, selectedregion, command=lambda x:enableaccept("minersettings"), *minerregions[selectedpool.get()]),
-            tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Region:'][:-1], anchor=tkinter.W),
+            tkinter.Label(miningsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language['Region:'][:-1], anchor=tkinter.W),
         ]
         givenstarttime = Lotfi(miningsettingsframe)
         presetshitfters[0].place(x=5, y=130 + presetshift, width=200, height=24)
@@ -1077,11 +1115,6 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         selectedhashrateupdatetime.set(savedsettings["updatetime"])
         selectedfixedfan = tkinter.IntVar()
         selectedfixedfan.set(savedsettings["fan"])
-        selectedconsolebg = tkinter.StringVar()
-        selectedconsolebg.set(savedsettings["consolebg"])
-        selectedconsolefg = tkinter.StringVar()
-        selectedconsolefg.set(savedsettings["consolefg"])
-        consolebgimage = savedsettings["consolebgimagepath"]
         selectedconsolefontsize = tkinter.IntVar()
         selectedconsolefontsize.set(savedsettings["consolefontsize"])
         """
@@ -1103,7 +1136,7 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         else: ocstate = "normal"
         usecustomargscheck = tkinter.Checkbutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, variable=selectedoc, onvalue=True, state=ocstate, offvalue=False, command=lambda:enableaccept(''))
         usecustomargscheck.place(x=5, y=12)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language['Overclock GPU'] + " | " + language['Unlocks Overclock settings. (Know what you are doing!)'], anchor=tkinter.W).place(x=40, y=15, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language['Overclock GPU'] + " | " + language['Unlocks Overclock settings. (Know what you are doing!)'], anchor=tkinter.W).place(x=40, y=15, width=800, height=20)
         pllot = Lotfi(advancedsettingsframe)
         cclot = Lotfi(advancedsettingsframe)
         mclot = Lotfi(advancedsettingsframe)
@@ -1116,60 +1149,51 @@ def opensettings():#settings - settings - settings - settings - settings - setti
         pllot.place(x=5, y=45, width=30, height=20)
         cclot.place(x=5, y=75, width=30, height=20)
         mclot.place(x=5, y=105, width=30, height=20)
-        ocsettings0 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=fontregular, variable=selectedintensity, from_=8, to=25, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
+        ocsettings0 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, state=ocstate, font=calibriregular, variable=selectedintensity, from_=8, to=25, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
         ocsettings0.place(x=5, y=125, width=240)
         ocsettings1 = tkinter.Checkbutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, variable=selectedcustomfan, onvalue=True, offvalue=False, command=lambda:enableaccept(''))
         ocsettings1.place(x=5, y=165)
         ocsettings2 = tkinter.Radiobutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, variable=selectedtempboundfanonoff, value=False, command=lambda:enableaccept(''))
         ocsettings2.place(x=5, y=195)
-        ocsettings3 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selectedfixedfan, from_=0, to=100, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
+        ocsettings3 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=calibriregular, variable=selectedfixedfan, from_=0, to=100, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
         ocsettings3.place(x=5, y=215, width=240)
         ocsettings4 = tkinter.Radiobutton(advancedsettingsframe, background=defaultbg, activebackground=defaultbg, variable=selectedtempboundfanonoff, value=True, command=lambda:enableaccept(''))
         ocsettings4.place(x=5, y=257)
-        ocsettings5 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selectedtempboundfan, from_=0, to=90, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
+        ocsettings5 = tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=calibriregular, variable=selectedtempboundfan, from_=0, to=90, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept)
         ocsettings5.place(x=5, y=275, width=240)
-        tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=fontregular, variable=selectedhashrateupdatetime, from_=5, to=60, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=345, width=240)
-        tkinter.Button(advancedsettingsframe, text=language['Open miner logs'], command=lambda:os.startfile(pydir+"\\logs.txt")).place(x=5, y=390)
+        tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, highlightthickness=0, font=calibriregular, variable=selectedhashrateupdatetime, from_=5, to=60, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=345, width=240)
+        tkinter.Button(advancedsettingsframe, text=language['Open miner logs'], command=openconsole).place(x=5, y=390)
         consolebg = tkinter.Entry(advancedsettingsframe)
         consolebg.place(x=5, y=425, width=100, height=20)
         consolefg = tkinter.Entry(advancedsettingsframe)
         consolefg.place(x=5, y=455, width=100, height=20)
         consolebg.insert(tkinter.END, savedsettings['consolebg'])
         consolefg.insert(tkinter.END, savedsettings['consolefg'])
-        def choosepathofdeath():
-            global consolebgimage
-            consolebgimage = tkinter.filedialog.askopenfilename(title="Select PNG", filetypes=[("png files", "*.png")])
-            consolepathtext.configure(text=consolebgimage)
-            enableaccept()
-        tkinter.Button(advancedsettingsframe, text=language["Edit"], command=choosepathofdeath).place(x=5, y=485, width=50, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text="Logs window background image" + " (800x600)", anchor=tkinter.E).place(x=500, y=485, height=20, width=300)
-        consolepathtext = tkinter.Label(advancedsettingsframe, text=consolebgimage, bg=defaultbg, anchor=W, fg="white")
-        consolepathtext.place(x=60, y=485, height=20)
-        tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, variable=selectedconsolefontsize, highlightthickness=0, font=fontregular, from_=1, to=50, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=510, width=240)
+        tkinter.Scale(advancedsettingsframe, fg="white", background=defaultbg, variable=selectedconsolefontsize, highlightthickness=0, font=calibriregular, from_=1, to=50, orient=tkinter.HORIZONTAL, cursor='circle', command=enableaccept).place(x=5, y=480, width=240)
 
 
 
 
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Power Limit"], anchor=tkinter.W).place(x=40, y=45, width=800, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Core Clock"], anchor=tkinter.W).place(x=40, y=75, width=800, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Memory Clock"], anchor=tkinter.W).place(x=40, y=105, width=800, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Intensity"], anchor=tkinter.W).place(x=250, y=142, width=800, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Custom fan speed"], anchor=tkinter.W).place(x=40, y=167, width=800, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Fixed fan speed"], anchor=tkinter.W).place(x=40, y=197, width=800, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Target fan speed in RPM"], anchor=tkinter.W).place(x=250, y=232, width=800, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Temp bound fan speed"], anchor=tkinter.W).place(x=40, y=260, width=800, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Target temperature in C"], anchor=tkinter.W).place(x=250, y=292, width=800, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text=language["Hashrate update frequency in seconds"], anchor=tkinter.W).place(x=250, y=362, width=800, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text="Logs window background hex color", anchor=tkinter.W).place(x=110, y=425, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text="Logs window foreground hex color", anchor=tkinter.W).place(x=110, y=455, height=20)
-        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text="Logs window font size", anchor=tkinter.W).place(x=250, y=527, height=20)
-        # preset tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=fontregular, text="", anchor=tkinter.W).place(x=250, y=0, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Power Limit"], anchor=tkinter.W).place(x=40, y=45, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Core Clock"], anchor=tkinter.W).place(x=40, y=75, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Memory Clock"], anchor=tkinter.W).place(x=40, y=105, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Intensity"], anchor=tkinter.W).place(x=250, y=142, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Custom fan speed"], anchor=tkinter.W).place(x=40, y=167, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Fixed fan speed"], anchor=tkinter.W).place(x=40, y=197, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Target fan speed in RPM"], anchor=tkinter.W).place(x=250, y=232, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Temp bound fan speed"], anchor=tkinter.W).place(x=40, y=260, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Target temperature in C"], anchor=tkinter.W).place(x=250, y=292, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Hashrate update frequency in seconds"], anchor=tkinter.W).place(x=250, y=362, width=800, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Logs window background color. # at beginning for hex code."], anchor=tkinter.W).place(x=110, y=425, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Logs window foreground color. # at beginning for hex code."], anchor=tkinter.W).place(x=110, y=455, height=20)
+        tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text=language["Logs window font size"], anchor=tkinter.W).place(x=250, y=497, height=20)
+        # preset tkinter.Label(advancedsettingsframe, bg=defaultbg, fg="white", font=calibriregular, text="", anchor=tkinter.W).place(x=250, y=0, height=20)
         #Megaguide Settings
-        tkinter.Label(megaguidesettingsframe, text=language["Secret Settings"], bg="pink", fg="white", font=fontextremelybig).pack()
-        tkinter.Button(megaguidesettingsframe, text="Megaguide", bg="Red", fg="White", command=megaguide, font=fontregular, padx=10, pady=5).pack(anchor=tkinter.NW)
+        tkinter.Label(megaguidesettingsframe, text=language["Secret Settings"], bg="pink", fg="white", font=calibribold).pack()
+        tkinter.Button(megaguidesettingsframe, text="Megaguide", bg="Red", fg="White", command=megaguide, font=calibriregular, padx=10, pady=5).pack(anchor=tkinter.NW)
         if savedsettings['language'] != "Furry":
-            tkinter.Label(megaguidesettingsframe, text=language["Button below restarts the program."], font=fontregular).pack(anchor=tkinter.NW)
-            hhh = tkinter.Button(megaguidesettingsframe, text=language["Furry Language"], bg="yellow", fg="pink", font=fontregular, command=lambda:changelang("Furry"))
+            tkinter.Label(megaguidesettingsframe, text=language["Button below restarts the program."], font=calibriregular).pack(anchor=tkinter.NW)
+            hhh = tkinter.Button(megaguidesettingsframe, text=language["Furry Language"], bg="yellow", fg="pink", font=calibriregular, command=lambda:changelang("Furry"))
             hhh.pack(anchor=tkinter.NW) #messageinblood
         #finishing touch
         if selectedpreset.get():
@@ -1333,27 +1357,27 @@ def openshedulemenu(): #shedule shedule shedule shedule shedule shedule shedule 
         shedulemenu.resizable(False, False)
         shedulemenu.iconbitmap(f'{pydir}\\FruitSalad.ico')
         shedulemenu.protocol("WM_DELETE_WINDOW", close)
-        titletext = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=fontbig, text=language["Create or select a marker."])
+        titletext = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=calibrimedium, text=language["Create or select a marker."])
         titletext.place(x=10, y=10)
         tkinter.Canvas(shedulemenu, bg="#212126", highlightthickness=0).place(x=9, y=520, width=2, height=75)
         tkinter.Canvas(shedulemenu, bg="#212126", highlightthickness=0).place(x=204, y=520, width=2, height=75)
         tkinter.Canvas(shedulemenu, bg="#212126", highlightthickness=0).place(x=789, y=520, width=2, height=75)
         tkinter.Canvas(shedulemenu, bg="#212126", highlightthickness=0).place(x=399, y=520, width=2, height=75)
         tkinter.Canvas(shedulemenu, bg="#212126", highlightthickness=0).place(x=594, y=520, width=2, height=75)
-        tkinter.Label(shedulemenu, bg=defaultbg, text="00:00", font=fontregular, fg="white").place(x=11, y=520, height=30)
-        tkinter.Label(shedulemenu, bg=defaultbg, text="06:00", font=fontregular, fg="white").place(x=206, y=520, height=30)
-        tkinter.Label(shedulemenu, bg=defaultbg, text="12:00", font=fontregular, fg="white").place(x=401, y=520, height=30)
-        tkinter.Label(shedulemenu, bg=defaultbg, text="18:00", font=fontregular, fg="white").place(x=596, y=520, height=30)
-        tkinter.Label(shedulemenu, bg=defaultbg, text="24:00", font=fontregular, fg="white", anchor=E).place(x=708, y=520, height=30, width=80)
+        tkinter.Label(shedulemenu, bg=defaultbg, text="00:00", font=calibriregular, fg="white").place(x=11, y=520, height=30)
+        tkinter.Label(shedulemenu, bg=defaultbg, text="06:00", font=calibriregular, fg="white").place(x=206, y=520, height=30)
+        tkinter.Label(shedulemenu, bg=defaultbg, text="12:00", font=calibriregular, fg="white").place(x=401, y=520, height=30)
+        tkinter.Label(shedulemenu, bg=defaultbg, text="18:00", font=calibriregular, fg="white").place(x=596, y=520, height=30)
+        tkinter.Label(shedulemenu, bg=defaultbg, text="24:00", font=calibriregular, fg="white", anchor=E).place(x=708, y=520, height=30, width=80)
         startchecker = tkinter.Radiobutton(shedulemenu, variable=selection, value=1, command=unlockapply, bg=defaultbg, activebackground=defaultbg, fg="black")
-        startlabel = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=fontregular, text=language["Start miner at that time."], anchor=tkinter.W)
+        startlabel = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=calibriregular, text=language["Start miner at that time."], anchor=tkinter.W)
         stopchecker = tkinter.Radiobutton(shedulemenu, variable=selection, value=2, command=unlockapply, bg=defaultbg, activebackground=defaultbg, fg="black")
-        stoplabel = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=fontregular, text=language["Stop miner at that time."], anchor=tkinter.W)
+        stoplabel = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=calibriregular, text=language["Stop miner at that time."], anchor=tkinter.W)
         switchtoprofilechecker = tkinter.Radiobutton(shedulemenu, variable=selection, value=3, command=unlockapply, bg=defaultbg, activebackground=defaultbg, fg="black")
-        switchprofilelabel = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=fontregular, text=language["Switch settings profile at that time."], anchor=tkinter.W)
+        switchprofilelabel = tkinter.Label(shedulemenu, bg=defaultbg, fg="white", font=calibriregular, text=language["Switch settings profile at that time."], anchor=tkinter.W)
         applybutton = tkinter.Button(shedulemenu, text=language["Accept Settings"], command=apply)
-        profilebutton = tkinter.Button(shedulemenu, text=language["Change profile"], command=chooseprofile, font=fontregular)
-        profilelabel = tkinter.Label(shedulemenu, text=f"Directory: {selectedprofile}", background=defaultbg, font=fontregular, fg="white")
+        profilebutton = tkinter.Button(shedulemenu, text=language["Change profile"], command=chooseprofile, font=calibriregular)
+        profilelabel = tkinter.Label(shedulemenu, text=f"Directory: {selectedprofile}", background=defaultbg, font=calibriregular, fg="white")
         timebar = tkinter.Canvas(shedulemenu, bg="grey")
         timebar.place(x=10, y=550, height=40, width=780)
         for item in savedsettings["schedule"]:
@@ -1361,8 +1385,21 @@ def openshedulemenu(): #shedule shedule shedule shedule shedule shedule shedule 
         timebar.bind('<Button-1>',barclick)
         shedulemenu.bind('<Button-3>',deselectall)
 def openconsole():
-    console = tkinter.Toplevel()
-
+    console.wm_deiconify()
+def consoleadd(text):
+    try:
+        try:
+            loglist.append(tkinter.Label(frame2, text=text, bg=savedsettings["consolebg"], fg=savedsettings["consolefg"], font=(fontfamily, savedsettings["consolefontsize"])))
+        except:
+            loglist.append(tkinter.Label(frame2, text=text, bg="black", fg="white"), font=(fontfamily, savedsettings["consolefontsize"]))
+        loglist[-1].pack(side=tkinter.TOP, anchor=tkinter.NW)
+        if len(loglist) > 999:
+            loglist[0].destroy()
+            loglist.pop(0)
+        textcanvas.configure(scrollregion=textcanvas.bbox("all"))
+        textcanvas.yview_moveto('1.0')
+        textcanvas.configure(scrollregion=textcanvas.bbox("all"))
+    except:pass
 def megaguide():
     winsound.PlaySound(pydir+"\\MEGAGUIDE.wav", winsound.SND_ASYNC)
 def windowclose():
@@ -1531,7 +1568,7 @@ def temperaturebar():
 def stopminer():
     global mineractive, hashratemonitor, session
     if mineractive:
-        hashratemonitor.configure(text='Stopping', font=fontextremelybig)
+        hashratemonitor.configure(text='Stopping', font=calibribold)
         session.send_signal(signal.CTRL_BREAK_EVENT)
         session.wait()
         mineractive = False
@@ -1540,7 +1577,7 @@ def stopminer():
                 time.sleep(3)
                 ocreset.send_signal(signal.CTRL_BREAK_EVENT)
                 ocreset.wait()
-        hashratemonitor.configure(text='0.00 MH/s', font=fontextremelybig)
+        hashratemonitor.configure(text='0.00 MH/s', font=calibribold)
         with open(f"{pydir}\\d.evs", "w") as data:
             data.write(str(devtimer))
 def miner():
@@ -1623,19 +1660,21 @@ def miner():
                 installminer(miner="nb")
                 if savedsettings["fanbool"]:
                     fan = f"--fan {savedsettings['fan']}"
-                session = subprocess.Popen(f"\"{pydir}\\miners\\nbminer\\nbminer.exe\" -a {algo.lower()} -o {stratum} {user} {p} --pl {pl}% --cclock {cc} --mclock {mc} -i {((int(intensity)-8)/17)*100} --no-color", shell=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
+                session = subprocess.Popen(f"\"{pydir}\\miners\\nbminer\\nbminer.exe\" -a {algo.lower()} -o {stratum} {user} {p} --pl {pl}% --cclock {cc} --mclock {mc} -i {((int(intensity)-8)/17)*100} --no-color", shell=False, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.PIPE)
                 currentminer = "nb"
 
             
             daggenerated = False
             mineractive = True
-            hashratemonitor.configure(text='Prepping', font=fontextremelybig)
+            hashratemonitor.configure(text='Prepping', font=calibribold)
             while ((mining or automining) and mineractive) and devtimer > int(savedsettings["devfee"]) * 60:
                 if currentminer == "nb":
                     time.sleep(int(savedsettings["updatetime"]))
+                    nbminerapi = json.loads(requests.get("http://127.0.0.1:22333/api/v1/status").text)
+                    
                     try:
-                        hashrate = json.loads(requests.get("http://127.0.0.1:22333/api/v1/status").text)["miner"]["total_hashrate"][:-2]
-                        hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
+                        hashrate = nbminerapi["miner"]["total_hashrate"][:-2]
+                        hashratemonitor.configure(text=f'{hashrate} MH/s', font=calibribold)
                         if float(hashrate) > 0:daggenerated = True
                     except:
                         stopminer()
@@ -1644,18 +1683,16 @@ def miner():
                     if output == "":stopminer()
                     if mineractive:
                         if "generating DAG" in output or "Building" in output:
-                            hashratemonitor.configure(text='Generating DAG', font=fontbig)
+                            hashratemonitor.configure(text='Generating DAG', font=calibrimedium)
                         if "DAG generated" in output or "Built" in output:
                             hashratemonitor.configure(text='Waiting for hashrate')
                             daggenerated = True
                         if "MH/s," in output:
                             if savedsettings["miner"] == "Phoenix Miner":hashrate = output.split()[output.split().index('MH/s,') - 1][:-1]
                             elif savedsettings["miner"] == "T-Rex Miner":hashrate = output.split()[output.split().index('MH/s,') - 1]
-                            elif savedsettings["miner"] == "NBMiner":hashrate = output.split()[output.split().index('M') - 1]
-                            hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
-                    print("non dev:"+output)
-                    with open(f'{pydir}\\logs.txt', "a") as logs:
-                        logs.write(output)
+                            hashratemonitor.configure(text=f'{hashrate} MH/s', font=calibribold)
+                    print(output)
+                    consoleadd(output)
         if (mining or automining) and (devtimer < int(savedsettings["devfee"]) * 60):#======================================================================================
             algo = savedsettings["algo"]
             user = ""
@@ -1731,13 +1768,14 @@ def miner():
             
             mineractive = True
             daggenerated = False
-            hashratemonitor.configure(text='Prepping', font=fontextremelybig)
+            hashratemonitor.configure(text='Prepping', font=calibribold)
             while ((mining or automining) and mineractive) and devtimer < int(savedsettings["devfee"]) * 60:
                 if currentminer == "nb":
                     time.sleep(int(savedsettings["updatetime"]))
+                    
                     try:
                         hashrate = json.loads(requests.get("http://127.0.0.1:22333/api/v1/status").text)["miner"]["total_hashrate"][:-2]
-                        hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
+                        hashratemonitor.configure(text=f'{hashrate} MH/s', font=calibribold)
                         if float(hashrate) > 0:daggenerated = True
                     except:
                         stopminer()
@@ -1746,18 +1784,16 @@ def miner():
                     if output == "":stopminer()
                     if mineractive:
                         if "generating DAG" in output or "Building" in output:
-                            hashratemonitor.configure(text='Generating DAG', font=fontbig)
+                            hashratemonitor.configure(text='Generating DAG', font=calibrimedium)
                         if "DAG generated" in output or "Built" in output:
                             hashratemonitor.configure(text='Waiting for hashrate')
                             daggenerated = True
                         if "MH/s," in output:
                             if savedsettings["miner"] == "Phoenix Miner":hashrate = output.split()[output.split().index('MH/s,') - 1][:-1]
                             elif savedsettings["miner"] == "T-Rex Miner":hashrate = output.split()[output.split().index('MH/s,') - 1]
-                            elif savedsettings["miner"] == "NBMiner":hashrate = output.split()[output.split().index('M') - 1]
-                            hashratemonitor.configure(text=f'{hashrate} MH/s', font=fontextremelybig)
-                    print("non dev:"+output)
-                    with open(f'{pydir}\\logs.txt', "a") as logs:
-                        logs.write(output)
+                            hashratemonitor.configure(text=f'{hashrate} MH/s', font=calibribold)
+                    print("dev: "+output)
+                    consoleadd("dev: "+output)
 def presence(command):
     global rpc
     if command == "connect":
@@ -1842,10 +1878,11 @@ minerregions = {
     "Prohashing": ["eu", "us"],
 }
 
-allfont = "Calibri"
-fontregular = (allfont, 10)
-fontbig = (allfont, 17)#                                                 fonts
-fontextremelybig = (allfont, 50, "bold")
+fontfamily = "Calibri"
+calibriregular = (fontfamily, 10)
+calibrimedium = (fontfamily, 17)#                                                 fonts
+calibribold = (fontfamily, 50, "bold")
+
 mineractive = False
 defaultbg = "#303136"
 hashrate = "0.00"
@@ -1885,7 +1922,6 @@ savedsettings = {
     "schedule": [],
     "consolebg": "black",
     "consolefg": "white",
-    "consolebgimagepath": "",
     "consolefontsize": 10,
 }
 try:
@@ -1953,6 +1989,11 @@ if gpus != []:
 if __name__ == "__main__":
     for thread in setupthreads:
         thread.start()
+
+
+    
+
+
     if savedsettings["freshlang"]:
         with open(f'{pydir}\\lang.vbs' ,"w") as message:
             message.write(f"MsgBox\"{language['Welcome to the -langname- version of Fruitsalad!']}\", 0, \"{language['Hello!']}\"")
@@ -1999,12 +2040,12 @@ if __name__ == "__main__":
                 currencylogo = f"ergo"
             elif savedsettings["algo"] == "Octopus":
                 currencylogo = f"octopus"
-            if not windowvisible and savedsettings["tempbar"]:gputemperature = str(gputemp())
+            if not windowvisible and savedsettings["tempbar"]:gputemperature = gputemp()
             if gpus[0]:
                 details = f"Mining on a {gpus[0]}."
             if savedsettings["dcpresence"]:
                 try:
-                    rpc.update(instance=True, details=details, state=f"{gputemperature}C, {str(int(round(float(hashrate.replace(',', '.')))))}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}], large_image="fruitsaladdark", large_text=f"Using {savedsettings['miner']}")
+                    rpc.update(instance=True, details=details, state=f"{str(gputemperature)}C, {str(int(round(float(hashrate.replace(',', '.')))))}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}], large_image="fruitsaladdark", large_text=f"Using {savedsettings['miner']}")
                     rpcupdatecount = 0
                 except:pass
         if savedsettings["autostart"] and not mining:
