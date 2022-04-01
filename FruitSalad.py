@@ -1,4 +1,4 @@
-version = "0.3.4"
+version = "0.3.5"
 import sys
 try:
     import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil, random
@@ -582,7 +582,7 @@ def aboutus():#about us page
         if site == 1:
             webbrowser.open("http://seflon.ddns.net/", new=2, autoraise=True)
         if site == 3:
-            webbrowser.open('https://discord.gg/VUcgW3nqGM', new=2, autoraise=True)
+            webbrowser.open('https://discord.gg/sxfbu7MrCb', new=2, autoraise=True)
     if not aboutopen:
         aboutopen = True
         about = tkinter.Toplevel()
@@ -1425,7 +1425,7 @@ def startminer():
         done = False
         if mining:
             if savedsettings["dcpresence"] and kaboompshhhbadammkardosh:
-                rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}])
+                rpc.update(details="Currently not mining.", small_image="salad", small_text=f"{version}", buttons=[{"label": "Discord", "url": "https://discord.gg/sxfbu7MrCb"}])
             mining = False
             starter.configure(image=startbuttonstopani)
             for i in range(25):
@@ -1450,10 +1450,12 @@ def startminer():
     if done:
         threading.Thread(target=t).start()
 def windowopen(hideshow):
+    global windowvisible
     if hideshow:
         root.withdraw()
     else:
         root.deiconify()
+        windowvisible = True
 def byebye(): #quit quit quit quit
     global quitter
     global windowvisible
@@ -1808,7 +1810,7 @@ def presence(command):
     global rpc
     if command == "connect":
         rpc.connect()
-        rpc.update(instance=False, details="Currently not mining.", small_image="salad", small_text="Salad", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}])
+        rpc.update(instance=False, details="Currently not mining.", small_image="salad", small_text=f"{version}", buttons=[{"label": "Discord", "url": "https://discord.gg/sxfbu7MrCb"}])
     elif command == "disconnect":
         rpc.close()
 icon = Image.open(f"{pydir}\\FruitSalad.ico")
@@ -2056,7 +2058,7 @@ if __name__ == "__main__":
                 details = f"Mining on a {gpus[0]}."
             if savedsettings["dcpresence"]:
                 try:
-                    rpc.update(instance=True, details=details, state=f"{str(gputemperature)}C, {str(int(round(float(hashrate.replace(',', '.')))))}MH/s", small_image=currencylogo, small_text=f"Mining {savedsettings['algo']}", buttons=[{"label": "Discord", "url": "https://discord.gg/VUcgW3nqGM"}], large_image="fruitsaladdark", large_text=f"Using {savedsettings['miner']}")
+                    rpc.update(instance=True, details=details, state=f"{str(gputemperature)}C, {str(int(round(float(hashrate.replace(',', '.')))))}MH/s", small_image=currencylogo, small_text=f"{version} - Mining {savedsettings['algo']}", buttons=[{"label": "Discord", "url": "https://discord.gg/sxfbu7MrCb"}], large_image="fruitsaladdark", large_text=f"Using {savedsettings['miner']}")
                     rpcupdatecount = 0
                 except:pass
         if savedsettings["autostart"] and not mining:
@@ -2067,7 +2069,7 @@ if __name__ == "__main__":
             else: 
                 if mineractive:
                     if savedsettings["dcpresence"]:
-                        rpc.update(details="Currently not mining.", small_image="salad", small_text="Salad")
+                        rpc.update(details="Currently not mining.", small_image="salad", small_text=f"{version}")
                 ####################
                 stime = ((time.localtime()[3] * 60) + time.localtime()[4]) * 60 + time.localtime()[5]
                 if savedsettings["schedule"] == () or savedsettings["schedule"] == []:
