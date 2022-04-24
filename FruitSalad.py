@@ -1,4 +1,4 @@
-version = "0.3.5"
+version = "0.3.6"
 import sys
 try:
     import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil, random
@@ -1425,7 +1425,9 @@ def startminer():
         done = False
         if mining:
             if savedsettings["dcpresence"] and kaboompshhhbadammkardosh:
-                rpc.update(details="Currently not mining.", small_image="salad", small_text=f"{version}", buttons=[{"label": "Discord", "url": "https://discord.gg/sxfbu7MrCb"}])
+                try:
+                    rpc.update(details="Currently not mining.", small_image="salad", small_text=f"{version}", buttons=[{"label": "Discord", "url": "https://discord.gg/sxfbu7MrCb"}])
+                except:print("rpc is weird right now!")
             mining = False
             starter.configure(image=startbuttonstopani)
             for i in range(25):
@@ -2021,7 +2023,7 @@ if __name__ == "__main__":
         time.sleep(1)
         if not kaboompshhhbadammkardosh:
             try:
-                rpc = Presence(client_id="948739944908738700")
+                rpc = Presence(client_id="967704006648537200")
                 kaboompshhhbadammkardosh = True
                 print('Discord found')
             except:
@@ -2069,7 +2071,9 @@ if __name__ == "__main__":
             else: 
                 if mineractive:
                     if savedsettings["dcpresence"]:
-                        rpc.update(details="Currently not mining.", small_image="salad", small_text=f"{version}")
+                        try:
+                            rpc.update(details="Currently not mining.", small_image="salad", small_text=f"{version}")
+                        except:print("rpc is weird right now!")
                 ####################
                 stime = ((time.localtime()[3] * 60) + time.localtime()[4]) * 60 + time.localtime()[5]
                 if savedsettings["schedule"] == () or savedsettings["schedule"] == []:
