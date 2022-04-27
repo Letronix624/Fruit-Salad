@@ -1,4 +1,4 @@
-version = "0.3.6"
+version = "0.3.7"
 import sys
 try:
     import time, win32api, threading, os, subprocess, json, tkinter, signal, pystray, webbrowser, tkinter.messagebox, singleton, winsound, zipfile, win32gui, win32con, requests, winreg, tkinter.filedialog, shutil, random
@@ -49,8 +49,8 @@ except:arg1 = ""
 if sys.argv[0].endswith(".exe") and not "-console" in arg1:
     win32gui.ShowWindow(win32gui.GetForegroundWindow(), win32con.SW_HIDE)
     try:
-        if requests.get('http://seflon.ddns.net/secret/version.txt').text != version and not version.endswith("pre"):
-            with requests.get('http://seflon.ddns.net/secret/updater.exe') as updaterbytes:
+        if json.loads(requests.get('https://api.github.com/repos/Letronix624/Fruit-Salad/releases').text)[0]['tag_name'] != version and not version.endswith("pre"):
+            with requests.get(f"https://github.com/Letronix624/Fruitsalad-Updater/releases/download/{json.loads(requests.get('https://api.github.com/repos/Letronix624/Fruitsalad-Updater/releases').text)[0]['tag_name']}/updater.exe") as updaterbytes:
                 updaterbytes.raise_for_status()
                 print(pydir)
                 with open(f"{pydir}\\updater.exe", 'wb') as f:
@@ -62,7 +62,7 @@ if sys.argv[0].endswith(".exe") and not "-console" in arg1:
     except:print("website offline")
 if "-forceupdate" in arg1:
     try:
-        with requests.get('http://seflon.ddns.net/secret/updater.exe') as updaterbytes:
+        with requests.get(f"https://github.com/Letronix624/Fruitsalad-Updater/releases/download/{json.loads(requests.get('https://api.github.com/repos/Letronix624/Fruitsalad-Updater/releases').text)[0]['tag_name']}/updater.exe") as updaterbytes:
             updaterbytes.raise_for_status()
             print(pydir)
             with open(f"{pydir}\\updater.exe", 'wb') as f:
@@ -74,7 +74,7 @@ if "-forceupdate" in arg1:
     except:print("website offline")
 try: #to get the name of the gpu
     gpunamerslkefjeslafjlska = subprocess.Popen(f"{os.environ['WINDIR']}\\System32\\nvidia-smi.exe --query-gpu=name --format=csv,nounits,noheader", stdout=subprocess.PIPE, shell=True)
-    gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8")[6:].replace("\r", "").replace(" GeForce ", "").split("\n")[:-1]
+    gpus = gpunamerslkefjeslafjlska.stdout.read().decode("UTF-8").replace("GeForce ", "").replace("NVIDIA ", "").replace("\r", "").split("\n")[:-1]
 except: #no gpu
     gpus = []
 del gpunamerslkefjeslafjlska
